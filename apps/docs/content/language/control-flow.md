@@ -3,7 +3,7 @@ title: Control flow
 description: Branch with if and else if, loop with while, loop, repeat and for over ranges and collections, and leave nested loops with labels.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-25"
 tags: [control-flow, if, loops, ranges, labels, return]
 related: [language/pattern-matching, language/functions, language/arrays-and-lists, specification/evaluation]
 ---
@@ -119,19 +119,21 @@ fn main() -> Int {
 }
 ```
 
+A count of zero is an ordinary answer to "how many times", so `repeat(0)` simply skips the body. That is the difference from `step 0` below, which asks a loop to move by nothing and is an error. A `repeat` count never runs backwards.
+
 `repeat` has no loop variable. When you need the iteration number, count with a range instead: `for i in 0..<n`.
 
 `repeat` is recognised only at the start of a statement followed by a parenthesised count and a block, so it remains an ordinary name everywhere else — `"ab".repeat(3)` is still the String method.
 
 ## Ranges: `for i in a..b`
 
-A range loop visits integers in increasing order:
+A range loop visits integers from its start towards its end, counting up or down to get there:
 
 | Syntax | Meaning | Example |
 | --- | --- | --- |
-| `a..b` | from `a` up to **and including** `b` | `1..5` → 1, 2, 3, 4, 5 |
-| `a..<b` | from `a` up to **but not including** `b` | `1..<5` → 1, 2, 3, 4 |
-| `… step k` | every `k`-th value | `1..10 step 2` → 1, 3, 5, 7, 9 |
+| `a..b` | from `a` to **and including** `b` | `1..5` → 1, 2, 3, 4, 5; `5..1` → 5, 4, 3, 2, 1 |
+| `a..<b` | from `a` to **but not including** `b` | `1..<5` → 1, 2, 3, 4; `5..<1` → 5, 4, 3, 2 |
+| `… step k` | every `k`-th value, in the range's direction | `1..10 step 2` → 1, 3, 5, 7, 9; `10..0 step 2` → 10, 8, 6, 4, 2, 0 |
 
 <!-- prismio-check: pass -->
 ```prismio
@@ -149,7 +151,7 @@ fn main() -> Int {
     }
     println("")
 
-    for i in 0..<10 step 3 {
+    for i in 9..0 step 3 {
         print(i)
     }
     println("")
@@ -157,14 +159,16 @@ fn main() -> Int {
 }
 ```
 
-This prints `12345`, `0123` and `0369`.
+This prints `12345`, `0123` and `9630`.
 
-- **`..<` is the one for indices.** A `Vec` of length `n` is indexed `0..<n`; `0..n` would visit one past the end.
-- **Either bound can be any `Int` expression.** Parentheses are allowed but not required: `for i in 1..(x + n * 2)` and `for i in lo + 1..hi` both work.
+- **`..<` is the one for indices.** A `Vec` of length `n` is indexed `0..<n`, which is empty when `n` is 0. `0..n` would visit one past the end.
+- **The direction comes from the values.** `a..b` counts down when `a` is greater than `b`, whether the bounds are literals or computed. A literal range is settled when the program is compiled; a computed one costs one comparison when the loop starts.
+- **Watch `0..n - 1`.** It is `0..<n` when `n` is at least 1, but when `n` is 0 it counts down, visiting 0 and then -1, where `0..<n` runs no times. The compiler warns about this shape; write `0..<n`.
+- **Either bound can be any `Int` expression.** Parentheses are allowed but not required: `for i in 1..x + n * 2` and `for i in lo + 1..hi` both work, because `..` binds more loosely than arithmetic.
 - **The start, the end and the step are each evaluated once**, in that order, before the first test. Changing a variable used in the end inside the body does not change how many times the loop runs, and `for i in 0..<v.length` does not recompute the length every iteration.
-- **A range whose start is past its end is empty.** `5..1` and `3..<3` run no times; `3..3` runs once.
-- **`step` must be positive.** A literal `step 0` or `step -2` is a compile error. A computed step that turns out zero or negative runs the loop no times. There is no descending range; count up and subtract (`for i in 0..<n { let j = n - 1 - i }`).
-- **Ranges stop at the largest `Int`.** `for i in 2147483640..2147483647` runs eight times and ends; it does not wrap around.
+- **`a..a` runs once and `a..<a` runs no times**, in either direction.
+- **`step` is a distance, so it must be positive.** The range already says which way to go; `step` says how far each iteration moves. A literal `step 0` or `step -2` is a compile error, and a computed step that turns out zero or negative stops the program with an error naming the line.
+- **Ranges stop at the ends of `Int`.** `for i in 2147483640..2147483647` runs eight times and ends; a range down to the smallest `Int` ends there too. Neither wraps around.
 - **The loop variable is an immutable `Int`** scoped to the body.
 
 The header may be written in parentheses, which reads naturally with `step`:
@@ -301,7 +305,6 @@ This conservative restriction prevents a path that succeeds once and becomes a u
 | --- | --- |
 | **`if` and `match` as expressions** (`let x = if (c) { 1 } else { 2 }`) | assign into a `let mut` in each branch, or `return` from a helper |
 | **A `break` that carries a value** out of a `loop` | assign into a `let mut` declared before the loop, then `break` |
-| **Descending ranges** (`10 downTo 1`) | `for i in 0..<n { let j = n - 1 - i }` |
 | **`for` over a `[T]` parameter**, whose length is not known | pass the length and write `for i in 0..<n` |
 | **`(key, value)` from an `Iterator`** | return a struct from `next()` and read its fields |
 | **`defer`**, exceptions, and conditional binding syntax (`if let`) | release explicitly on each path; use `Option` with `match` |

@@ -3,7 +3,7 @@ title: Control-flow lowering
 description: How Prismio branches, loops, matches, short-circuit operators, returns, drops, and region exits become valid LLVM basic blocks.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-25"
 tags: [llvm, control-flow, lowering]
 related: [compiler/enums-and-pattern-lowering, compiler/loop-guards, llvm/functions-and-calls]
 ---
@@ -285,24 +285,43 @@ discipline:
 - `for` additionally initializes and updates the induction binding.
 
 `repeat(n)` has no generator of its own: the parser builds it as `for $repeat_L_C in 0..<n`, with a
-counter name no source can spell. Collection loops never reach codegen either — sema rewrites
+counter name no source can spell, and sets `i2` on the node to say the loop only counts up.
+Collection loops never reach codegen either — sema rewrites
 `for x in v` into a range over the length with `let x = v[$x]` prepended to the body, and an
 `Iterator` loop into a `while` over `hasNext`/`next` (see
 [semantic analysis](/compiler/semantic-analysis-and-types)).
 
-**A range `for` evaluates its start, end and step once, in the preheader**, and has two shapes:
+**A range `for` evaluates its start, end and step once, in the preheader.** A step that is not a
+literal is then passed to `prismio_step_check`, which ends the program with the file and line when
+it is zero or negative; sema refuses a literal one. The step is a distance: the range decides the
+direction.
+
+**Direction.** `forDirection` settles it at compile time for a `repeat` count, for two integer
+literals, and for `0..<` a length (`list_len`, `slice_len`, `data_len`, never negative). Anything
+else compares `start <= end` once on entry and branches to one of two copies:
+
+- the **ascending** copy is the one the flat guard, the range proofs and the proved-index `nsw`
+  serve, exactly as for a loop whose direction was known;
+- the **descending** copy is a single checked copy with no guard of its own. A loop the source
+  leaves open rarely runs down, and each copy is the whole body again, nested loops multiplying it.
+  A literal descending range (`10..0`) does keep the flat guard.
+
+Each direction has two shapes:
 
 | Header | Test | Latch |
 | --- | --- | --- |
-| `a..<b` with no step | `i < b` before every iteration | `i = i + 1`, back to the test |
-| `a..b`, or any `step k` | `i <= b` (or `i < b`) once, on entry | continue while `b - i`, read unsigned, is `>= k` (`> k` for `..<`); then `i = i + k` and back to the body |
+| `a..<b`, up, no step | `i < b` before every iteration | `i = i + 1`, back to the test |
+| `a..b` up, or any `step k` | `i <= b` (or `i < b`) once, on entry | continue while `b - i`, read unsigned, is `>= k` (`> k` for `..<`); then `i = i + k` and back to the body |
+| any range, down | `i >= b` (or `i > b`) once, on entry | continue while `i - b`, read unsigned, is `>= k` (`> k` for `..<`); then `i = i - k` and back to the body |
 
 The first is the canonical counted loop LLVM's loop passes expect, and `i + 1` cannot wrap because
-`i < b` held. The second tests before incrementing because incrementing first would wrap past the
-largest `Int` and never exit — `for i in 0..2147483647` has to stop. `b - i` is non-negative there,
-since `i` never passes `b`, so taken as unsigned it is the exact distance left even when it does not
-fit in a signed `Int`. A computed step is additionally tested `> 0` on entry, so a zero or negative
-step runs no iterations instead of forever; sema refuses a literal one.
+`i < b` held. The others test before stepping because stepping first would wrap past the end of
+`Int` and never exit — `for i in 0..2147483647` has to stop, and so does a range down to the smallest
+`Int`. The distance left is non-negative there, since `i` never passes `b`, so taken as unsigned it is
+exact even when it does not fit in a signed `Int`, and the step itself is `nsw`.
+
+Sema warns (P4003) on an inclusive range whose end is `n - 1` over a computed `n`
+(`semaForEndBeforeCount`): it is written as a count, and counts down to `-1` when `n` is 0.
 
 Every loop enters its body through `irLoopEnter(stmt, continueLabel, breakLabel)`, which calls
 `ir_loop_push(continueLabel, breakLabel)` to record targets in the native symbol state and

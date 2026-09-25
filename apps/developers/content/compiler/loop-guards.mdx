@@ -305,6 +305,8 @@ The analysis is deliberately narrow, and each of these is a separate widening
 with its own soundness argument:
 
 - `loop` forms. `while` and range `for` loops carry the guard.
+- The descending copy of a range `for` whose direction is only known at run time.
+  It is one checked copy; the ascending copy is guarded and proved as usual.
 - An induction variable updated anywhere but the body's last statement, more than
   once, or by a non-literal step.
 - An index that is not `V`, `V + E` or `V - E` for a loop-invariant `E`.

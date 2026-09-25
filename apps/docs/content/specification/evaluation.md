@@ -4,7 +4,7 @@ description: Expression ordering, short circuiting, assignments, loops, matches,
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-25"
 tags: [specification, evaluation, control-flow, precedence]
 related: [language/operators, language/control-flow, language/pattern-matching]
 ---
@@ -37,7 +37,7 @@ Compound assignment is not a general member/index place operation in 0.1.
 
 `if` selects at most one branch; an `else if` chain tests its conditions in order and runs the first branch whose condition holds. `while` tests before each iteration. `loop` has no condition. `repeat(n)` evaluates `n` once and runs its body that many times, or none when `n` is not positive.
 
-A range `for` evaluates its start, end and step once each, in that order, before the first test, and visits increasing integer values from the start. `start..end` includes `end`; `start..<end` stops before it. With `step k` it visits every `k`-th value; a literal step must be positive, and a computed one that is not positive runs zero iterations. A range whose start is past its end runs zero iterations, and a range that ends at the largest `Int` ends there rather than wrapping.
+A range `for` evaluates its start, end and step once each, in that order, before the first test, and visits integer values from the start towards the end: increasing when the start is at most the end, decreasing otherwise. `start..end` includes `end`; `start..<end` stops before it, so `a..<a` runs zero iterations and `a..a` one. With `step k` it visits every `k`-th value in that direction; the step must be positive, a literal one that is not being a compile-time error and a computed one a run-time error when the loop is entered. A range that ends at the largest or the smallest `Int` ends there rather than wrapping. A `repeat(n)` count is not a range: it never decreases, and a count of zero or less runs zero iterations.
 
 A collection `for` evaluates the collection once. An expression that is not a name or a field is kept for the duration of the loop and released at the end of the enclosing block. The loop visits the elements present when it began, by index, in order; a `Map` in insertion order; an `Iterator` by `hasNext` and `next` until `hasNext` answers false.
 
