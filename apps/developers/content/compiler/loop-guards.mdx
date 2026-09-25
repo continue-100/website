@@ -3,7 +3,7 @@ title: Loop guards and container access
 description: How Prismio proves a container's representation and index range once per loop, versions the loop on that proof, and emits unchecked access inside it.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-25"
 tags: [compiler, loops, containers, codegen, performance, vectorization]
 related: [compiler/aif-internals, compiler/string-representation, llvm/control-flow, runtime/collection-representations]
 ---
@@ -225,6 +225,46 @@ and so does every other production compiler.
 `llvm.smax.i32`, `llvm.smin.i32` and `llvm.abs.i32`, which LLVM lists as
 *trivially vectorizable* — a branch written by hand is not.
 
+## Index arithmetic in 64 bits, where it is proved
+
+`Int` is 32 bits and wraps, and an index is sign-extended to 64 bits before it
+becomes an address. A plain `sub i32` there hides the index's shape from LLVM.
+In knapsack's `best[at] = max(best[at], best[at - weight] + value)` the
+vectoriser cannot express the distance between `best[at]` and
+`best[at - weight]`, so it guards its vector loop with a run-time test that the
+two *ranges* do not overlap. They always do, so the vector loop never runs.
+C++ has the same problem with an `int` index, and the same loop with an
+`int64_t` index is 4.8x faster.
+
+The proved copy already knows more than LLVM does: the range guard holds
+`0 <= at - weight < len`. So `rangeMarkIndex` (`src/ir/ranges.psm`) marks the
+index's `+` and `-` with the loop's proof, and the proved copy emits them `nsw`.
+With that, LLVM computes the index in 64 bits, sees a distance of `weight`, and
+drops both the wrap check and the overlap check.
+
+`nsw` is a promise, and a broken one is poison, so the rule is strict:
+
+- **An op is marked only when its result and both operands are inside `Int`.**
+  The guard's i64 interval is the loop's value only modulo 2^32, and
+  `(i + k) - k` is in range while `i + k` wraps. A value inside `Int` does equal
+  its interval's value, though. So operands inside `Int` are what the loop
+  computed, and their exact sum is the result.
+- **What is known inside `Int` comes from facts the guard already holds**: the
+  index itself, which is in `[0, len)`, and the operand of `/` or `%`, which the
+  guard keeps inside `Int`. A literal offset carries the bound down: `c - 1` in
+  `[0, len)` puts `c` in `[1, len]`, which is why every op of edit_distance's
+  `current + c - 1` is marked. `c - 2` is not, because `c` could then be
+  `INT_MAX + 1`.
+- **No fact is ever added to earn a mark.** A fact that failed at run time would
+  send the loop to its checked copy, so a mark could cost more than it saves.
+- **Multiplies are never marked**, and neither is anything outside a proved
+  index, so trip counts keep their wrapping arithmetic. §9 of
+  `aif/evidence/RESULTS-int-width.md` measured what marking a trip-count
+  multiply costs: `dead_code_elimination` lost a closed-form fold.
+
+The difference-bound tier already did this for the indices it proves: each
+term it interprets folds its own no-wrap facts and is marked by `relCommit`.
+
 ## Measurements
 
 `knapsack`, a 1-D DP over `Vec<Int>` with 576,000 inner iterations, against C++
@@ -239,6 +279,11 @@ checksums equal:
 | unchecked writes | 1.42x | 0.50x |
 | TBAA on the store | 1.37x | 0.47x |
 | source written as an unconditional `max` | **1.03x** | **0.35x** |
+| proved index arithmetic `nsw` (2026-09-25) | **0.25x** | |
+
+The last row is the vector loop running at all, not Prismio outpacing clang's
+code: the C++ arm indexes with `int` and never enters its vector loop, and the
+same C++ with an `int64_t` index gets the same factor.
 
 Rust is scalar on this workload and pays bounds checks Prismio no longer does,
 which is why Prismio is roughly three times faster there while still level with
@@ -259,7 +304,7 @@ loop at all — is **0.56x of C++**.
 The analysis is deliberately narrow, and each of these is a separate widening
 with its own soundness argument:
 
-- `for` and `loop` forms. Only `while` carries the guard today.
+- `loop` forms. `while` and range `for` loops carry the guard.
 - An induction variable updated anywhere but the body's last statement, more than
   once, or by a non-literal step.
 - An index that is not `V`, `V + E` or `V - E` for a loop-invariant `E`.
@@ -274,13 +319,15 @@ with its own soundness argument:
 
 | Concern | Location |
 | --- | --- |
-| Guard construction, range recovery | `generateLoopFlatGuard`, `generateLoopRangeGuards` in `src/ir/expr.psm` |
+| Representation guard | `generateLoopFlatGuard` in `src/ir/expr.psm` |
+| Range proofs, per access | `src/ir/ranges.psm` (delta tier), `src/ir/relations.psm` and `src/ir/dbm.psm` (difference bounds) |
+| `nsw` on proved index arithmetic | `rangeMarkIndex` in `src/ir/ranges.psm`, `relCommit` in `src/ir/relations.psm`; emitted by `irAccessProved` in `src/ir/expr.psm` |
 | Which calls decline a loop | `irFlatGuardCount` in `src/ir/expr.psm` |
 | Effect analysis and fixed point | `irBodyMovesNoBlock` and the sweep in `src/ir/module.psm` |
 | Guard-safe function table | `ir_mark_guard_safe_fn`, `ir_is_guard_safe_fn` in `runtime/ir_symbols.c` |
 | Unchecked read and write | `ir_list_flat_scalar_elem`, `ir_list_flat_scalar_set` in `runtime/llvm-api-backend.c` |
 | min/max/abs intrinsics | `src/sema/builtins.psm`, `src/ir/expr.psm`, `std/math.psm` |
-| Tests | `tests/test_119_loop_range_guard.psm`, `test_120_min_max_abs.psm`, `test_121_guard_effect_analysis.psm` |
+| Tests | `tests/test_119_loop_range_guard.psm`, `test_120_min_max_abs.psm`, `test_121_guard_effect_analysis.psm`, `test_169_loop_range_proofs.psm`, `test_179_proved_index_nsw.psm` (with `proved_index_nsw` in `test_runner.py`) |
 
 ## Debugging a guard change
 
