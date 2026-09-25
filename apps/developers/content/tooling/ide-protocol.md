@@ -3,7 +3,7 @@ title: IDE and JSON diagnostics protocol
 description: The analysis-only check command, versioned JSON Lines diagnostics, source positions, severities, and editor integration rules.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-25"
 tags: [ide, diagnostics, json]
 related: [compiler/diagnostics, compiler/cli, cookbook/add-a-diagnostic]
 ---
@@ -12,14 +12,25 @@ Editors should invoke `prismio check <source.psm> --diagnostic-format=json`. The
 imports, parsing, semantic analysis, ownership checks, and relevant analysis without generating
 LLVM IR, invoking the native linker, or creating an output artifact.
 
+**A module is checked through its program.** `src/parse/stmt.psm` resolves `import lexer.token`
+against the entry's directory, and uses `Parser` without importing it because a program's
+modules share its names; checked as a program of its own it reports errors it does not have. An
+editor runs `prismio check <entry> --diagnostic-format=json --overlay <file> <buffer>`: the
+program reads `<buffer>` wherever it would read `<file>`, diagnostics name `<file>`, and the
+editor shows the ones for that file. A program that never reads it answers warning P1075. A
+standard-library module no program imports is checked alone as `--module std.<leaf>`. The
+`IDE_PROTOCOL.md` in the compiler repository has the whole contract, and the order in which the
+IntelliJ plugin looks for a file's program.
+
 The wire contract is documented in the repository's `IDE_PROTOCOL.md`. Output is JSON Lines so a
 client can process one diagnostic record at a time. Records identify schema version, severity,
 message, source file, and source range according to the current protocol.
 
 ## Stream discipline
 
-Machine records belong on stdout. Human status, routing information, and actionable host failures
-belong on stderr. A single non-JSON prefix can make the entire stream unusable to an editor.
+Machine records are written to stderr, one JSON object per line, ending with a `summary` record.
+A `note` record follows the diagnostic it explains, usually with no location of its own, and
+belongs with it. A single stray non-JSON line must not stop a client reading the rest.
 
 ## Source positions
 

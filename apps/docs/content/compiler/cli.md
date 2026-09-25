@@ -3,7 +3,7 @@ title: Compiler command-line reference
 description: Complete Prismio 0.1 build, run, bootstrap, AST, AIF, target, optimization, and verification command reference.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-25"
 tags: [compiler, cli, flags, commands]
 related: [start/build-and-run, compiler/aif, compiler/targets]
 ---
@@ -13,6 +13,7 @@ related: [start/build-and-run, compiler/aif, compiler/targets]
 ```text
 prismio build <source.psm> [-o output] [options]
 prismio run <source.psm> [options]
+prismio check <source.psm> [--diagnostic-format=json] [--overlay <file.psm> <text>] [--module <name>]
 prismio bootstrap [source.psm] [-o output]
 prismio dump-ast <source.psm>
 prismio aif <source.psm> [aif-options]
@@ -74,6 +75,8 @@ prismio bootstrap components/main.psm -o build/prismio-next
 `bootstrap` is the compiler-development path. It builds the compiler with repository backend/runtime sources rather than linking only the installed application runtime. Prefer repository bootstrap scripts for multi-generation and platform-specific orchestration.
 
 ## Inspection commands
+
+`check` runs everything `build` does up to code generation — imports, parsing, type checking, ownership — and reports the diagnostics without producing a program. `--diagnostic-format=json` writes them one JSON object per line for an editor. A file that is one module of a larger program is checked through that program, since its imports resolve against the program's entry and it may use names the program shares: `prismio check src/main.psm --overlay src/parse/stmt.psm buffer.psm` checks the program with `buffer.psm`'s text standing in for `stmt.psm`, which is how an editor checks unsaved changes. `--module std.map` checks a standard-library module on its own.
 
 `dump-ast` parses a source entry and prints the compiler's current AST representation for development. The textual representation is diagnostic/internal and is not a stable machine protocol.
 
