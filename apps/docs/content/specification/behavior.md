@@ -4,7 +4,7 @@ description: Boundaries where Prismio 0.1 rejects code, checks at runtime, or do
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-08-09"
+lastUpdated: "2026-09-25"
 tags: [specification, undefined-behavior, portability, safety]
 related: [specification/memory-model, compiler/targets, language/ffi]
 ---
@@ -39,11 +39,11 @@ These areas require explicit application checks, narrow FFI wrappers, or target-
 
 ## Numeric behavior
 
-The language defines type widths and explicit cast mechanics, but does not yet guarantee checked arithmetic for overflow, zero division, invalid shift counts, or out-of-range float-to-integer conversion. LLVM lowering can impose preconditions whose violation is not a recoverable Prismio error.
+The language defines type widths and explicit cast mechanics, but does not yet guarantee checked arithmetic for overflow, zero division, or invalid shift counts. Float-to-integer conversion is defined for every input: it truncates toward zero, saturates at the destination's bounds, and maps NaN to 0. LLVM lowering can impose preconditions whose violation is not a recoverable Prismio error.
 
 Portable code validates divisors, shift ranges, and numeric input before performing the operation. Security-sensitive code should not infer debug trapping or wraparound without a future explicit contract.
 
-Floating-point computation uses the current `Float` backend representation. NaN comparisons, signed zero, rounding modes, exception flags, contraction, and bit-for-bit cross-target reproducibility are not exhaustively standardized.
+`Float` is IEEE 754 binary64 (ISO/IEC 60559). `+ - * /` and `sqrt` are correctly rounded to nearest, ties to even. Comparisons follow IEEE 754: `!=` is true for a NaN operand, and the other comparisons are false. Signed zero is preserved through negation. `%` is C's `fmod`. The compiler may contract `a * b + c` into a fused multiply-add. Exception flags and non-default rounding modes are not exposed. Transcendental functions come from the platform C library and may differ in the last bit between targets; see [`std.math`](/stdlib/math#floating-point-semantics).
 
 ## Bounds and storage
 

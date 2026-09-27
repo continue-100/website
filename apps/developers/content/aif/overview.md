@@ -3,7 +3,7 @@ title: Adaptive Inference Framework overview
 description: What AIF decides, how to see its decisions on your own code, and the map of the pass for contributors changing it.
 status: experimental
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-25"
 tags: [aif, memory, architecture]
 related: [compiler/aif-internals, aif/tiers-and-analysis-domains, aif/reuse-reports-and-verification, testing/aif-differential]
 ---
@@ -33,7 +33,7 @@ fn label(n: Int) -> String {
 fn main() -> Int {
     let p = Point { x: 1, y: 2 }
     let name = label(p.x)
-    return name.length() + p.y
+    return name.length + p.y
 }
 ```
 

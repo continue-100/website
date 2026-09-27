@@ -1,9 +1,9 @@
 ---
 title: Process and arguments
-description: The std.process module — command-line arguments, starting other programs and talking to them through pipes, and why an argument comes back as a copy.
+description: The std.process module — command-line arguments, environment variables, the process id, starting other programs and talking to them through pipes.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-25"
 tags: [standard-library, process, arguments, ffi]
 related: [stdlib, stdlib/platform, stdlib/filesystem, cookbook/cli-arguments, language/ffi]
 ---
@@ -41,6 +41,42 @@ Out of range and "the argument is the empty string" answer alike, deliberately. 
 `process.args[i]` is `at(i)`: `x[i]` on a struct is `at(x, i)`, the same rewrite `s[i]` has always had for String. Nothing builds a list to answer a question about one argument.
 
 This replaced five functions — `argCount`, `arg`, `argBorrowed`, `argAt` and `args`. The two that carried real information are here; `argBorrowed`'s uncopied form and `argAt`'s `Option` are gone.
+
+## Environment variables and the process id
+
+| Spelling | Answers |
+|---|---|
+| `process.env(name)` | `Option<String>`: `Some(value)`, or `None` when the variable is not set. A variable set to the empty string is `Some("")`. |
+| `process.setEnv(name, value)` | `Bool`: sets it for this process and for every child started afterwards; `false` for an empty name or one containing `=` |
+| `process.removeEnv(name)` | `Bool`: `true` when the variable is unset afterwards, whether or not it was set before |
+| `process.pid` | `Int`: this process's id, as the operating system numbers it |
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.option
+import std.process
+
+fn main() -> Int {
+    let home = process.env("HOME")
+    match (home) {
+        Option.Some(dir) => { println(dir) }
+        Option.None => { println("HOME is not set") }
+    }
+
+    let editor = process.env("EDITOR")
+    let chosen = optionOr(editor, "vi")
+    println(chosen)
+
+    process.setEnv("APP_MODE", "test")
+    println(process.pid)
+    return 0
+}
+```
+
+`optionOr(process.env("EDITOR"), "vi")` releases everything, written in one expression: the looked-up `Option` lives until the end of the enclosing block, because the result is a view of it.
+
+**The environment is not thread-safe**, in Prismio as in C: it is one table for the whole process, so a `setEnv` on one task racing an `env` on another is undefined. Set what you need before you `spawn` tasks.
 
 ## Why indexing copies
 
@@ -221,4 +257,4 @@ QUIET WORDS
 
 ## Still missing
 
-Environment variables, a working directory for the child, the current process id, and redirecting a stream to a file. The Windows half has not been exercised yet — it is written, and its first build is on Windows CI.
+Listing every environment variable at once, a working directory or environment of its own for a child (a child inherits this process's), and redirecting a stream to a file. The Windows half has not been exercised yet — it is written, and its first build is on Windows CI.

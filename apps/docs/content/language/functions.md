@@ -3,7 +3,7 @@ title: Functions and parameters
 description: Declare Prismio 0.1 functions, return values, overloads, and borrow, sink, or inout parameters.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-25"
 tags: [functions, parameters, returns, overloads]
 related: [language/ownership-and-borrowing, language/ffi, errors/wrong-arity]
 ---
@@ -54,7 +54,7 @@ The number of arguments and their exact types must match an available declaratio
 
 ## Return rules
 
-Omitting `-> Type` declares a no-value-returning function. Non-void functions must return on every reachable path. Code after an unconditional `return` is rejected as unreachable.
+Omitting `-> Type` declares a no-value-returning function. Non-void functions must return on every reachable path; a path may instead end in [`panic`, `unreachable` or `exit`](/language/error-handling#when-the-program-cannot-go-on), which never return. Code after an unconditional `return`, or after one of those three, is rejected as unreachable.
 
 ```prismio
 fn log_ready() {

@@ -118,7 +118,7 @@ A program reaches native code in one of three ways, and they are not interchange
 - **Standard modules** (`std.*`) provide the supported application APIs, implemented in Prismio where possible, and wrap every runtime symbol an application has business calling.
 - **Foreign `extern fn` declarations** connect to C-compatible symbols, and must state their ownership behaviour. They are for foreign code an application brings itself, not for reaching into the Prismio runtime.
 
-Moving a helper into C makes it opaque to ordinary analysis. Pretending a representation operation is an extern creates a symbol and ABI that should not exist. `RUNTIME.md` in the compiler repository is the full map of what a program can call, and who owns what it returns; [the supported surface](/runtime/supported-surface) is its summary here.
+Moving a helper into C makes it opaque to ordinary analysis. Pretending a representation operation is an extern creates a symbol and ABI that should not exist. [Builtins, standard modules, and foreign code](/runtime/supported-surface) is the full map of what a program can call, and who owns what it returns.
 
 ## Runtime compatibility
 

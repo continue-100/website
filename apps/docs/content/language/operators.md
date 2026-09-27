@@ -3,7 +3,7 @@ title: Operators and casts
 description: Prismio 0.1 arithmetic, comparison, logical, bitwise, shift, unary, assignment, and cast operators.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-25"
 tags: [operators, precedence, casts, bitwise]
 related: [language/types, specification/evaluation, errors/integer-width-mismatch]
 ---
@@ -14,7 +14,9 @@ Operators are statically checked. Prismio generally requires matching operand ty
 
 ## Arithmetic
 
-`+`, `-`, `*`, `/`, and `%` operate on compatible numeric values. Unary `-` negates a signed integer or floating-point value where the type supports it.
+`+`, `-`, `*`, `/`, and `%` operate on compatible numeric values. On integers `%` takes the dividend's sign (`-7 % 2` is `-1`; [`floorMod`](/stdlib/math#integer-functions) takes the divisor's). On `Float` it is C's `fmod`: `-7.5 % 2.0` is `-1.5`, and `x % 0.0` is NaN. Unary `-` negates a signed integer or floating-point value, and on a `Float` it flips only the sign, so `-(0.0)` is `-0.0`.
+
+`Float` comparisons follow IEEE 754: `NaN != NaN` is `true`, and `==`, `<`, `<=`, `>`, `>=` with a NaN operand are `false`.
 
 <!-- prismio-check: pass -->
 ```prismio
@@ -121,7 +123,7 @@ The documented conversions are:
 - widening an unsigned integer, `Bool`, or `Char` zero-extends;
 - narrowing an integer keeps the low-order bits;
 - integer-to-float converts numerically but may lose precision;
-- float-to-integer truncates toward zero and requires a representable destination for portable use.
+- float-to-integer truncates toward zero and saturates: out-of-range values clamp to the destination's `MAX`/`MIN`, and NaN becomes 0.
 
 A cast states intent; it does not validate an input range. Check application ranges before narrowing data received from files, networks, or foreign code.
 
@@ -162,15 +164,12 @@ A `String` is a pointer, so a raw address comparison would quietly answer
 "not equal" for two equal strings. `==` is the content comparison, and there is no
 way to spell the address one.
 
-Because `+` and `[a..b]` produce an owned value, the ownership rule applies to
-them: bind the result. `println(a + b)` compiles and leaks;
-`let joined = a + b` does not.
+`+` and `[a..b]` produce an owned value, released like any call's result:
+`println(a + b)` frees the joined string once `println` returns.
 
 A chain of `+` is **one** call, not a nest of them: `a + b + c` becomes
-`a.concat(b, c)`. That is a correctness measure rather than an optimisation —
-the intermediate of a nested concatenation is a value nothing names, so the
-pairwise lowering would leak once per `+`. Up to six parts are supported; past
-that, build a `Vec<String>` and call `join` on it.
+`a.concat(b, c)`, one allocation rather than one per `+`. Up to six parts are
+supported; past that, build a `Vec<String>` and call `join` on it.
 
 Both sides of `+` must be Strings. Nothing is promoted implicitly, so write
 `"n = " + count.toString()`.

@@ -22,8 +22,6 @@
     "roadmap",
     "runtime/allocation-arenas-rc-and-cycles",
     "runtime/collection-representations",
-    "runtime/supported-surface",
-    "runtime/tasks-and-channels",
     "start/first-compiler-change",
     "testing/regression-suite",
     "tooling/build-graph-and-linking",

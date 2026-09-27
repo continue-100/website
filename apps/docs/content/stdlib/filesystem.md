@@ -3,7 +3,7 @@ title: Filesystem API
 description: The std.fs module — files, paths, and directory listing, with the ownership contracts the raw runtime calls do not carry.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-16"
+lastUpdated: "2026-09-25"
 tags: [standard-library, filesystem, paths]
 related: [stdlib, stdlib/process, stdlib/strings, language/ffi]
 ---
@@ -75,7 +75,7 @@ fn main() -> Int {
 }
 ```
 
-Note that every result is bound to a `let` before use. `println(readFile(path))` compiles and leaks — an owned result passed straight into a parameter is a value nothing names, and nothing names it is nothing frees it. See [strings](/stdlib/strings) for the rule and how `--verify` reports it.
+Binding the result is not required: `println(readFile(path))` releases the file's contents once `println` returns. See [strings](/stdlib/strings#passing-a-result-straight-on) for the two shapes where a `let` still matters, and how `--verify` reports a leak.
 
 ## Still missing
 

@@ -3,7 +3,7 @@ title: LLVM C API bridge
 description: A categorized reference to the LLVM 23 C API used by Prismio's native backend and the ir_* operations exposed to self-hosted code.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-25"
 tags: [llvm, c-api, bridge]
 related: [llvm/overview, llvm/types-and-abi, llvm/functions-and-calls]
 ---
@@ -94,12 +94,18 @@ Integer and bitwise operations use `LLVMBuildAdd`, `LLVMBuildSub`, `LLVMBuildMul
 `LLVMBuildLShr`, and `LLVMBuildAShr`.
 
 Floating operations use `LLVMBuildFAdd`, `LLVMBuildFSub`, `LLVMBuildFMul`,
-`LLVMBuildFDiv`, and `LLVMBuildFNeg`. Comparisons use `LLVMBuildICmp` or
-`LLVMBuildFCmp` with the predicate selected by the `ir_icmp_*` or `ir_fcmp_*` wrapper.
+`LLVMBuildFDiv`, `LLVMBuildFRem` (`%`, C's `fmod`), and `LLVMBuildFNeg` (unary `-`; an
+`fsub 0.0, x` would turn `-0.0` into `+0.0`). Comparisons use `LLVMBuildICmp` or
+`LLVMBuildFCmp` with the predicate selected by the `ir_icmp_*` or `ir_fcmp_*` wrapper. Float
+`==` and the orderings are *ordered* (`oeq`, `olt`, …) and `!=` is **unordered** (`une`), so
+a NaN operand makes `!=` true and everything else false, as IEEE 754 requires. `ir_fcmp_one`
+is still defined because the committed seed calls it; nothing current emits it.
 
 Conversions use `LLVMBuildZExt`, `LLVMBuildSExt`, `LLVMBuildTrunc`,
-`LLVMBuildSIToFP`, `LLVMBuildUIToFP`, `LLVMBuildFPToSI`, `LLVMBuildFPToUI`,
-`LLVMBuildIntToPtr`, `LLVMBuildPtrToInt`, and `LLVMBuildBitCast`.
+`LLVMBuildSIToFP`, `LLVMBuildUIToFP`, `LLVMBuildIntToPtr`, `LLVMBuildPtrToInt`, and
+`LLVMBuildBitCast`. A float-to-integer `as` is not `LLVMBuildFPToSI`: `generateCast` calls
+`llvm.fptosi.sat.<int>.f64` (or `fptoui.sat`) through `ir_call_*`, because a bare `fptosi` is
+poison out of range and on NaN. The saturating form is one `fcvtzs` on AArch64.
 `LLVMBuildSelect` supports branchless scalar choices and representation guards.
 
 Calls use `LLVMBuildCall2` with an explicit `LLVMFunctionType`. The bridge does not use the
@@ -154,7 +160,10 @@ may be silently dropped.
 ## Adding a bridge operation
 
 Add the declaration to `bridge.psm`, the prototype to `prismio_llvm.h`, and the implementation
-to `llvm-api-backend.c`. Accept type keys and value handles rather than exposing LLVM addresses.
+to `llvm-api-backend.c`. **A new LLVM-C function or enum value also goes in `prismio_llvm.h`.**
+Bootstrap compiles the backend against the real LLVM headers, but `tools/package.py` compiles it
+against that hand-kept subset, so a bridge using `LLVMBuildFRem` or `LLVMRealUNE` that is missing
+there builds a compiler and then fails to package with "call to undeclared function". Accept type keys and value handles rather than exposing LLVM addresses.
 Check for a terminated block, use `type_from_key` and `resolve_value`, intern any produced
 value, attach applicable debug/TBAA metadata, and test the operation in
 `runtime/test_llvm_backend.c` plus a source-level regression. A bridge function is complete only

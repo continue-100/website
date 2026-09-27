@@ -71,16 +71,19 @@ Block comments are `/* ... */` and nest; see [lexical structure](/language/lexic
 Methods, `impl` blocks, traits and closures **are**. A declaration may carry a leading visibility modifier, and an `impl` body holds `fn` declarations that may each carry one:
 
 ```text
-declaration    = visibility? (importDecl | letDecl | fnDecl | externDecl
+declaration    = visibility? (importDecl | letDecl | fnDecl | propDecl | externDecl
                              | structDecl | enumDecl | implDecl | traitDecl) ;
 visibility     = "public" | "private" | "internal" ;
 implDecl       = "impl" typeName ("for" typeName)? "{" implMember* "}" ;
-implMember     = visibility? fnDecl ;
+implMember     = visibility? (fnDecl | propDecl) ;
+propDecl       = "prop" identifier "(" parameter ")" returnType block ;
 traitDecl      = "trait" identifier "{" fnSignature* "}" ;
 closureExpr    = "|" parameters? "|" (expression | block) ;
 ```
 
 A visibility modifier is accepted only on a function or a foreign declaration -- `fn`, `extern fn`, `extern let`, or a method inside an `impl` block. On a type, an enum, or a Prismio global it is a parse-time rejection rather than a marker that is accepted and ignored.
+
+`prop` is contextual: it begins a `propDecl` only when a name follows it in declaration position, so it remains an ordinary name elsewhere. A property is read without parentheses (`x.length`) and a method called with them; writing either one the other way is a semantic error, as are a property with more than one parameter, no return type, or an owned return type.
 
 An `impl` member without a `self` parameter is an associated function; a generic `impl` (`impl Box<Int>`) is rejected.
 

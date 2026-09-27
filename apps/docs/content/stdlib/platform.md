@@ -16,25 +16,25 @@ import std.io
 import std.platform
 
 fn main() -> Int {
-    match (platform.current()) {
+    match (platform.current) {
         Platform.Windows => { println("Windows") }
         Platform.Linux => { println("Linux") }
         Platform.MacOS => { println("macOS") }
         Platform.Unknown => { println("somewhere else") }
     }
-    if (platform.architecture() == Architecture.ARM64) { println("ARM64") }
+    if (platform.architecture == Architecture.ARM64) { println("ARM64") }
     return 0
 }
 ```
 
 | Call | Returns |
 |---|---|
-| `platform.current()` | `Platform` — `Windows`, `Linux`, `MacOS` or `Unknown` |
-| `platform.isWindows()` | `Bool` — the same as `platform.current() == Platform.Windows` |
-| `platform.isLinux()` | `Bool` — the same as `platform.current() == Platform.Linux` |
-| `platform.isMacOS()` | `Bool` — the same as `platform.current() == Platform.MacOS` |
-| `platform.architecture()` | `Architecture` — `X86_64`, `ARM64` or `Unknown` |
-| `platform.environment()` | `Environment` — `GNU`, `Musl`, `MSVC`, `MinGW` or `Unknown` |
+| `platform.current` | `Platform` — `Windows`, `Linux`, `MacOS` or `Unknown` |
+| `platform.isWindows` | `Bool` — the same as `platform.current == Platform.Windows` |
+| `platform.isLinux` | `Bool` — the same as `platform.current == Platform.Linux` |
+| `platform.isMacOS` | `Bool` — the same as `platform.current == Platform.MacOS` |
+| `platform.architecture` | `Architecture` — `X86_64`, `ARM64` or `Unknown` |
+| `platform.environment` | `Environment` — `GNU`, `Musl`, `MSVC`, `MinGW` or `Unknown` |
 
 `platform` is a global the module declares, of an empty struct type, `PlatformQuery`; the calls above are its methods.
 
@@ -43,10 +43,10 @@ fn main() -> Int {
 These are facts about the compile target. A native build targets the machine it runs on, so there the answer is that machine's too. A cross build answers for the target it names:
 
 ```text
-prismio build app.psm --target x86_64-pc-windows-msvc    # platform.current() is Platform.Windows
+prismio build app.psm --target x86_64-pc-windows-msvc    # platform.current is Platform.Windows
 ```
 
-Every answer is a constant, so `if (platform.isLinux()) { ... } else { ... }` compiles to the one branch it takes. There is no run-time check and no call.
+Every answer is a constant, so `if (platform.isLinux) { ... } else { ... }` compiles to the one branch it takes. There is no run-time check and no call.
 
 ## How a triple maps
 

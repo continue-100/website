@@ -3,7 +3,7 @@ title: Ownership and drop lowering
 description: How Prismio tracks moves, default borrows, consuming parameters, mutable borrows, reassignment, and destruction — and how that legality gets turned into an actual release call.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-25"
 tags: [ownership, borrowing, drops]
 related: [aif/overview, aif/regions-views-and-provenance, llvm/control-flow, runtime/overview]
 ---
@@ -182,5 +182,16 @@ Releasing the value a field *assignment* displaces is still not done: `let old =
 `irArgumentIsOwnedTemporary` identifies a call argument whose storage has no binding owner. `generateOwnedTemporaryRelease` schedules its release after the call completes (`ir_call_end`), except where a consuming parameter has taken ownership instead. Borrowed C-string conversion records its own call-frame temporary and releases it in `release_call_temps`.
 
 `nodeProducesOwnedValue`, `irCallReturnsAlias`, and `aif_owns_call_result_at_node` distinguish an owned result from an alias or a view. Return lowering transfers an owned result out of the local drop set entirely; returning an alias instead extends the underlying owner's required lifetime through AIF provenance, rather than pretending the alias itself owns storage.
+
+**Who owns a call's result is asked of that call, not of its allocation site.** A site is per allocating function, so one site serves every value that function makes — every `concat` in a program is one. `aif_owns_call_result_at_node` used to refuse a call whenever any site it could return had been stored into a container or a released field *anywhere*, and one `Box { text: make(n) }` in a function nothing calls then cost every temporary `concat` result its release. It now builds a key-level flow graph from the constraints (`flow_build` in `runtime/aif_support.c`) and asks two flow questions:
+
+- `call_result_held` — does *this node's* value reach a holder? The walk gives every call a fresh value set, so the constraints that consume it (and any union built from it) are this node's consumers alone.
+- `call_fn_result_held` — can the callee's result already be held when it returns: read out of a holder, or stored into one and returned as well? Answered over the keys that flow into its `RET` key, without following edges out of a `RET` key, which belong to callers.
+
+The pass-through guard is asked of flow in the same way. `param_returns` records, per parameter, whether a path leads from it to its function's return along moves that function makes — each constraint carries the function whose walk made it (`aif_con_fn`) — crossing into a callee only through the callee's own answer. Asked of sites instead, a chain of one-line wrappers (`x.toUpper().toUpper()`, where `toUpper` returns `strToUpper`'s allocation) put one site in both the parameter's set and the return's, and every chained call looked like it returned its receiver.
+
+**A temporary whose release the callee withholds becomes a binding.** When the callee may hand an argument, or a view of it, back — `optionOr(lookup(i), d)` returns the String inside the Option — codegen cannot release the temporary after the call. `irHoistBorrowedTemporaries` (`src/ir/expr.psm`) runs before a function body is generated and splices `let bt.N = lookup(i)` ahead of the statement, so the scope drop and every guard on it apply by name. It only does so where that reorders nothing: the temporary must be the statement's first effect, the statement must run once (a `let`, an expression, an assignment to a name, an `if` condition), and the block must not carry an automatic arena, whose range is counted in statements.
+
+The guards on a callee-allocated binding's drop now cover a view of it leaving the scope, not only the binding itself: `irValueAliasesName` treats a call that may return a view of a parameter as an alias (except `concat`, which copies), `chainAssignsAliasOf` refuses a binding whose alias is assigned into another binding, and `chainRetainsAliasOf` one whose alias is passed to an argument the callee keeps (`aif_call_arg_retained`: the contract for an extern such as `list_push`, the flow graph for a Prismio function). Each shape read freed memory before — a Vec of views of a dropped `Option` read back as the last string written — and `--verify` reported them clean, because every release it saw was legal. `tests/test_185_view_outlives_binding.psm` aborts on the compiler before the fix.
 
 Ownership regressions need coverage for at least: a legal move, use-after-move rejection, borrow followed by use, consuming call, overwrite, every early exit, nested scope, loop break/continue, returned owned value, returned view, container element replacement, task transfer, an FFI contract, and both verifier and observable-value assertions — a balanced ledger and a correct answer are different claims, and a regression test that only checks the ledger can pass while returning a stale value.

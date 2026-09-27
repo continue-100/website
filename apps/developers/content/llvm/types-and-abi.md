@@ -3,7 +3,7 @@ title: Types and ABI
 description: Prismio-to-LLVM type keys, storage forms, field layout, target widths, optional encoding, string ABI, and foreign-call coercion.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-18"
+lastUpdated: "2026-09-25"
 tags: [llvm, types, abi]
 related: [llvm/overview, runtime/collection-representations, compiler/string-representation]
 ---
@@ -140,7 +140,8 @@ Signedness determines the chosen instruction:
 - `ir_sext` versus `ir_zext` for widening;
 - `ir_sdiv`/`ir_srem` versus `ir_udiv`/`ir_urem`;
 - signed versus unsigned `ir_icmp_*`; and
-- `ir_sitofp`/`ir_fptosi` versus their unsigned forms.
+- `ir_sitofp` versus `ir_uitofp`, and `llvm.fptosi.sat` versus `llvm.fptoui.sat` for a
+  float-to-integer cast, which saturates rather than producing poison.
 
 LLVM integer types themselves are signless, so using the correct builder is the only place this
 meaning survives.

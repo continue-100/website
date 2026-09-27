@@ -100,7 +100,7 @@ That is `semaErrorAt`, which every general semantic error goes through, so the c
 | `aif/corpus/` | The programs the AIF differential runs over |
 | `aif/evidence/` | Experiments, rejected ideas, and measured decisions, one `RESULTS-*.md` per piece of work |
 
-Three top-level documents are worth knowing before you change anything: `KNOWN_ISSUES.md` (what is open), `RUNTIME.md` (what a program can call, and who owns what it returns), and `CODE_STYLE.md` with its C counterpart `C_CODE_STYLE.md`.
+Three documents are worth knowing before you change anything: `docs/KNOWN_ISSUES.md` (what is open), [the runtime surface](/runtime/supported-surface) (what a program can call, and who owns what it returns), and `CODE_STYLE.md` with its C counterpart `C_CODE_STYLE.md`.
 
 ## If you are reading the source
 

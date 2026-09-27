@@ -3,7 +3,7 @@ title: Strings
 description: The String type, its operators, and the std.string method surface -- length, indexing, comparison, concatenation, slicing, iteration, searching, and parsing.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-27"
 tags: [standard-library, strings, operators, methods, ownership]
 related: [language/operators, language/methods, language/ownership-and-borrowing, language/control-flow]
 ---
@@ -34,17 +34,28 @@ fn main() -> Int {
 }
 ```
 
-## The one rule that catches everyone
+## Passing a result straight on
 
-**Bind what allocates.** An owned result passed straight into a parameter is a
-value nothing names, and nothing names it is nothing frees it.
+An owned result can be passed straight into another call. The compiler releases
+it after the call returns, or at the end of the enclosing block when the callee
+may hand back a view of it:
 
 | Written | Result |
 |---|---|
-| `println(text.trim())` | compiles, **leaks** |
-| `let trimmed = text.trim()` then `println(trimmed)` | correct |
-| `println(text.split(',').length)` | leaks the temporary Vec |
-| `let parts = text.split(',')` then `println(parts.length)` | correct |
+| `println(text.trim())` | correct |
+| `println(text.split(',').length)` | correct — the Vec is released after `length` is read |
+| `println(optionOr(text.stripPrefix("x"), "none"))` | correct — the Option lives to the end of the block |
+| `x.trim().toUpper()` | correct — both results are released |
+
+Two shapes still leak, and binding the value with `let` fixes both:
+
+- a temporary evaluated *after* another call in the same expression, when the
+  callee may hand back a view of it: `n = a.size() + optionOr(f(), d).length`
+  (moving `f()` ahead of `a.size()` could reorder their effects, so the compiler
+  does not);
+- a view of a temporary that is kept — pushed into a Vec or assigned to a
+  variable outside the block. The value is kept alive rather than freed early,
+  so this is a leak, never a stale read.
 
 Every table below marks which entries allocate. Build with `--verify` and run the
 binary to check: the ledger line reads `N allocated, N released, N leaked,
@@ -55,8 +66,8 @@ violation corrupts.
 
 Five operators work on `String`. Each is rewritten during semantic analysis into
 the `std.string` call it means, so ownership, overload resolution, and code
-generation see an ordinary call — which is exactly why the allocation rule above
-applies to `+` and `[a..b]` just as it does to a method.
+generation see an ordinary call — so `+` and `[a..b]` allocate, and are released,
+exactly as a method's result is.
 
 | Operator | Means | Allocates |
 |---|---|---|
@@ -123,11 +134,10 @@ implicitly, so convert first — `"n = " + count.toString()`.
 
 ## Properties
 
-A property is a method call with the parentheses left off. **A property never
-allocates**: the rewrite is refused when the function it resolves to returns an
-owned value, so `s.trim` is a compile error naming the fix and `s.length` is not.
-That keeps the "bind what allocates" rule visible — anything that allocates has
-parentheses on it.
+These are declared `prop`, so they are read without parentheses — `s.length`,
+never `s.length()` ([properties](/language/methods#properties)). A property never
+allocates; anything that does is a method and takes `()`, so `s.trim` is a
+compile error naming the fix.
 
 | Property | Type | Meaning |
 |---|---|---|
@@ -320,8 +330,8 @@ import std.string
 
 fn main() -> Int {
     let token = "abc123"
-    println(token.countIf(|c: Char| c.isDigit()))
-    println(token.allChars(|c: Char| c.isAlnum()))
+    println(token.countIf(|c: Char| c.isDigit))
+    println(token.allChars(|c: Char| c.isAlnum))
     return 0
 }
 ```
@@ -340,7 +350,7 @@ closure at all.
 | `c.isLower`, `c.isUpper`, `c.isSpace` | `Bool` (properties) |
 | `c.digitValue` | `Int` (property) |
 | `c.toUpper()`, `c.toLower()` | `Char` |
-| `c.code()` | `Int` — the byte value |
+| `c.code` | `Int` — the byte value |
 | `c.toString()` | `String` — **allocates** |
 
 ## Parsing and formatting
@@ -457,9 +467,9 @@ the second reading:
 
 | Method | Returns |
 |---|---|
-| `s.isAscii()` | `Bool` |
-| `s.isValidUtf8()` | `Bool` — well-formed, so overlong forms and surrogates are refused |
-| `s.scalarCount()` | `Int` — characters, as opposed to `length`'s bytes |
+| `s.isAscii` | `Bool` |
+| `s.isValidUtf8` | `Bool` — well-formed, so overlong forms and surrogates are refused |
+| `s.scalarCount` | `Int` — characters, as opposed to `length`'s bytes |
 | `s.scalars()` | `Vec<Int>` — code points; an ill-formed byte becomes U+FFFD |
 | `s.scalarAt(byteIndex)` | `Int` — the code point there, or `-1` |
 | `s.scalarWidthAt(byteIndex)` | `Int` — 1 to 4, or 0 |
@@ -475,7 +485,7 @@ import std.string
 fn main() -> Int {
     let greeting = "héllo"
     println(greeting.length)
-    println(greeting.scalarCount())
+    println(greeting.scalarCount)
     println(greeting.reverse())
     println(greeting.scalarSubstring(1, 3))
     return 0
@@ -518,7 +528,7 @@ fn main() -> Int {
 ``error: `strTrim` is internal to the package that declares it`` — write
 `"  x ".trim()`. The number conversions are methods on the number: `n.toString()`,
 `n.toString(16)`, `n.toHex()`, `f.toString(2)`. The character predicates are
-methods on `Char`: `c.isDigit()`, `c.toUpper()`, `c.digitValue()`.
+methods on `Char`: `c.isDigit`, `c.toUpper()`, `c.digitValue`.
 
 Three free functions remain, because none of them has a receiver to hang on:
 `join(parts, sep)` (also written `parts.join(sep)`), `strFromScalar(code)`, and,
@@ -555,10 +565,28 @@ Grapheme clusters, terminal width and NFC/NFD normalization are in
 [`std.unicode`](/stdlib/unicode) rather than here, because they carry 100 KB of
 generated tables that a program doing none of it should not build.
 
-There is no string *builder*, and none is needed: `s = s + part` in a loop is
-amortised O(1) per append. Codegen consumes the left buffer when an owning
-assignment immediately replaces it, and capacity doubles on a miss — 2000 appends
-of ten bytes measure **13 allocations**, not 2000.
+`s = s + part` in a loop on a local is amortised O(1) per append. Codegen consumes
+the left buffer when an owning assignment immediately replaces it, and capacity
+doubles on a miss — 2000 appends of ten bytes measure **13 allocations**, not 2000.
+Through a struct field the same line copies the whole text each time; use a
+`StringBuilder` there, which keeps the pieces and joins them once:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+
+fn main() -> Int {
+    let mut out = StringBuilder.new()
+    for i in 0..<3 {
+        out.append("line ")
+        out.appendLine(i.toString())
+    }
+    println(out.length)       // 21
+    print(out.toString())
+    return 0
+}
+```
 
 ## FFI caution
 

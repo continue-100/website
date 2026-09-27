@@ -3,7 +3,7 @@ title: Types
 description: Primitive, numeric, aggregate, optional, and inferred types in Prismio 0.1.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-25"
 tags: [types, integers, floats, bool, string]
 related: [language/arrays-and-lists, language/structs, language/optionals, specification/type-system]
 ---
@@ -89,9 +89,11 @@ Beyond wrapping, integer overflow behavior is not yet frozen as a portable sourc
 
 ## Floating point
 
-`Float` is a 64-bit floating-point value. There is no `Float32` or `Float64` spelling in 0.1. Arithmetic and ordered comparisons operate on two `Float` values; explicitly cast integers before mixing them with a float.
+`Float` is an IEEE 754 binary64 value (ISO/IEC 60559), the same type as C's `double`. There is no `Float32` or `Float64` spelling in 0.1. Arithmetic, `%` and ordered comparisons operate on two `Float` values; explicitly cast integers before mixing them with a float.
 
-Floating-point special values and edge cases inherit the current LLVM/backend behavior, but NaN ordering, exception flags, contraction, and cross-target reproducibility are not yet exhaustively specified. Treat exact numerical reproducibility as an application-level responsibility.
+The IEEE special values behave as the standard says. `NaN != NaN` is `true` and every other comparison with a NaN is `false`. `-0.0` keeps its sign, so `1.0 / -0.0` is `-inf`. `%` is C's `fmod`, so its result takes the dividend's sign. Square roots, rounding, powers, logarithms, trigonometry and the `Float.PI`/`Float.INFINITY` constants are in [`std.math`](/stdlib/math), which also documents what is correctly rounded and what comes from the platform's C library.
+
+The compiler may fuse `a * b + c` into one fused multiply-add, as C compilers do by default. Exception flags and rounding modes other than round-to-nearest are not exposed. Treat bit-for-bit reproducibility of transcendental functions across operating systems as an application-level responsibility.
 
 ## Boolean and character values
 
@@ -156,9 +158,9 @@ Use `expect(value)` to obtain the underlying non-optional value after a runtime 
 
 ## Cast behavior
 
-Narrowing integer casts keep low bits. Signed widening sign-extends; unsigned, `Bool`, and `Char` widening zero-extends. Float-to-integer casts truncate toward zero.
+Narrowing integer casts keep low bits. Signed widening sign-extends; unsigned, `Bool`, and `Char` widening zero-extends. Float-to-integer casts truncate toward zero and **saturate**: a value past the destination's range becomes its `MAX` or `MIN`, and NaN becomes 0. `1e10 as Int` is `Int.MAX`, never an arbitrary value.
 
-Integer-to-float and float-to-integer conversions can lose precision. A cast states that the conversion is intentional; it does not prove the value is in range. Pointer-related casts and foreign ABI conversions should be isolated behind small, well-documented interfaces.
+Integer-to-float conversions can lose precision above 2⁵³. A cast states that the conversion is intentional; it does not prove the value is in range. Pointer-related casts and foreign ABI conversions should be isolated behind small, well-documented interfaces.
 
 ## Copy and move categories
 

@@ -199,14 +199,15 @@ export const docsConfig: DocsAppConfig = {
                 { label: "Console I/O", href: "/stdlib/io" },
                 { label: "Terminal colors", href: "/stdlib/term" },
                 { label: "Strings", href: "/stdlib/strings" },
+                { label: "Math", href: "/stdlib/math" },
                 { label: "Vec", href: "/stdlib/vec" },
                 { label: "Map", href: "/stdlib/map" },
                 { label: "Option and Result", href: "/stdlib/option" },
                 { label: "Platform", href: "/stdlib/platform" },
+                { label: "Filesystem", href: "/stdlib/filesystem" },
                 {
                     label: "Planned modules",
                     items: [
-                        { label: "Filesystem · Coming Soon", href: "/stdlib/filesystem" },
                         { label: "Networking · Coming Soon", href: "/stdlib/networking" },
                         { label: "Time · Coming Soon", href: "/stdlib/time" },
                         { label: "Concurrency · Coming Soon", href: "/stdlib/concurrency" },

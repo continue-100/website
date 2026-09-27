@@ -23,9 +23,9 @@ compares no user-entered text should not build them.
 | Measure | Value | From |
 | --- | --- | --- |
 | bytes | 3 | `s.length`, in `std.string` |
-| scalars | 2 | `s.scalarCount()`, in `std.string` |
-| graphemes | 1 | `s.graphemeCount()`, here |
-| columns | 1 | `s.displayWidth()`, here |
+| scalars | 2 | `s.scalarCount`, in `std.string` |
+| graphemes | 1 | `s.graphemeCount`, here |
+| columns | 1 | `s.displayWidth`, here |
 
 <!-- prismio-check: pass -->
 ```prismio
@@ -36,8 +36,8 @@ import std.unicode
 fn main() -> Int {
     let cjk = "日本"
     println(cjk.length)
-    println(cjk.scalarCount())
-    println(cjk.displayWidth())
+    println(cjk.scalarCount)
+    println(cjk.displayWidth)
     return 0
 }
 ```
@@ -57,7 +57,7 @@ whole subject of this module.
 | Function | Returns |
 | --- | --- |
 | `scalarWidth(code)` | `Int` — 0, 1 or 2 |
-| `s.displayWidth()` | `Int` — the columns `s` occupies |
+| `s.displayWidth` | `Int` — the columns `s` occupies |
 | `s.padStartDisplay(columns, pad)` | `String` |
 | `s.padEndDisplay(columns, pad)` | `String` |
 | `s.truncateToWidth(columns)` | `String` — cut at a cluster boundary |
@@ -74,7 +74,7 @@ characters are one column wide. These count columns, for the ones that are not.
 
 | Function | Returns |
 | --- | --- |
-| `s.graphemeCount()` | `Int` |
+| `s.graphemeCount` | `Int` |
 | `s.graphemes()` | `Vec<String>` |
 | `s.graphemeWidthAt(byteIndex)` | `Int` — bytes in the cluster there |
 
@@ -108,8 +108,8 @@ fn main() -> Int {
     if ((composed == decomposed) == false) { println("different bytes") }
     if (composed.equalsNormalized(decomposed)) { println("same text") }
 
-    println(composed.normalizeNfd().scalarCount())
-    println(decomposed.normalizeNfc().scalarCount())
+    println(composed.normalizeNfd().scalarCount)
+    println(decomposed.normalizeNfc().scalarCount)
     return 0
 }
 ```

@@ -4,7 +4,7 @@ description: Implementation status for current and planned Prismio language, too
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-25"
 tags: [roadmap, status, coming-soon]
 related: [start/overview, releases/0.1.0, faq]
 ---
@@ -20,6 +20,8 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | WebAssembly past IR | Blocked |
 | Importable standard-library modules | Implemented |
 | Terminal colours and styles (`std.term`), `\e` / `\xHH` / `\u{…}` escapes | Implemented |
+| Math (`std.math`): Float roots, rounding, logarithms, trigonometry, IEEE 754 constants; integer `pow`, `gcd`, `floorMod`, limits | Implemented |
+| Random numbers, `F32`, bit counting, checked integer arithmetic | Coming Soon |
 | Module qualifiers (`std.string.trim(x)`) | Implemented (calls only, by full import path) |
 | Visibility: `public`, `private`, `internal` | Implemented (`fn` and `extern fn`; `public` is the default) |
 | Selective imports (`import m.name`) | Implemented |
@@ -39,7 +41,8 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | Ranges `a..b` (end included) and `a..<b`, with `step` | Implemented |
 | `for` over String, Vec, Slice, arrays, Map and `Iterator` types, with `(index, element)` | Implemented |
 | Labelled loops: `outer@ for …`, `break@outer`, `continue@outer` | Implemented |
-| Descending ranges, `break` with a value, `if`/`match` as expressions | Coming Soon |
+| Descending ranges (`10..0` counts down) | Implemented |
+| `break` with a value, `if`/`match` as expressions | Coming Soon |
 | Payload enums, `Option` and `Result` | Implemented |
 | Closures | Implemented |
 | User-written lifetimes | Coming Soon |

@@ -3,7 +3,7 @@ title: Functions and calls
 description: Declaration staging, symbol selection, parameter attributes, direct and indirect calls, task thunks, vtables, and temporary ownership.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-25"
 tags: [llvm, functions, calls]
 related: [llvm/types-and-abi, compiler/traits-impls-and-dispatch, runtime/tasks-and-channels, compiler/closures-and-captures]
 ---
@@ -137,8 +137,8 @@ error: aborting due to 1 previous error
 `extern fn` declarations state an ownership contract because the compiler cannot infer one from C:
 `produce(free_fn)` for a fresh, owned return the caller must release, `alias` for a return that is
 some existing value handed back, `borrow` for a parameter the callee only reads. Getting this wrong
-does not fail to compile — it corrupts memory, which is why `RUNTIME.md`'s own guidance is blunt:
-*"`produce(free)` versus `alias` is not a guess."*
+does not fail to compile — it corrupts memory. `produce` versus `alias` is the distinction that
+bites; see [writing an extern contract](/runtime/supported-surface#writing-an-extern-contract).
 
 `tests/extern_alias_escape.psm` is a real, fixed instance. `prismio_expect`, declared
 `extern fn prismio_expect(p: String borrow) -> String alias`, hands back the same string it was

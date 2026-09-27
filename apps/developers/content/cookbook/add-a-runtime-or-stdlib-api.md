@@ -3,7 +3,7 @@ title: Add a runtime or standard-library API
 description: Choose the correct Prismio implementation layer, specify ownership, connect native symbols, and prove behavior across targets.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-25"
 tags: [cookbook, runtime, stdlib]
 related: [runtime/supported-surface, aif/ffi-contracts, llvm/llvm-c-bridge, runtime/overview, runtime/library-artifacts, tooling/compiler-host-and-promotion]
 ---
@@ -124,6 +124,22 @@ The allocation inference the compiler runs and the independent oracle it is chec
 | `aifCompilerBuiltinContract` (`src/aif/contracts.psm`) | `FFI_CONTRACTS` (`aif/prototype/aif.py`) |
 | `aifRuntimeContract` (`src/aif/contracts.psm`) | `FFI_CONTRACTS` (`aif/prototype/aif.py`) |
 | `aifFfiProduces` (`src/aif/contracts.psm`) | `FFI_RETURNS_PRODUCE` (`aif/prototype/aif.py`) |
+
+### A Float operation: one table, not five
+
+A numeric builtin normally touches five places: sema's return type and argument check, codegen's emission, the flat-List guard's safe-function table, `aifCompilerBuiltinContract`, and the oracle's `FFI_CONTRACTS`. If one of them is missing, the failure is silent. The guard declines every loop that calls it, or AIF stops bracketing the caller, and the suite stays green. `std.math`'s Float functions avoid this with one family, `__builtin_f64_<op>`, tabled once in `src/common/float_builtins.psm`:
+
+| Reader | What it takes from the table |
+| --- | --- |
+| `src/sema/builtins.psm` | `floatBuiltinArity(name)` — a non-zero arity means "Float operands, Float result" |
+| `src/ir/expr.psm` | `floatBuiltinSymbol(name)` — the LLVM intrinsic, or the libm name where LLVM has none |
+| `src/ir/module.psm` | `floatBuiltinOp(i)` enumerates every name into the guard-safe table |
+| `src/aif/contracts.psm` | every name is `AIF_FFI_BORROW` |
+| `aif/prototype/aif.py` | `F64_BUILTIN_ARITY` generates the oracle's entries |
+
+Adding `erf`, say, means adding one line to `floatBuiltinOp`, its name to the libm branch of `floatBuiltinSymbol`, one word to the oracle's tuple, and a method in `std/math.psm`. Because `src/` never imports `std.math`, the seed never compiles it, so a new operation needs no seed refresh.
+
+**Choose the symbol for the weakest target, not this machine.** An intrinsic with no instruction on a target becomes a C call named after it. On an x86-64 without SSE4.1, which is the CPU a Linux or Windows build targets, `llvm.floor.f64` becomes `floor`, and `llvm.roundeven.f64` becomes C23's `roundeven`, which the Windows UCRT does not export. That is why `roundEven` lowers to `llvm.rint.f64`: it is the same rounding in the default mode, which Prismio never changes, and it is C99. Check a new operation by building a probe with `--target x86_64-pc-windows-msvc -o probe.ll`, running `third_party/llvm/bin/llc -O3` on it, and reading the `call` targets. Every one must be C99.
 
 `irRuntimeProvides` in `src/ir/module.psm` is a separate table: it controls which undeclared runtime helpers code generation is allowed to synthesize as LLVM declarations, which matters if your new symbol is called from generated code rather than from an explicit `extern fn` a program wrote itself.
 

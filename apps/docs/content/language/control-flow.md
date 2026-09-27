@@ -284,7 +284,7 @@ Everything created inside the loops being left is released on the way out, exact
 
 ## `return`
 
-`return expression` exits a value-returning function. A function without a result may use `return` without an expression. Every reachable path through a value-returning function must return the declared type.
+`return expression` exits a value-returning function. A function without a result may use `return` without an expression. Every reachable path through a value-returning function must return the declared type, or end in [`panic`, `unreachable` or `exit`](/language/error-handling#when-the-program-cannot-go-on).
 
 ```prismio
 fn absolute(value: Int) -> Int {

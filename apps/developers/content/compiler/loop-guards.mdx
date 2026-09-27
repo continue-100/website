@@ -223,7 +223,9 @@ and so does every other production compiler.
 
 `std.math`'s `max`, `min` and `abs` exist for this reason. They lower to
 `llvm.smax.i32`, `llvm.smin.i32` and `llvm.abs.i32`, which LLVM lists as
-*trivially vectorizable* — a branch written by hand is not.
+*trivially vectorizable* — a branch written by hand is not. `std.math`'s Float
+functions are marked guard-safe the same way: every `__builtin_f64_*` name is in the
+table before the sweep, so a loop calling `x.sqrt()` or `a.max(b)` keeps its guard.
 
 ## Index arithmetic in 64 bits, where it is proved
 
@@ -305,8 +307,6 @@ The analysis is deliberately narrow, and each of these is a separate widening
 with its own soundness argument:
 
 - `loop` forms. `while` and range `for` loops carry the guard.
-- The descending copy of a range `for` whose direction is only known at run time.
-  It is one checked copy; the ascending copy is guarded and proved as usual.
 - An induction variable updated anywhere but the body's last statement, more than
   once, or by a non-literal step.
 - An index that is not `V`, `V + E` or `V - E` for a loop-invariant `E`.
@@ -329,6 +329,8 @@ with its own soundness argument:
 | Guard-safe function table | `ir_mark_guard_safe_fn`, `ir_is_guard_safe_fn` in `runtime/ir_symbols.c` |
 | Unchecked read and write | `ir_list_flat_scalar_elem`, `ir_list_flat_scalar_set` in `runtime/llvm-api-backend.c` |
 | min/max/abs intrinsics | `src/sema/builtins.psm`, `src/ir/expr.psm`, `std/math.psm` |
+| Float math builtins | `src/common/float_builtins.psm` (the table), marked safe in `src/ir/module.psm` |
+| Failure builtins (`panic`, `assert`, …) | marked safe in `src/ir/module.psm`; `irFlatGuardCount` counts only an `assert`'s condition, since the rest runs on the way out of the process |
 | Tests | `tests/test_119_loop_range_guard.psm`, `test_120_min_max_abs.psm`, `test_121_guard_effect_analysis.psm`, `test_169_loop_range_proofs.psm`, `test_179_proved_index_nsw.psm` (with `proved_index_nsw` in `test_runner.py`) |
 
 ## Debugging a guard change

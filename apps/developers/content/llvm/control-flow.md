@@ -195,10 +195,10 @@ import std.string
 
 fn greetLen(name: String) -> Int {
     let greeting: String = "hi ".concat(name)
-    if (greeting.length() > 100) {
+    if (greeting.length > 100) {
         return -1
     }
-    return greeting.length()
+    return greeting.length
 }
 
 fn main() -> Int {
@@ -300,11 +300,14 @@ direction.
 literals, and for `0..<` a length (`list_len`, `slice_len`, `data_len`, never negative). Anything
 else compares `start <= end` once on entry and branches to one of two copies:
 
-- the **ascending** copy is the one the flat guard, the range proofs and the proved-index `nsw`
-  serve, exactly as for a loop whose direction was known;
-- the **descending** copy is a single checked copy with no guard of its own. A loop the source
-  leaves open rarely runs down, and each copy is the whole body again, nested loops multiplying it.
-  A literal descending range (`10..0`) does keep the flat guard.
+- the **ascending** copy, counting from `start` up to `end`;
+- the **descending** copy, counting from `start` down to `end`.
+
+Each is served on its own by the flat guard, the range proofs and the proved-index `nsw`, exactly
+as a loop whose direction was known. Counting down, `end` is the variable's low bound and `start`
+its high one. A single checked descending copy cost `for at in capacity..weight` 8x against the
+`while` it replaced in the knapsack benchmark, so the extra copies are worth their size; LLVM
+deletes the one a constant direction test rules out.
 
 Each direction has two shapes:
 

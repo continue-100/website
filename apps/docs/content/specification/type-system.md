@@ -4,7 +4,7 @@ description: Prismio 0.1 type categories, inference, compatibility, optional typ
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-18"
+lastUpdated: "2026-09-25"
 tags: [specification, type-system, inference, conversion]
 related: [language/types, language/functions, specification/memory-model]
 ---
@@ -17,7 +17,7 @@ Type inference is local and does not make a binding polymorphic or dynamic. Once
 
 Primitive types are `Int` (also spelled `I32`), `I8`, `I16`, `I64`, `Isize`, `U8`, `U16`, `U32`, `U64`, `Usize`, `Float`, `Bool`, `Char`, `String`, and `Ptr`. Struct names introduce nominal types. Enum names introduce declared enum types with the `Int` compatibility rule below. `Array<T, N>` forms an array type of element `T` and length `N`, an integer literal; `[T]` and `Array<T>` spell it with the length taken from an initializer. `Vec<T>` forms the built-in growable vector type. `List<T>`, its former spelling, is rejected with a diagnostic naming `Vec<T>`.
 
-`Int` is signed 32-bit. `Float` is the sole 64-bit floating-point type. `Isize` and `Usize` use target pointer width. `Char` is byte-sized in 0.1.
+`Int` is signed 32-bit. `Float` is the sole floating-point type: IEEE 754 binary64 (ISO/IEC 60559). `Isize` and `Usize` use target pointer width. `Char` is byte-sized in 0.1.
 
 Struct identity is nominal: distinct declarations do not become compatible because their fields coincide. Enum declarations retain names for annotations and variant lookup, but a variant expression types as plain `Int`, and `semaTypesMatch` treats an enum and the default 32-bit `Int` as compatible in either direction. Consequently distinct enum declarations can interoperate through that representation in 0.1. `Vec<T>` is a built-in type constructor, separate from [generics](/language/generics): it predates them and is not an instance of them. An enum with payload variants is not an `Int` — it compiles to a tagged struct and is nominal and move-only like any other struct.
 
@@ -38,7 +38,7 @@ For explicit casts:
 - signed widening sign-extends;
 - unsigned, Boolean, and character widening zero-extends;
 - integer narrowing keeps low-order bits;
-- float-to-integer truncates toward zero; and
+- float-to-integer truncates toward zero, saturating at the destination's bounds, with NaN converting to 0; and
 - integer/float conversions may lose precision.
 
 An explicit cast does not perform application-level range validation.

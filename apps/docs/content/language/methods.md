@@ -3,7 +3,7 @@ title: Methods and impl blocks
 description: Method call syntax and concrete or generic impl blocks in Prismio -- x.f(a) is f(x, a), and an impl block is where the free function is written.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-02"
+lastUpdated: "2026-09-25"
 tags: [methods, impl, receiver, self, overloads]
 related: [language/functions, language/traits, language/structs]
 ---
@@ -61,29 +61,36 @@ fn main() -> Int {
 }
 ```
 
-## Properties: a method call without the parentheses
+## Properties
 
-`s.length` is `length(s)`. The rewrite is the same one above, minus the argument
-list.
+A property is a function you read like a field: `s.length`, `'7'.isDigit`,
+`process.pid`. It is declared with `prop` where a method has `fn`, and it is
+written **without** parentheses — `s.length()` is an error, just as `s.trim` is.
+The spelling tells a reader which one they are looking at.
 
 <!-- prismio-check: pass -->
 ```prismio
 import std.io
 import std.string
 
+struct Rect { w: Int, h: Int }
+
+impl Rect {
+    prop area(self) -> Int { return self.w * self.h }
+    fn scaled(self, by: Int) -> Rect { return Rect { w: self.w * by, h: self.h * by } }
+}
+
 fn main() -> Int {
     let text = "prismio"
-
-    println(text.length)      // the property
-    println(text.length())    // the method -- the same function
-    println('7'.isDigit)
+    let r = Rect { w: 3, h: 4 }
+    println(text.length)            // a property
+    println(text.trim())            // a method
+    println(r.scaled(2).area)       // 48
     return 0
 }
 ```
 
-**A property may not allocate, and that is enforced.** The rewrite is refused when
-the function it resolves to returns an owned value, so `s.trim` is a compile error
-that names the fix while `s.length` is fine:
+Calling one as the other is a compile error that names the fix:
 
 <!-- prismio-check: fail -->
 ```prismio
@@ -92,17 +99,29 @@ import std.string
 
 fn main() -> Int {
     let text = "  padded  "
-    println(text.trim)
+    println(text.length())   // `length` is a property, not a method
+    println(text.trim)       // `trim` is a method, not a property
     return 0
 }
 ```
 
-The rule exists because Prismio requires an owned result to be bound — `let t =
-text.trim()` — and a spelling that hid the allocation behind a field-like name
-would hide the obligation with it. Parentheses mean "this may allocate".
+**A property takes only its receiver, returns a value, and does not allocate.**
+All three are checked where it is declared. The last one is the reason the two
+spellings are kept apart: Prismio asks you to bind an owned result (`let t =
+text.trim()`), and a field-like name that hid an allocation would hide that
+obligation with it. Parentheses mean "this may allocate".
 
-A struct field always wins over a property of the same name, so no existing
-program changes meaning; a struct may have both.
+`prop` is only a keyword directly before a name in a declaration, so a variable
+may still be called `prop`. A property is still a function underneath, and
+`length(text)` calls it like one. A struct field always wins over a property of
+the same name.
+
+The standard library's properties are the reads that describe a value rather
+than compute a new one: `length`, `isEmpty`, `first` and `last` on String and
+Vec; `isDigit`, `isSpace` and the other Char classifications; `isEven`, `isNan`
+and the other number predicates; `process.pid`, `process.args.count` and
+`platform.current`. Everything that converts, computes or acts — `toUpper()`,
+`sqrt()`, `parseInt()`, `wait()` — is a method.
 
 ## `impl` blocks
 

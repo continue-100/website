@@ -5,7 +5,7 @@ status: experimental
 version: "0.1.0"
 tags: [aif, regions, views]
 related: [aif/tiers-and-analysis-domains, compiler/ownership-and-drop-lowering, aif/reuse-reports-and-verification]
-lastUpdated: "2026-09-18"
+lastUpdated: "2026-09-26"
 ---
 
 Some values are cheaper to point at than to copy: the middle third of a list, the string inside a
@@ -158,19 +158,18 @@ prismio run test_92_field_view_provenance.psm --verify
 ```
 
 ```text
-Built test_92_field_view_provenance
 test_92 ok
-aif-verify: leaked #12 (4 bytes)
-...
-aif-verify: 18 allocated, 8 released, 10 leaked, 0 violation(s)
+aif-verify: 18 allocated, 18 released, 0 leaked, 0 violation(s)
 ```
 
 `test_92 ok` is the value assertion passing — every one of these views now reads the right string.
-The ten leaks are the same conservative trade-off as the region example above: `RUNTIME.md` states
-the rule directly — an owned result passed straight into a parameter, with nothing left to name it,
-is leaked rather than freed early. **This is the reason the test file's own docstring says it
-"asserts values, not the ledger":** a `--verify` run that only checked the counts would have called
-both the broken and the fixed compiler correct.
+The ledger balances too. When this fix landed it read `18 allocated, 8 released, 10 leaked`: an
+owned result passed straight into a parameter, with nothing left to name it, was leaked rather than
+freed early. Since 2026-09-25 such a result is released after the call, or, when the callee may
+return a view of it, given a hidden binding and released with the block; see
+[an owned result passed straight on](/runtime/supported-surface#an-owned-result-passed-straight-on).
+**The test still asserts values, not the ledger:** a `--verify` run that only checked the counts
+would have called both the broken and the fixed compiler correct.
 
 ## Layout consequence
 

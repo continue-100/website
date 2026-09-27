@@ -3,12 +3,12 @@ title: Standard library status
 description: Prismio's shipped source standard library and the modules still planned.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-25"
 tags: [standard-library, runtime, status]
-related: [stdlib/io, stdlib/strings, stdlib/vec, stdlib/map, stdlib/option, roadmap]
+related: [stdlib/io, stdlib/strings, stdlib/math, stdlib/vec, stdlib/map, stdlib/option, roadmap]
 ---
 
-Prismio ships seventeen standard-library modules: `std.io`, `std.string`, `std.fs`, `std.process`, `std.platform`, `std.vec`, `std.map`, `std.option`, `std.key`, `std.ord`, `std.copy`, `std.eq`, `std.iter`, `std.math`, `std.display`, [`std.default`](/language/traits#a-types-own-default), which gives a type its own starting value, and [`std.term`](/stdlib/term), which colours terminal output.
+Prismio ships seventeen standard-library modules: `std.io`, `std.string`, `std.fs`, `std.process`, `std.platform`, `std.vec`, `std.map`, `std.option`, `std.key`, `std.ord`, `std.copy`, `std.eq`, `std.iter`, [`std.math`](/stdlib/math), `std.display`, [`std.default`](/language/traits#a-types-own-default), which gives a type its own starting value, and [`std.term`](/stdlib/term), which colours terminal output.
 
 A packaged toolchain installs them as **compiled `stdlib/*.plib` artifacts**, not as `.psm` source. A PLIB carries the module's interface — which the frontend still parses, because generic bodies have to be instantiated against your concrete types — together with its compiled LLVM bitcode, which the driver merges into your program before optimization. The directory is **flattened**, so never derive a module's logical name from its path on disk: `std.map` is `stdlib/map.plib`.
 
@@ -25,6 +25,7 @@ Inside a Prismio checkout the `std/*.psm` sources win instead, because imports r
 The compiler provides a small built-in surface that needs no import at all:
 
 - Explicit `drop` and checked `expect`
+- [`panic`, `unreachable`, `assert` and `exit`](/language/error-handling#when-the-program-cannot-go-on), which stop the program with a message and its source location, or with a status of your choosing
 - `Vec<T>`'s core: the empty literal `[]`, `Vec<T>.withCapacity(n)`, indexing, `for x in v`, the methods `push`, `set`, `replace`, `swap`, `insert`, `reserve`, `truncate` and `clear`, and the properties `length`, `capacity`, `first`, `last`, `isEmpty` and `isNotEmpty`
 - a Slice's and a DataView's `length`
 - the [`default`](/language/variables#default-values) value of any type that has one
@@ -38,6 +39,10 @@ The output overloads participate in normal declaration lookup, overload resoluti
 ## Output
 
 `String`, `Int`, `Float`, `Bool`, and `Char` have exact `print`/`println` overloads. There is no generic formatting trait, interpolation syntax, standard input abstraction, or writer protocol.
+
+## Math
+
+[`std.math`](/stdlib/math) holds Float's square roots, rounding modes, powers, logarithms and trigonometry, integer `pow`, `gcd`, `lcm`, `floorDiv`/`floorMod` and `isqrt`, and every numeric type's limits as `Int.MAX`, `Float.PI`, `Float.INFINITY` and so on. Each Float function compiles to the instruction or C-library call a C compiler would use. `Float` itself is IEEE 754 binary64. Random numbers, `F32` and bit counting are not available yet.
 
 ## Strings
 
@@ -68,7 +73,7 @@ remains the general conservative replacement operation.
 
 Programs can declare C-compatible symbols with `extern fn`. It is the escape hatch for clocks, networking, and platform services — **not** the way to reach the Prismio runtime. Files, paths, arguments, and string operations are covered by [`std.fs`](/stdlib/filesystem), [`std.process`](/stdlib/process), and [`std.string`](/stdlib/strings), which carry the ownership contracts so applications do not have to.
 
-An `extern fn` with no contract has unknown provenance: the analysis widens it to Shared, the result gets no owner, and it leaks. Worse, `produce(free)` on a function that returns a borrowed pointer hands that pointer to the deallocator. See the contract table in the compiler repository's `RUNTIME.md`.
+An `extern fn` with no contract has unknown provenance: the analysis widens it to Shared, the result gets no owner, and it leaks. Worse, `produce(free)` on a function that returns a borrowed pointer hands that pointer to the deallocator. See the [contract table](https://developers.prismio.org/runtime/supported-surface#writing-an-extern-contract) on the developer portal.
 
 These pages separate existing runtime surface from planned modules. Networking and time are marked Coming Soon, and so is the concurrency page, for the synchronization types and `async` that are not built yet; every other page describes a module that ships.
 
