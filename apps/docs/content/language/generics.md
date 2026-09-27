@@ -3,7 +3,7 @@ title: Generics
 description: Generic functions and types in Prismio, type argument inference, and the monomorphization that makes them free at runtime.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-27"
 tags: [generics, type-parameters, monomorphization]
 related: [language/traits, language/functions, language/structs, stdlib/map]
 ---
@@ -122,7 +122,9 @@ fn main() -> Int {
 }
 ```
 
-Type arguments are solved from argument positions only, never from the return type. When a call has no argument that mentions a type parameter — a constructor is the usual case — write the arguments out:
+Type arguments are solved from argument positions, never from the expected return type. One kind of argument answers more than its own type: a closure passed for a parameter with a [closure bound](/language/closures#closure-bounds) also solves the parameters in the bound's result, so `fn describe<U, F: Fn(Int) -> U>(n: Int, f: F) -> U` learns `U` from what the closure returns.
+
+When a call has no argument that mentions a type parameter — a constructor is the usual case — write the arguments out:
 
 <!-- prismio-check: pass -->
 ```prismio
@@ -206,4 +208,12 @@ instantiates once.
   generic, as in `trait From<T>` and `impl From<Int> for String`; their arguments
   may also appear in bounds such as `U: From<Int>`.
 - **No variance, no specialization, no partial instantiation.**
-- Type parameters are solved independently of one another; there is no unification across parameters.
+- Type parameters are solved independently of one another; there is no unification across parameters, apart from a closure bound's result being solved from the closure.
+- **An unsized array cannot be a type argument.** `Vec<[Int]>`, a parameter or field of type `Box<[Int]>`, and a function returning `Option<[Int]>` are refused, and so is a generic function that puts its own `T` into a type when `T` is an array (`fn wrap<T>(x: T) -> Option<T>` called with an array). Without a length, an array is a view of elements in the frame that declared it, and a container carrying it out of that function would read a dead frame. The diagnostic says what to use instead:
+
+  ```text
+  error[P4001]: an array cannot be a type argument
+    note: it would point into the frame that declared it; use a `Vec`, or a struct with an `Array<T, N>` field
+  ```
+
+  A generic function's own `T` may still be an array when it only hands the value back — `fn same<T>(x: T) -> T` returns the view to the frame that owns it.

@@ -3,7 +3,7 @@ title: Control flow
 description: Branch with if and else if, loop with while, loop, repeat and for over ranges and collections, and leave nested loops with labels.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-27"
 tags: [control-flow, if, loops, ranges, labels, return]
 related: [language/pattern-matching, language/functions, language/arrays-and-lists, specification/evaluation]
 ---
@@ -213,8 +213,8 @@ fn main() -> Int {
     println(total)
 
     let ages = mapNew<String, Int>()
-    mapSet(ages, "ann", 31)
-    mapSet(ages, "bob", 42)
+    ages.set("ann", 31)
+    ages.set("bob", 42)
     for (name, age) in ages {
         println(name.concat(" is ", age.toString()))
     }

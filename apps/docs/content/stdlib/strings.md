@@ -538,6 +538,60 @@ in [std.unicode](/stdlib/unicode), `scalarWidth(code)`.
 module path: `std.string.trim(s)`. An unqualified call prefers the program's own
 function, and the operators always mean the library's.
 
+## Building text from pieces
+
+Joining text a piece at a time needs nothing special when the text is in a local variable:
+
+```prismio
+let mut out = ""
+for word in words { out = out + word + " " }
+```
+
+That loop is linear. The compiler appends in place when an assignment replaces the variable it reads, and doubles the capacity when it runs out: 2,000 appends of ten bytes cost 13 allocations, not 2,000.
+
+**Through a struct field the same line is not linear, and it leaks.** `log.text = log.text + piece` copies the whole text on every append, and assigning a field does not release the value it replaces. Measured with 200 appends through an `inout` parameter, it read `201 allocated, 1 released, 200 leaked`. At 320,000 appends it was killed at 13.8 GB.
+
+Keep a `StringBuilder` in the field instead. It holds the pieces and joins them once, when you ask for the text:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+
+struct Report {
+    title: String,
+    body: StringBuilder
+}
+
+fn addRow(inout r: Report, name: String, score: Int) {
+    r.body.append(name)
+    r.body.append(": ")
+    r.body.appendLine(score.toString())
+}
+
+fn main() -> Int {
+    let mut r = Report { title: "Scores", body: StringBuilder.new() }
+    addRow(r, "ada", 36)
+    addRow(r, "grace", 85)
+    println(r.title)
+    print(r.body.toString())        // ada: 36, then grace: 85, each on its own line
+    println(r.body.length)          // 18
+    return 0
+}
+```
+
+| On a `StringBuilder` | Does |
+| --- | --- |
+| `StringBuilder.new()` | an empty builder |
+| `b.append(piece)` | adds a copy of `piece` |
+| `b.appendLine(piece)` | adds `piece` and a newline |
+| `b.length`, `b.isEmpty` | the text's length in bytes so far, and whether it is empty; properties |
+| `b.toString()` | the text so far, as a new `String`; the builder keeps its pieces and can go on growing |
+
+`append` and `appendLine` change the builder, so a function that appends to one it was given takes it `inout`, as `addRow` does. 640,000 appends take 73 ms and release every allocation.
+
+**Which to use:** a local `s = s + x` for text built in one function, and a `StringBuilder` for text kept in a struct or grown across calls. Both are linear.
+
 ## Performance
 
 `std.string` is native Prismio down to three compiler primitives — read a byte,
@@ -564,29 +618,6 @@ is that a string can change length — `ß` uppercases to `SS`.
 Grapheme clusters, terminal width and NFC/NFD normalization are in
 [`std.unicode`](/stdlib/unicode) rather than here, because they carry 100 KB of
 generated tables that a program doing none of it should not build.
-
-`s = s + part` in a loop on a local is amortised O(1) per append. Codegen consumes
-the left buffer when an owning assignment immediately replaces it, and capacity
-doubles on a miss — 2000 appends of ten bytes measure **13 allocations**, not 2000.
-Through a struct field the same line copies the whole text each time; use a
-`StringBuilder` there, which keeps the pieces and joins them once:
-
-<!-- prismio-check: pass -->
-```prismio
-import std.io
-import std.string
-
-fn main() -> Int {
-    let mut out = StringBuilder.new()
-    for i in 0..<3 {
-        out.append("line ")
-        out.appendLine(i.toString())
-    }
-    println(out.length)       // 21
-    print(out.toString())
-    return 0
-}
-```
 
 ## FFI caution
 

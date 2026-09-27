@@ -17,7 +17,6 @@
     "performance/benchmark-contract",
     "performance/investigation-method",
     "project/security-and-compatibility",
-    "releases",
     "releases/0.1.0",
     "roadmap",
     "runtime/allocation-arenas-rc-and-cycles",

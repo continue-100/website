@@ -4,7 +4,6 @@
     "errors/invalid-drop",
     "language/pattern-matching",
     "language/variables",
-    "stdlib/option",
     "stdlib/strings"
   ],
   "noRunnableBlock": [
@@ -31,7 +30,6 @@
     "stdlib",
     "stdlib/concurrency",
     "stdlib/networking",
-    "stdlib/time",
     "tutorials"
   ]
 }

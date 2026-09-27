@@ -3,7 +3,7 @@ title: Frequently asked questions
 description: Concise answers about Prismio 0.1 stability, self-hosting, memory, platforms, packages, and documentation status.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-18"
+lastUpdated: "2026-09-27"
 tags: [faq, support, status]
 related: [start/overview, roadmap, compiler/targets]
 ---
@@ -34,9 +34,9 @@ Native support does not yet imply a stable binary distribution, cross-compilatio
 
 ## Where is the standard library?
 
-There are ten importable modules: `std.io`, `std.string`, `std.fs`, `std.process`, `std.vec`, `std.map`, `std.option`, `std.key`, `std.ord` and `std.copy`. `std.io` is an ordinary import rather than a prelude, so a program that names no I/O carries none. `std.*` resolves against the compiler's own library, so a local `std/` directory cannot shadow it.
+There are twenty importable modules, [listed with what each covers](/stdlib): among them `std.io` and `std.input` for the console, `std.fs` for files, `std.process`, `std.time`, `std.math`, `std.string`, and the `std.vec` and `std.map` collections. `std.io` is an ordinary import rather than a prelude, so a program that names no I/O carries none. `std.*` resolves against the compiler's own library, so a local `std/` directory cannot shadow it.
 
-Concurrency is not one of them, and that is not an omission: `spawn`/`join`/`Task<R>` and `Channel<T>` are language features rather than libraries. Networking and time still require local FFI integration; their pages are marked Coming Soon.
+Concurrency is not one of them, and that is not an omission: `spawn`/`join`/`Task<R>` and `Channel<T>` are language features rather than libraries. Networking still requires local FFI integration; its page is marked Coming Soon.
 
 ## Does Prismio have Cargo, npm, or Go modules?
 

@@ -497,11 +497,23 @@ at a time. The three stream modes are a wire protocol (`0` inherit, `1` pipe,
 `2` discard), spelled once each in `std/process.psm` and
 `runtime/program_support.c`.
 
-**Standard input is one buffer per process.** A line is found with `memchr` in
-memory and copied out, and the descriptor is read 64 KiB at a time, so a line
-costs no system call. It is unlocked, like `getc_unlocked`: one reader at a time.
-`Stream { descriptor: 0 }.readAll()` reads the descriptor directly and skips
-whatever the buffer already holds.
+**One line reader serves standard input and files.** `LineReader` in `program_support.c` is a
+buffer over one descriptor: `io_stdin_*` use a single one for descriptor 0, and `fs_lines_*` one per
+open file. A line is found with `memchr` in memory and copied out, and the descriptor is read 64 KiB
+at a time, so a line costs no system call; the buffer grows to fit a longer line rather than split
+it. Two calls, `has_line` then `take_line`, because the iterator protocol asks "is there another?"
+and "give it to me" separately and an owned `String` has no null to mean "end". The buffer is
+internal and plain `malloc`; only the line copies cross into Prismio, from `rt_base_alloc`. It is
+unlocked, like `getc_unlocked`: one reader at a time. `Stream { descriptor: 0 }.readAll()` reads the
+descriptor directly and skips whatever the stdin buffer already holds.
+
+**A file reader's handle is an `Int` naming a slot and a generation.** Prismio has no destructor to
+hang a close on, so `readLines` closes the file when its reader reaches the end, and the slot is
+reused by the next `readLines`. An iterator asked again after its end must not read that next file,
+so the handle carries the generation it was opened in (`FS_LINES_SLOT_BITS` of slot, the rest
+generation) and a stale handle answers "no more lines". `-1` means the file could not be opened,
+which `tryReadLines` turns into `None`. `test_194_file_lines.psm` reads 200 files in turn and
+checks that an ended reader does not see the file reopened in its slot.
 
 **A producer in `program_support.c` is not arena memory.** Everything there
 allocates through `rt_base_alloc`, and only `lang_runtime.c`'s `rt_alloc` reads

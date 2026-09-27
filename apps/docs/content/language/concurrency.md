@@ -3,7 +3,7 @@ title: Concurrency
 description: Tasks, blocking typed channels, how AIF models thread affinity, and which concurrency features are still absent.
 status: experimental
 version: "0.1.0"
-lastUpdated: "2026-08-29"
+lastUpdated: "2026-09-27"
 tags: [concurrency, tasks, threads, spawn, join, channels, aif]
 related: [stdlib/concurrency, specification/memory-model, guides/memory-and-aif, roadmap]
 ---
@@ -31,6 +31,13 @@ fn main() -> Int {
 callee's declared return type, so `join` is typed rather than yielding a bare pointer. A task whose
 function returns nothing is still joined — the join is the synchronization, not just the value
 transfer.
+
+**A task that cannot start stops the program.** If the operating system refuses to create the
+thread — too many threads, or no memory for another stack — `spawn` prints
+`panic: could not start a task:` followed by the reason, and exits with status 101, as a
+[`panic`](/language/error-handling#when-the-program-cannot-go-on) does. It does not fall back to
+running the call inline on the current thread: a task that fills a channel before its consumer
+exists would then wait for a consumer that is never started.
 
 Because the compiler knows the callee's return type statically, it selects a correctly-typed
 function pointer instead of casting through one common signature. That matters on the 64-bit
@@ -89,9 +96,15 @@ builtins in the same category as a Vec's `push` and indexing, so they need no im
 | `chan_len(c)` | `Int` | messages queued |
 | `chan_free(c)` | `Void` | after `chan_close`, after every `join` |
 
-`T` must be reference-shaped — a struct, a `List`, a `String`. One pointer travels per message, and
-the receive answers `T?`, which applies to reference-shaped types only. `Channel<Int>` is refused;
-send a one-field struct instead.
+`T` must be reference-shaped — a struct, a `Vec`, a `String`: the types `T?` accepts. One pointer
+travels per message, and the receive answers `T?`, which applies to reference-shaped types only. A
+channel of a number is refused, and the message says what to send instead:
+
+```text
+error[P4001]: a channel carries references, and Int is not one; send a struct with one field of it
+```
+
+`struct Reading { value: Int }` and a `Channel<Reading>` carry the same number.
 
 <!-- prismio-check: pass -->
 ```prismio

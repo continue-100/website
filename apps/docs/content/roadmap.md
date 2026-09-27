@@ -4,7 +4,7 @@ description: Implementation status for current and planned Prismio language, too
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-27"
 tags: [roadmap, status, coming-soon]
 related: [start/overview, releases/0.1.0, faq]
 ---
@@ -22,6 +22,16 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | Terminal colours and styles (`std.term`), `\e` / `\xHH` / `\u{…}` escapes | Implemented |
 | Math (`std.math`): Float roots, rounding, logarithms, trigonometry, IEEE 754 constants; integer `pow`, `gcd`, `floorMod`, limits | Implemented |
 | Random numbers, `F32`, bit counting, checked integer arithmetic | Coming Soon |
+| Standard input (`std.input`): lines, one line, or everything | Implemented |
+| Time (`std.time`): `Instant`, `Duration`, the wall clock, `sleep` | Implemented |
+| Calendar dates, time zones, timers | Coming Soon |
+| Files (`std.fs`): read, write, append, a line at a time, list, rename, remove, metadata | Implemented |
+| Environment variables and the process id (`std.process`) | Implemented |
+| `panic`, `unreachable`, `assert`, `exit` | Implemented |
+| A `Never` return type for a function that always fails | Coming Soon |
+| Growing text in a struct field (`StringBuilder`) | Implemented |
+| `Map` removal and methods (`m.get`, `m.remove`, `m[k]`, …) | Implemented (no `keys()`; `keyAt` instead) |
+| `Option`/`Result` methods (`unwrapOr`, `expect`, `map`, `andThen`, …) | Implemented |
 | Module qualifiers (`std.string.trim(x)`) | Implemented (calls only, by full import path) |
 | Visibility: `public`, `private`, `internal` | Implemented (`fn` and `extern fn`; `public` is the default) |
 | Selective imports (`import m.name`) | Implemented |
@@ -45,8 +55,10 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | `break` with a value, `if`/`match` as expressions | Coming Soon |
 | Payload enums, `Option` and `Result` | Implemented |
 | Closures | Implemented |
+| Closure bounds (`F: Fn(A) -> R`), solving a result type from the closure | Implemented |
+| Inferred closure parameter types, storing or returning a closure | Coming Soon |
 | User-written lifetimes | Coming Soon |
-| Exceptions or result propagation syntax | Coming Soon |
+| Exceptions or result propagation syntax (`?`) | Coming Soon |
 | Tasks: `spawn`, `join`, `Task<R>` | Experimental |
 | Blocking typed channels: `Channel<T>` | Implemented |
 | Async functions, `await`, atomics, synchronization types | Coming Soon |
@@ -56,8 +68,8 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | Formatter, linter, and language server | Coming Soon |
 | Android and iOS toolchains | Coming Soon |
 
-`std.io`, `std.string`, `std.fs`, `std.process`, `std.vec`, `std.map`, `std.option`, `std.key`,
-`std.ord` and `std.copy` are ordinary importable modules; `std.io` is an import rather than a
+The twenty standard modules, from `std.io` and `std.input` to `std.time` and `std.math`, are ordinary
+importable modules; see [the library status page](/stdlib). `std.io` is an import rather than a
 prelude, so a program that names no I/O carries none.
 
 Channels are the exception to "a library is a module you import": `Channel<T>` and its seven

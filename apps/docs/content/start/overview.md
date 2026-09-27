@@ -3,7 +3,7 @@ title: Prismio 0.1 overview
 description: What Prismio is, what the self-hosted 0.1 compiler implements, and which capabilities are still planned.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-27"
 tags: [overview, status, compiler]
 related: [start/installation, language, compiler/overview, roadmap]
 ---
@@ -66,9 +66,9 @@ The Adaptive Inference Framework can select an implementation tier and exposes e
 
 ## Not implemented
 
-User-written lifetime syntax, exceptions, macros, `async`/`await`, and a package *registry* are not implemented. Generics, payload-carrying enum variants, `Option`/`Result`, method-call syntax, `impl` blocks, generic traits with structural arguments and multiple bounds per type parameter, closures, slices, module namespacing and visibility, tasks, blocking typed channels, and the UMS package manifest all are. The pages for what remains missing are retained as roadmap contracts and are visibly marked **Coming Soon**.
+User-written lifetime syntax, exceptions, macros, `async`/`await`, and a package *registry* are not implemented. Generics, payload-carrying enum variants, `Option`/`Result`, method-call syntax, `impl` blocks, generic traits with structural arguments and multiple bounds per type parameter, closures and closure bounds, slices, module namespacing and visibility, tasks, blocking typed channels, and the UMS package manifest all are. The pages for what remains missing are retained as roadmap contracts and are visibly marked **Coming Soon**.
 
-`std.io`, `std.string`, `std.fs`, `std.process`, `std.vec`, `std.map`, `std.option`, `std.key`, `std.ord` and `std.copy` are ordinary importable modules — `std.io` is an import rather than a prelude, so a program that names no I/O carries none. See [Standard library status](/stdlib) before assuming a module exists.
+The twenty standard modules — `std.io`, `std.input`, `std.string`, `std.fs`, `std.process`, `std.time`, `std.math`, `std.vec`, `std.map`, `std.option` and the rest — are ordinary importable modules; `std.io` is an import rather than a prelude, so a program that names no I/O carries none. See [Standard library status](/stdlib) before assuming a module exists.
 
 The current language does not provide tuple types, general non-owning references, or implicit numeric promotion. These limits are stated on the relevant reference pages instead of being hidden in a single roadmap.
 

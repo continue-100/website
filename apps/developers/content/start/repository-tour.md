@@ -3,7 +3,7 @@ title: Repository tour
 description: Where each decision lives in the compiler checkout — compiler, runtime, std, UMS, tests, evidence — and how to find what owns a behaviour.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-16"
+lastUpdated: "2026-09-27"
 tags: [repository, architecture, contributing]
 related: [compiler/overview, runtime/overview, tooling/ums-overview]
 ---
@@ -101,6 +101,27 @@ That is `semaErrorAt`, which every general semantic error goes through, so the c
 | `aif/evidence/` | Experiments, rejected ideas, and measured decisions, one `RESULTS-*.md` per piece of work |
 
 Three documents are worth knowing before you change anything: `docs/KNOWN_ISSUES.md` (what is open), [the runtime surface](/runtime/supported-surface) (what a program can call, and who owns what it returns), and `CODE_STYLE.md` with its C counterpart `C_CODE_STYLE.md`.
+
+## Where the project's state lives
+
+There is no `TODO.md` or `HANDOFF.md`. The root handoff documents were re-audited into planners on
+2026-09-25 (each claim checked against the tree, the originals recoverable from `1e338c0`), and
+what replaced them is:
+
+| Question | Where |
+| --- | --- |
+| What is left before v0.1.0 is published? | `RELEASE_CHECKLIST.md` at the root. A box is ticked in the commit that does the work, and the message says what the evidence is |
+| What is planned, and why that way? | `docs/*_PLAN.md` — `STDLIB_SHIP_PLAN`, `MEMORY_PLAN`, `CHANNELS_PLAN`, `PERFORMANCE_PLAN` — and `docs/COLLECTIONS.md`, each split into what 0.1 needs and what comes later |
+| What is open, with enough to act on? | `docs/KNOWN_ISSUES.md` |
+| What was measured? | `aif/evidence/`, one `RESULTS-*.md` per piece of work |
+| What changed, and why? | `git log`. Commit messages here carry their own evidence, and are usually better than any document summarising them |
+| What shipped, and how to ship it? | `CHANGELOG.md` and `RELEASE.md` |
+
+A new plan goes in `docs/`, not at the root. `RELEASE.md` §1 has two requirements the release gate
+does not check for you, and both fail it wholesale: the candidate must be a **packaged** toolchain
+(`tools/package.py`, not a bare `build/gN`, which has no runtime bitcode — 229 suite failures), and
+the pinned LLVM must be first on `PATH` (`third_party/llvm/bin`), because an older system `llvm-nm`
+or `clang` cannot read LLVM 23 bitcode. See [releases](/releases#what-a-release-record-must-contain).
 
 ## If you are reading the source
 

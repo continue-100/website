@@ -3,7 +3,7 @@ title: Ownership and drop lowering
 description: How Prismio tracks moves, default borrows, consuming parameters, mutable borrows, reassignment, and destruction — and how that legality gets turned into an actual release call.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-27"
 tags: [ownership, borrowing, drops]
 related: [aif/overview, aif/regions-views-and-provenance, llvm/control-flow, runtime/overview]
 ---
@@ -193,5 +193,28 @@ The pass-through guard is asked of flow in the same way. `param_returns` records
 **A temporary whose release the callee withholds becomes a binding.** When the callee may hand an argument, or a view of it, back — `optionOr(lookup(i), d)` returns the String inside the Option — codegen cannot release the temporary after the call. `irHoistBorrowedTemporaries` (`src/ir/expr.psm`) runs before a function body is generated and splices `let bt.N = lookup(i)` ahead of the statement, so the scope drop and every guard on it apply by name. It only does so where that reorders nothing: the temporary must be the statement's first effect, the statement must run once (a `let`, an expression, an assignment to a name, an `if` condition), and the block must not carry an automatic arena, whose range is counted in statements.
 
 The guards on a callee-allocated binding's drop now cover a view of it leaving the scope, not only the binding itself: `irValueAliasesName` treats a call that may return a view of a parameter as an alias (except `concat`, which copies), `chainAssignsAliasOf` refuses a binding whose alias is assigned into another binding, and `chainRetainsAliasOf` one whose alias is passed to an argument the callee keeps (`aif_call_arg_retained`: the contract for an extern such as `list_push`, the flow graph for a Prismio function). Each shape read freed memory before — a Vec of views of a dropped `Option` read back as the last string written — and `--verify` reported them clean, because every release it saw was legal. `tests/test_185_view_outlives_binding.psm` aborts on the compiler before the fix.
+
+**A discarded result is released.** `make(1)` on a line of its own, or `it.next()` to skip an element, is a value nothing reads — the degenerate `let`, with no uses. `generateDiscardedCallRelease` (`src/ir/expr.psm`) asks it the question a temporary argument is asked, `irArgumentIsOwnedTemporary`, and releases an owned one through `generateOwnedTemporaryRelease`. Before 2026-09-25 every discarded owned result leaked.
+
+**A return that may be static storage is partial.** `fn_returns_partial` (`runtime/aif_support.c`) tells a caller not to take ownership of what a function hands back when some `return` may carry no allocation. It used to ask "does a return resolve to no site at all?", and two shapes answered no while returning a literal:
+
+- `fn wrap(o: Option<String>, d: String) -> String { return optionOr(o, d) }` resolved to the sites stored into *any* `Option<String>` payload — std's own `Some(substring)` among them — while the value could be the caller's literal `d`;
+- `return v` for a payload binder resolved the same way while the `Option` in hand held a literal.
+
+Both read as owned, and the caller freed `.rodata`: `free(): invalid pointer` outside `--verify`. The question is now "may this return be static storage?", answered by `key_may_return_untracked`. It is `key_may_be_untracked`'s closure over binds, stores and arguments, less one source: a literal bound straight into a local, which codegen clones wherever that binding is also given owned values (`let mut out = ""; out = out + x; return out` returns an allocation on every path). Counting that source made every such builder partial and leaked its result — 6 of 1,054 in `test_140`. Still open, and no wider than before: a `let mut s = "lit"` that is not an accumulator, later given both an owned value and an unowned one that is not itself a literal source, and returned. `forwarding_literal_probe.psm` and `binder_return_probe.psm` pin the two shapes. The third shape fixed with them — a payload binder moved into a new enum — is a view question; see [regions, views and provenance](/aif/regions-views-and-provenance#a-field-holding-a-view-of-an-enums-payload).
+
+**A value this frame stores into a recursive field is held.** `plain_released_field_keys` leaves out a released field that re-enters its owner's type, so that a tree's root stays its caller's: the field's release and the caller's drop are one traversal. That holds for the root and not for a value this frame binds and then makes a child:
+
+```prismio
+let left = build(d - 1)
+let right = build(d - 1)
+return Expr.Op(d, left, right)
+```
+
+`left` became part of the returned tree, which the tree's release frees, and the binding's scope drop freed it too: a double free on every tree built this way. `call_result_held` now also asks `vs_stored_in_recursive_field`, which walks the value through this frame's own `VAR` keys to such a field, so a value reaching one through a return or a parameter stays the question it was. No program in `tests/` or `aif/corpus/` changed IR, and `recursive_enum_bindings_probe.psm` reads 190/190/0.
+
+The same tree through `Node?` did not link. A `T?` slot's IR key is `ptr`, which carries no type, so its typed drop named `__aif_release_` — undefined. `noteOptionalDropType` (`src/ir/types.psm`) remembers the struct an optional binding's drop must name where the binding is marked droppable, and `irOwnedTemporaryDeclType` does the same for a temporary; `recursive_optional_probe.psm` pins it. All four probes run in the suite's `ownership_probes` check.
+
+**One allocation site backs every `concat` in a program, so its ownership is decided by the whole program.** Asking "who owns this call's result" of the call rather than the site (above) narrowed this, and did not remove it: a fact about the one `concat` site still reaches every `concat` call. When `StringBuilder` first stored `concat` results in its `Vec` field, that together with `listModules` doing the same made every `concat` result passed straight as an argument go unreleased, in any program that imported `std.fs` and `std.string`, whether it used either or not: `test_184` leaked 2,165 of 4,073. `StringBuilder` now copies each piece through a helper of its own, `builderPiece` in `std/string.psm`, whose comment says why it must not be `concat`, and `concat_argument_probe.psm` pins the shape. The sensitivity remains for application code: a program that stores `concat` results in a container field of its own can change what is released elsewhere. The planned fix is context-sensitive sites for library producers, part of the interprocedural work in `docs/MEMORY_PLAN.md` §2.3 (`docs/KNOWN_ISSUES.md`, "Ownership", the entry on `concat`, has the measurement); until then, treat a new `concat` stored into a field in `std/` as a whole-program change and measure the suite's ledgers with it.
 
 Ownership regressions need coverage for at least: a legal move, use-after-move rejection, borrow followed by use, consuming call, overwrite, every early exit, nested scope, loop break/continue, returned owned value, returned view, container element replacement, task transfer, an FFI contract, and both verifier and observable-value assertions — a balanced ledger and a correct answer are different claims, and a regression test that only checks the ledger can pass while returning a stale value.

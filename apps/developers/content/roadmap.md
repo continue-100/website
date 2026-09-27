@@ -4,7 +4,7 @@ description: Evidence-backed Prismio compiler, AIF, runtime, tooling, and standa
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-18"
+lastUpdated: "2026-09-27"
 tags: [roadmap, compiler, status]
 related: [start, releases/0.1.0, performance/investigation-method]
 ---
@@ -19,7 +19,10 @@ does not assign release dates.
 - Generics, traits, associated items, trait objects, `impl Trait`, closures, payload enums, slices,
   DataView, native tasks, and blocking typed channels.
 - AIF storage plans, explanations, manifests, runtime verification, and an independent oracle.
-- A 73-workload cross-language benchmark catalog with 57 implemented workloads.
+- A standard library a command-line program can be written with: standard input, files and line
+  readers, the environment, clocks, math, `StringBuilder`, and `Map`/`Option`/`Result` methods
+  (`docs/STDLIB_SHIP_PLAN.md` tier 1, done 2026-09-25).
+- A 78-workload cross-language benchmark catalog with 63 implemented workloads.
 
 ## Foundational memory work
 
@@ -61,7 +64,7 @@ Chunked vectors (`Vec<T, N>`, `Vec<T, Chunk>`) are designed in the compiler repo
 `P3006` until they exist. Of `Array<T, N>` (step 3), returns and struct fields are built; still
 open are `[T]` parameters compiled once per length, array fields in generic structs and enum
 payloads (refused in `semaCheckArrayLengthPositions`), and copies of nested or owning arrays.
-`Slice<T>` layouts and slices of arrays are step 5. The benchmark catalog records missing deques and ordered containers, priority queues, map deletion,
+`Slice<T>` layouts and slices of arrays are step 5. The benchmark catalog records missing deques and ordered containers, priority queues,
 regex, JSON, generic serialization, user-facing atomics and locks, work stealing, async I/O,
 sockets, memory-mapped files, explicit SIMD types, and custom collection allocators.
 

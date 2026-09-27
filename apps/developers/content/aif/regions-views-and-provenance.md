@@ -5,7 +5,7 @@ status: experimental
 version: "0.1.0"
 tags: [aif, regions, views]
 related: [aif/tiers-and-analysis-domains, compiler/ownership-and-drop-lowering, aif/reuse-reports-and-verification]
-lastUpdated: "2026-09-26"
+lastUpdated: "2026-09-27"
 ---
 
 Some values are cheaper to point at than to copy: the middle third of a list, the string inside a
@@ -227,6 +227,48 @@ Container stores are different: `aif_con_store(key, values, owners)` records bot
 points-to edge and the set of owning containers. `aif_con_retain_in` records another holder.
 `aif_elem_key` is based on the full container type to avoid immediately merging
 `List<Int>` and `List<Node>`.
+
+### A field holding a view of an enum's payload
+
+A match binder is a view of the enum it was read out of (the worked example above). That made one
+shape free memory twice:
+
+```prismio
+fn errOf(r: Result<Int, String>) -> Option<String> {
+    match (r) {
+        Result.Err(e) => { return Option<String>.Some(e) }
+        Result.Ok(v) => { return Option<String>.None }
+    }
+}
+```
+
+`Option<String>.Some(e)` stores a value that still belongs to `r`, and an enum's release always frees
+its payload; binding one out does not stop that. The sites alone cannot tell: they are the
+payload's sites, and `r`'s own payload field lists them too, so **both fields agreed they were the
+release point**, and the payload was freed once by each enum. Two changes in
+`runtime/aif_support.c` close it, and each needs the other.
+
+- **`field_release_of` declines a field that may hold a view of an enum's payload**
+  (`field_holds_enum_view`). The new `Option` does not free `e`; the `Result` stays its one owner.
+  A payload enum is a `$tag` struct by the time AIF sees it (`site_is_enum` looks for that field).
+- **`fn_may_return_view_of_param` looks through the returned object's fields.** `errOf` returns an
+  `Option` of its own, a fresh object, but that object *holds* a view of `r`. The caller used to
+  free its argument at scope exit while that `Option` lived: `let h = parse(t); return errOf(h)`
+  handed back a payload already freed. `fn_return_holds_view_of_param` walks every field of every
+  object the return may reach, since a struct can hold the `Option`, and asks whether any of them
+  views an enum the parameter points to. When one does, the caller keeps `h` alive, which leaks it
+  rather than freeing it early.
+
+**Enums only.** A *struct* whose field value is read out and kept elsewhere is not released with
+that field (the rule behind "a field value read out and returned leaks"), so there the holder is the
+one owner. Restricted to enums, the compiler's own IR is byte-identical across the change. Counting
+structs too moved it twice: `field_release_of` declined the parser's copy of `umsLex`'s
+`lexer.tokens` in `umsParse` and leaked the token list, and the return walk declined
+`parseSource`'s lexer and parser, reached through every punned `Ptr` field of an `ASTNode`. Field keys are per type rather than per
+object, so the fact is conservative the usual way: any view stored into that field anywhere counts,
+and the cost is a leak. This is why `ok()`, `err()`, `okOr` and `mapErr` in `std.option` can leak a
+payload in some programs and never free one twice. `binder_rewrap_probe.psm` pins the shape in the
+suite's `ownership_probes` check.
 
 ### Interprocedural provenance
 

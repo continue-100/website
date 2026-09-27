@@ -3,7 +3,7 @@ title: Library artifacts — runtime bitcode and PLIB
 description: The two shipped library formats, the PLIB v3 container with a code section per target, how both are merged into a program, and the rules for changing either producer.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-16"
+lastUpdated: "2026-09-27"
 tags: [runtime, packaging, llvm, stdlib]
 related: [runtime/platform-and-packaging, llvm/runtime-ir-and-optimization, tooling/compiler-host-and-promotion, cookbook/add-a-runtime-or-stdlib-api]
 ---
@@ -88,6 +88,8 @@ If you change how either artifact is built, change both and keep the comparison 
 `merge_libraries_into_program` extracts the bitcode for the build's target from each registered PLIB, validates every runtime module, and hands the whole set to `ir_link_library_modules`, which parses and links them in a single LLVM context. Doing it one artifact at a time reparsed and reprinted the growing program per input — accidentally quadratic in serialization, with a large program crossing the text-IR boundary sixteen times before optimization ever started.
 
 After the merge, imported definitions with no remaining IR users are deleted, and the sweep repeats because removing one wrapper can make its callees dead. Without that, whole-program bitcode would turn every executable into an export of the entire runtime surface.
+
+**A workload's stubs win the link.** A workload build — the program AIF runs to measure a layout profile — must not reach the file system, the environment or its input, so `generateExternStub` (`src/ir/module.psm`) gives every extern the runtime does not provide a body that calls `rt_workload_stub`. Some of those names are the runtime's own capabilities, `read_file`, `proc_*` and `io_stdin_*`, and the runtime module defines them too. Two definitions of one name do not link ("symbol multiply defined"), and the driver fell back to the static profile with the generic "the workload failed to build": every workload that imported `std.fs` or `std.process` had been measuring nothing, and `std.input` would have made it every workload that reads input. `yield_to_workload_stubs` in `runtime/llvm-api-backend.c` runs on each runtime module before the link and gives any function the program has stubbed `available_externally` linkage, which says "this body is a copy of one defined elsewhere", so the linker keeps the program's stub and discards the runtime's body. The suite's workload test builds a variant that imports those modules.
 
 There is no source fallback on this path and no environment variable that restores one. The obsolete `PRISMIO_INLINE_RUNTIME` is ignored.
 

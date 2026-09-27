@@ -3,12 +3,29 @@ title: Standard library status
 description: Prismio's shipped source standard library and the modules still planned.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-27"
 tags: [standard-library, runtime, status]
-related: [stdlib/io, stdlib/strings, stdlib/math, stdlib/vec, stdlib/map, stdlib/option, roadmap]
+related: [stdlib/io, stdlib/input, stdlib/strings, stdlib/math, stdlib/time, stdlib/filesystem, stdlib/vec, stdlib/map, stdlib/option, roadmap]
 ---
 
-Prismio ships seventeen standard-library modules: `std.io`, `std.string`, `std.fs`, `std.process`, `std.platform`, `std.vec`, `std.map`, `std.option`, `std.key`, `std.ord`, `std.copy`, `std.eq`, `std.iter`, [`std.math`](/stdlib/math), `std.display`, [`std.default`](/language/traits#a-types-own-default), which gives a type its own starting value, and [`std.term`](/stdlib/term), which colours terminal output.
+Prismio ships twenty standard-library modules:
+
+| Module | Covers |
+| --- | --- |
+| [`std.io`](/stdlib/io) | `print`, `println`, `eprint`, `eprintln` |
+| [`std.input`](/stdlib/input) | standard input: `stdin.lines()`, `stdin.readLine()`, `stdin.readAll()` |
+| [`std.string`](/stdlib/strings) | `String` and `Char` methods, parsing, formatting, `StringBuilder`, and the `String` operators |
+| [`std.unicode`](/stdlib/unicode) | grapheme clusters, terminal width, normalization |
+| [`std.fs`](/stdlib/filesystem) | files, directories, paths, `readLines`, `metadata` |
+| [`std.process`](/stdlib/process) | arguments, environment variables, the process id, starting other programs |
+| [`std.platform`](/stdlib/platform) | the target's operating system and architecture |
+| [`std.time`](/stdlib/time) | `Instant`, `Duration`, `unixTime()`, `sleep` |
+| [`std.math`](/stdlib/math) | Float and integer math, and every numeric type's limits |
+| [`std.vec`](/stdlib/vec) | `Vec<T>`'s library methods and the Vec literal |
+| [`std.map`](/stdlib/map) | `Map<K, V>` |
+| [`std.option`](/stdlib/option) | `Option<T>`, `Result<T, E>` and their methods |
+| [`std.term`](/stdlib/term) | terminal colours and styles |
+| `std.key`, `std.ord`, `std.copy`, `std.eq`, `std.iter`, `std.display`, [`std.default`](/language/traits#a-types-own-default) | the `Key`, `Ord`, `Copy`, `Eq`, `Iterator`, `Display` and `Default` traits |
 
 A packaged toolchain installs them as **compiled `stdlib/*.plib` artifacts**, not as `.psm` source. A PLIB carries the module's interface — which the frontend still parses, because generic bodies have to be instantiated against your concrete types — together with its compiled LLVM bitcode, which the driver merges into your program before optimization. The directory is **flattened**, so never derive a module's logical name from its path on disk: `std.map` is `stdlib/map.plib`.
 
@@ -38,7 +55,11 @@ The output overloads participate in normal declaration lookup, overload resoluti
 
 ## Output
 
-`String`, `Int`, `Float`, `Bool`, and `Char` have exact `print`/`println` overloads. There is no generic formatting trait, interpolation syntax, standard input abstraction, or writer protocol.
+`String`, `Int`, `Float`, `Bool`, and `Char` have exact `print`/`println` overloads, and one call may carry several values. String interpolation, `"${x}"`, formats through the `Display` trait and needs `import std.display`. There is no writer protocol and no formatted-output mini-language.
+
+## Input, files and time
+
+[Standard input](/stdlib/input) is its own module, `std.input`, so a program that only prints does not carry it. Files — whole, appended to, or [a line at a time](/stdlib/filesystem#reading-a-file-a-line-at-a-time) — and directories are [`std.fs`](/stdlib/filesystem). [`std.time`](/stdlib/time) measures elapsed time on the monotonic clock, reads the wall clock, and sleeps.
 
 ## Math
 
@@ -71,11 +92,11 @@ remains the general conservative replacement operation.
 
 ## Foreign extensions
 
-Programs can declare C-compatible symbols with `extern fn`. It is the escape hatch for clocks, networking, and platform services — **not** the way to reach the Prismio runtime. Files, paths, arguments, and string operations are covered by [`std.fs`](/stdlib/filesystem), [`std.process`](/stdlib/process), and [`std.string`](/stdlib/strings), which carry the ownership contracts so applications do not have to.
+Programs can declare C-compatible symbols with `extern fn`. It is the escape hatch for networking and platform services the standard library does not cover — **not** the way to reach the Prismio runtime. Files, input, clocks, arguments, and string operations are covered by [`std.fs`](/stdlib/filesystem), [`std.input`](/stdlib/input), [`std.time`](/stdlib/time), [`std.process`](/stdlib/process), and [`std.string`](/stdlib/strings), which carry the ownership contracts so applications do not have to.
 
 An `extern fn` with no contract has unknown provenance: the analysis widens it to Shared, the result gets no owner, and it leaks. Worse, `produce(free)` on a function that returns a borrowed pointer hands that pointer to the deallocator. See the [contract table](https://developers.prismio.org/runtime/supported-surface#writing-an-extern-contract) on the developer portal.
 
-These pages separate existing runtime surface from planned modules. Networking and time are marked Coming Soon, and so is the concurrency page, for the synchronization types and `async` that are not built yet; every other page describes a module that ships.
+These pages separate existing runtime surface from planned modules. Networking is marked Coming Soon, and so is the concurrency page, for the synchronization types and `async` that are not built yet; every other page describes a module that ships.
 
 Coming Soon pages intentionally do not invent final module names or signatures. They define what is missing and the semantic questions that must be resolved before the status changes.
 

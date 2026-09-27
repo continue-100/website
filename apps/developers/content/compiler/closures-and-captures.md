@@ -3,7 +3,7 @@ title: Closures and captures
 description: How Prismio rewrites closures into a generated struct and call function, with no function pointer, no vtable, and no indirect call.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-27"
 tags: [closures, captures, ownership]
 related: [compiler/traits-impls-and-dispatch, aif/tiers-and-analysis-domains, runtime/tasks-and-channels, compiler/generics-and-monomorphization]
 ---
@@ -170,6 +170,13 @@ object-safety and dispatch constraints as their trait representation (see
 [traits, impls, and dispatch](/compiler/traits-impls-and-dispatch)). Tests
 must cover capture moves, use-after-capture errors, generic closure contexts,
 capture-free cases, and scalar and move-only captures.
+
+**A closure bound checks the generated `call` against a signature.** A type parameter bounded by
+`Fn(A, B) -> R` accepts only a closure whose lowered `call` takes exactly `A, B` and returns `R`,
+and a type parameter that appears only in `R` is solved from that `call`'s return type — which is
+how `Option.map` knows its `U`. The parsing, checking and solving are in the generics pass; see
+[closure bounds](/compiler/generics-and-monomorphization#instantiation-functions). The closure
+itself is lowered exactly as before: the bound adds a check and a solution, and no code.
 
 ## What's not there yet
 

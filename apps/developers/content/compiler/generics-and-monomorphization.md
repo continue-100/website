@@ -3,7 +3,7 @@ title: Generics and monomorphization
 description: How Prismio discovers generic instantiations, substitutes concrete types, validates bounds, and emits one specialized copy per combination of type arguments.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-27"
 tags: [generics, monomorphization, compiler]
 related: [compiler/traits-impls-and-dispatch, compiler/semantic-analysis-and-types, aif/layout-selection]
 ---
@@ -178,6 +178,26 @@ that go into it. `monoSeparatorCount` and `monoArgsTooDeep` guard against
 runaway recursive expansion; `monoElide` shortens diagnostic presentation
 without shortening the actual identity used for deduplication.
 
+**A template is not in the declaration index.** `indexModuleDeclarations` walks `module.child1`,
+and `monoCollectTemplates` parks templates on `module.child2`, so `ir_decl_count` and
+`semaDeclaresFunction` answer 0 for a generic function that a call resolves perfectly well. Anything
+that must know a generic exists *before* writing a call to it asks `monoHasTemplate(module, name,
+kind)` instead, and `monoHasTemplateOfArity(module, name, count)` when the parameter count matters.
+Two rewrites learned this in 0.1.0:
+
+- **`semaPropertyRewrite`** turns `o.isSome` into a call. A property declared on
+  `impl<T> Option<T>` is a template, so the rewrite used to see no function and read the property
+  as a field ("struct `Option$Int` has no field"). It now falls back to `monoHasTemplate`, and when
+  no template of the name takes only its receiver — `monoHasTemplateOfArity(module, name, 1)` —
+  it reports ``"`unwrapOr` is a method, not a property"`` itself rather than letting the rewritten
+  call fail as "unknown function". The concrete case still reaches `semaCheckPropertySpelling`
+  through overload resolution, and both name `isSome` rather than its instantiation `isSome$Int`
+  (`tests/neg_194_generic_property_spelling.psm`).
+- **The index rewrite** turns `m[k]` on a struct into `at(m, k)`. `Map`'s `at` is a template of
+  `impl<K, V> Map<K, V>`, so the rewrite asks `monoHasTemplate(module, "at", …)` as well as
+  `semaDeclaresFunction("at")`; and the index is no longer required to be an `Int` before the
+  struct's `at` is consulted, since a map's key need not be one.
+
 ### Substitution
 
 `monoCopyOne` and `monoCopyChain` deep-copy the AST (abstract syntax tree)
@@ -202,6 +222,37 @@ considers function templates at a call site. `monoTemplateAcceptsCall` and
 `monoSolveTypeParam` infer arguments by matching formal annotations against
 actual argument `TypeInfo` values, and `monoMatchParam` recurses into nested
 applied types rather than comparing only top-level names.
+
+**Closure bounds.** `Fn(A, B) -> R` in a bound position is parsed by `parseCallableBound`
+(`src/parse/decl.psm`) into a `TRAIT_REF` marked callable, with the parameter types on `child1`
+and the result on `child3`; `nodeIsCallableBound` tells it apart from a trait. The result is
+required, because a closure always returns a value and a bound without one would leave nothing to
+solve from (`tests/neg_196_callable_bound_result.psm`). Two things happen at instantiation:
+
+- `monoSolveFromCallables` solves what the arguments left open. A type parameter that appears only
+  in a bound's result — `U` in `F: Fn(T) -> U` — has no argument to be read from, so it is matched
+  structurally against the closure's lowered `call` return type. Matching is structural, so
+  `andThen`'s `Fn(T) -> Option<U>` finds `U` inside the `Option` the closure returns. It repeats
+  until nothing more is solved, because one answer can be what another bound's result is written in.
+- `monoCheckCallableBound` checks the closure against the substituted bound: the same parameter
+  types and the same result, or ``this closure is `Fn(String) -> String`, and `map` needs
+  `Fn(Int) -> String` ``; an argument that is not a closure is ``Int is not a closure, so it is
+  not `F: Fn(Int) -> Int` `` (`tests/neg_195_callable_bound.psm`).
+
+It works in a `where` clause and as `impl Fn(...)` on a parameter. The syntax landed in two steps,
+as new syntax must: the frontend first, then a seed refresh, and only then `std/option.psm`'s
+`map`, `andThen` and `mapErr`. `tests/test_192_callable_bounds.psm` covers the language half.
+
+**An array is not a type argument of a type.** `monoArgsHoldArray` runs where a written type with
+type arguments is resolved (`semaAnnotationInner` in `src/sema/types.psm`) and refuses an unsized
+array among them: a `[T]` without a length is a pointer to elements in the declaring frame, and a
+`Box<[Int]>` built from a local and returned read that dead frame. Because it runs on annotations,
+it also catches a generic function whose `T` is an array when the instantiated body writes
+`Option<T>` (`tests/neg_199_array_inferred_type_argument.psm`); a generic function's own `T` may
+still be an array, since `id<T>(x: T) -> T` hands the view back to the frame that owns it
+(`test_163`). It does not see a type named only in expression position: `Box<[Int]> { value: a }`
+used within the declaring function compiles, which is sound because nothing carries it out, but
+it is a gap to close if a path that does carry one is found.
 
 After solving, `monoCheckBounds` evaluates every required trait reference —
 this is what produced the `Show`/`Bool` diagnostic above. `monoCheckOneBound`

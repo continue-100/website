@@ -5,7 +5,7 @@ status: experimental
 version: "0.1.0"
 tags: [aif, ffi, ownership]
 related: [cookbook/c-ffi, runtime/supported-surface, aif/tiers-and-analysis-domains]
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-27"
 ---
 
 Every allocation [AIF](/aif/overview) places — the Adaptive Inference Framework, the pass that
@@ -174,6 +174,47 @@ one it double-checks. Wrong in the unsafe direction (claiming ownership you don'
 aliasing something that isn't) and the failure is silent until `--verify`, ASan, or production finds
 it.
 
+## A produced return is not arena memory
+
+`produce(free)` says the caller owns a fresh block. It does not say *where the block came from*,
+and until 2026-09-25 AIF assumed it could be anywhere a Prismio allocation could be — including an
+arena. An enclosing region was allowed to "serve" the return of any `produce` extern except
+`chan_recv`, and code generation bracketed the call with the arena hint.
+
+Only one allocator reads that hint: `rt_alloc` in `runtime/lang_runtime.c`. Everything in
+`runtime/program_support.c` — `read_file`, `join_path`, `proc_env_get`, the new `io_stdin_*` —
+allocates through `rt_base_alloc`, and C an application brings calls `malloc`. For those, the
+region freed nothing at its exit, and the site had been taken off the drop list because the region
+was supposed to reclaim it: one leak per call, with no violation to flag it. The bracketed path, which
+places a callee's sites in its caller's region, did not check at all.
+
+Standard input found it. `for line in stdin.lines()` put a region around every iteration that
+served nothing:
+
+| `for line in stdin.lines()` | Ledger | 3M lines |
+| --- | --- | --- |
+| before | `6 allocated, 3 released, 3 leaked` | 277 ms |
+| after | `6 allocated, 6 released, 0 leaked` | 134 ms |
+
+**The rule now is a list of who allocates through the hint, and everything else is refused.**
+`aifFfiArenaCannotServe(name)` in `src/aif/contracts.psm` is true for every extern not in
+`aifFfiAllocatesThroughArenaHint`: the `__builtin_string_*` family, `str_concat`, `str_substring`,
+`str_slice`, `str_with_capacity`, `str_clone`, `str_clone_n`, `str_own`, `str_from_double`,
+`str_from_double_fixed`, `int_to_str`, `list_new`, `list_new_with_capacity`, `soa` and `aos`. When
+it is true, the walk (`src/aif/walk.psm`) applies `aif_con_foreign` to the return's site. A
+`foreign` site is refused by `arena_would_serve`, gets no frame slot (T0), and the bracket gate and
+its cost model report it under the `no-stack` blocker, since the reason a reader needs is the same:
+this site's storage is not this frame's.
+
+The oracle mirrors it as `ffi_arena_cannot_serve` over `FFI_ALLOCATES_THROUGH_ARENA_HINT` in
+`aif/prototype/aif.py`, and the suite's `oracle_vocabulary` check compares the two lists, so one
+cannot drift from the other. Of 228 programs in `tests/` and `aif/corpus/`, only
+`test_19_runtime_split` changed IR (its `join_path` went from 3 leaked to 2).
+
+**If you add a producer:** a C function that returns a block from `rt_base_alloc` or `malloc` needs
+nothing. One that allocates through `rt_alloc` goes on both lists, or it loses arena placement it
+could have had.
+
 ## Writing a contract
 
 A parameter is `borrow` (the default — the callee may read and write during the call but does not
@@ -243,7 +284,8 @@ parameter applies the call's transfer/escape behavior and prevents later source 
 return calls `aif_vs_view_of` or connects the result to the selected argument's value set. A
 produced return creates or exposes an allocation site and uses the declared deallocator in codegen.
 
-An unsummarised foreign call applies `aif_con_foreign` or `aif_con_opaque` to reachable values.
+An unsummarised foreign call applies `aif_con_foreign` or `aif_con_opaque` to reachable values, and a
+produced return that `aifFfiArenaCannotServe` names is `foreign` too ([above](#a-produced-return-is-not-arena-memory)).
 That can raise escape, alias, and thread facts because the compiler cannot inspect retention,
 mutation, callbacks, or concurrency inside the callee.
 

@@ -3,9 +3,9 @@ title: Console I/O
 description: Source-defined print and println overloads available to Prismio programs.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-27"
 tags: [standard-library, io, print, console]
-related: [start/hello-world, stdlib, language/ffi]
+related: [start/hello-world, stdlib, stdlib/input, stdlib/filesystem, language/ffi]
 ---
 
 Console output has two public functions: `print` and `println`. They are ordinary exact-type overloads implemented in the shipped `std/io.psm` source module, and one call may carry several values. **There is no prelude — `import std.io` is required**, like any other module. That is deliberate: a program that names no I/O carries none, which is what lets a target with no stdout link at all.
@@ -213,6 +213,11 @@ The 0.1 print functions do not expose a structured recoverable I/O result or a w
 
 `Float` is the one value type still formatted in C, because its formatter parses candidates back with `strtod`; every other overload formats in Prismio. A Float prints with at most fifteen significant digits, so `println(0.1 + 0.2)` prints `0.3` — see [float text](/stdlib/strings#float-text).
 
-`std/io.psm` is currently a minimal output module. Formatted output, input streams, files, error objects, and pluggable writers are not part of the 0.1 standard library.
+`std/io.psm` is an output module. Formatted output beyond interpolation, error objects, and pluggable writers are not part of the 0.1 standard library.
 
-For input or file access, define a local C-compatible wrapper and state its ownership/error contracts. The planned [filesystem](/stdlib/filesystem) and broader I/O modules remain Coming Soon.
+## Reading input and files
+
+Input lives in its own modules, so a program that only prints carries none of it:
+
+- **Standard input** is [`std.input`](/stdlib/input): `for line in stdin.lines()`, `stdin.readLine()` and `stdin.readAll()`.
+- **Files** are [`std.fs`](/stdlib/filesystem): `readFile`, `writeFile`, `appendFile`, and `readLines` for a file read a line at a time.
