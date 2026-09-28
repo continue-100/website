@@ -12,6 +12,7 @@ import {
     Zap,
     Code2,
     BookOpen,
+    ShieldCheck,
 } from "lucide-react";
 import HeaderMain from "@/components/HeaderMain";
 import FooterMain from "@prismio/ui/FooterMain";
@@ -414,115 +415,91 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* ── 6. Team Spotlight Section ────────────────────────── */}
-                <section id="team" className="py-24 border-b border-white/[0.08]">
-                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-                        <div className="lg:col-span-5 space-y-5">
+                {/* ── 6. Project Origins & Stewardship ───────────────── */}
+                <section id="stewardship" className="py-24 border-b border-white/[0.08]">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+                        <div className="lg:col-span-5 space-y-4">
                             <span className="text-xs font-mono uppercase tracking-widest text-[#47d7b5]">
-                                Project Stewardship
+                                Project Origins &amp; Stewardship
                             </span>
                             <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
-                                Built in public by compiler engineers and community contributors.
+                                Engineered independently, stewarded openly.
                             </h2>
                             <p className="text-base leading-7 text-zinc-400">
-                                Prismio is created and stewarded by Saksham Jaiswal alongside an international
-                                community of systems programmers, researchers, and open-source contributors.
+                                Prismio was conceived and architected by Saksham Jaiswal to eliminate the long-standing compromises of manual memory hazards and garbage collection latency.
                             </p>
                             <p className="text-sm leading-6 text-zinc-500">
-                                All language decisions pass through public RFC discussions, reproducible
-                                performance benchmarks, and open Discord review.
+                                Today, the compiler toolchain, standard library, and differential benchmark suite are developed openly with an international community of systems programmers.
                             </p>
 
                             <div className="pt-2 flex flex-wrap items-center gap-3">
                                 <Link
                                     href="/team"
-                                    className="inline-flex items-center gap-2 rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-600 shadow-lg shadow-indigo-500/20"
+                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-black hover:bg-zinc-200 transition-all"
                                 >
                                     <Users size={16} />
-                                    Meet the Full Team
+                                    <span>Meet the Team &amp; Creator</span>
                                     <ArrowRight size={14} />
                                 </Link>
 
                                 <Link
-                                    href="/team/saksham-jaiswal"
-                                    className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-all"
+                                    href="/community"
+                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 px-5 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.06] transition-all"
                                 >
-                                    <Sparkles size={15} className="text-rose-400" />
-                                    Author's Note & Story
+                                    <span>Community Hub</span>
+                                    <ArrowUpRight size={14} className="opacity-60" />
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Spotlight Card */}
-                        <div className="lg:col-span-7">
-                            <div className="rounded-3xl border border-white/[0.1] bg-[#0c0c0e]/90 p-8 backdrop-blur-2xl">
-                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
-                                    <div>
-                                        <div className="flex items-center gap-3">
-                                            <h3 className="text-2xl font-bold text-white">Saksham Jaiswal</h3>
-                                            <span className="rounded-full bg-indigo-500/10 px-2.5 py-0.5 text-xs font-mono text-indigo-400 border border-indigo-500/20">
-                                                Creator & Lead Architect
-                                            </span>
-                                        </div>
-                                        <p className="text-xs text-zinc-400 mt-1">
-                                            Compiler Frontend · AIF Memory Inference · LLVM Backend
-                                        </p>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <a
-                                            href="https://github.com/prismio-lang"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="rounded-xl border border-white/10 p-2 text-zinc-300 hover:bg-white/[0.06] hover:text-white transition-all"
-                                            aria-label="GitHub"
-                                        >
-                                            <Code2 size={16} />
-                                        </a>
-                                        <a
-                                            href="https://saksham1319.vercel.app"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="rounded-xl border border-white/10 p-2 text-zinc-300 hover:bg-white/[0.06] hover:text-white transition-all"
-                                            aria-label="Portfolio"
-                                        >
-                                            <ArrowUpRight size={16} />
-                                        </a>
-                                    </div>
+                        {/* Stewardship Commitments Grid */}
+                        <div className="lg:col-span-7 grid gap-4 sm:grid-cols-2">
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0c0e]/80 p-6 space-y-2.5">
+                                <div className="flex items-center gap-2 text-white font-semibold text-sm">
+                                    <ShieldCheck size={16} className="text-emerald-400" />
+                                    <span>100% Permissive Open Source</span>
                                 </div>
+                                <p className="text-xs text-zinc-400 leading-relaxed">
+                                    All source code, compiler passes, and standard library modules are released under the Apache License 2.0. There are no enterprise tiers or proprietary flags.
+                                </p>
+                            </div>
 
-                                <div className="py-6 space-y-4 text-sm leading-relaxed text-zinc-300">
-                                    <p>
-                                        Architect of Prismio's self-hosted compiler, parser grammar, and
-                                        the Adaptive Inference Framework. Working to bring explainable memory
-                                        inference and robust systems programming to production software without
-                                        the burden of garbage collection or rigid lifetime fighting.
-                                    </p>
-
-                                    <div className="pt-2">
-                                        <Link
-                                            href="/team/saksham-jaiswal"
-                                            className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-rose-300 hover:text-rose-200 transition-colors"
-                                        >
-                                            <span>Read Saksham's letter to developers</span>
-                                            <ArrowRight size={13} />
-                                        </Link>
-                                    </div>
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0c0e]/80 p-6 space-y-2.5">
+                                <div className="flex items-center gap-2 text-white font-semibold text-sm">
+                                    <GitBranch size={16} className="text-indigo-400" />
+                                    <span>RFC-Driven Evolution</span>
                                 </div>
+                                <p className="text-xs text-zinc-400 leading-relaxed">
+                                    Every syntax change, type system extension, and stdlib addition passes through public Request for Comments (RFC) proposals reviewed in the open.
+                                </p>
+                            </div>
 
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-6 border-t border-white/[0.06] text-xs">
-                                    <div className="rounded-2xl bg-black/40 border border-white/[0.04] p-3">
-                                        <span className="text-zinc-500 block">Governance</span>
-                                        <span className="text-zinc-200 font-medium">RFC-Driven</span>
-                                    </div>
-                                    <div className="rounded-2xl bg-black/40 border border-white/[0.04] p-3">
-                                        <span className="text-zinc-500 block">Community</span>
-                                        <span className="text-emerald-400 font-medium">Open Discord</span>
-                                    </div>
-                                    <div className="rounded-2xl bg-black/40 border border-white/[0.04] p-3 col-span-2 sm:col-span-1">
-                                        <span className="text-zinc-500 block">Ecosystem</span>
-                                        <span className="text-indigo-300 font-medium">Independent</span>
-                                    </div>
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0c0e]/80 p-6 space-y-2.5">
+                                <div className="flex items-center gap-2 text-white font-semibold text-sm">
+                                    <Cpu size={16} className="text-amber-400" />
+                                    <span>Zero Corporate Capture</span>
+                                </div>
+                                <p className="text-xs text-zinc-400 leading-relaxed">
+                                    Prismio is independently steered. Technical decisions are governed strictly by correctness, memory safety theorems, and bare-metal benchmark evidence.
+                                </p>
+                            </div>
+
+                            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0c0e]/80 p-6 space-y-2.5">
+                                <div className="flex items-center gap-2 text-white font-semibold text-sm">
+                                    <Code2 size={16} className="text-sky-400" />
+                                    <span>Author&apos;s Technical Note</span>
+                                </div>
+                                <p className="text-xs text-zinc-400 leading-relaxed">
+                                    Read Saksham&apos;s personal essay detailing the early compiler milestones and the mathematical formulation of AIF.
+                                </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href="/team/saksham-jaiswal"
+                                        className="inline-flex items-center gap-1 font-mono text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
+                                    >
+                                        <span>Read Saksham&apos;s Journey</span>
+                                        <ArrowRight size={11} />
+                                    </Link>
                                 </div>
                             </div>
                         </div>

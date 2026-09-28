@@ -27,7 +27,7 @@ const nextConfig = {
             },
             {
                 source: '/playground',
-                destination: 'https://playground.prismio.org',
+                destination: 'https://play.prismio.org',
                 permanent: false,
             },
             {

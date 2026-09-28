@@ -8,7 +8,7 @@ programming language, as one pnpm + Turborepo workspace.
 | `apps/web` | the landing site | 3000 | install, benchmarks, community |
 | `apps/docs` | <https://docs.prismio.org> | 3001 | the language guide, standard library, and specification — for people writing Prismio |
 | `apps/developers` | <https://developers.prismio.org> | 3002 | the contributor reference — for people changing the compiler, runtime, and tooling |
-| `apps/play` | <https://playground.prismio.org> | 3004 | interactive compiler playground — write, run, inspect AIF, and examine LLVM IR in the browser |
+| `apps/play` | <https://play.prismio.org> | 3004 | interactive compiler playground — write, run, inspect AIF, and examine LLVM IR in the browser |
 
 `packages/` holds the shared UI library and the ESLint and TypeScript configs.
 

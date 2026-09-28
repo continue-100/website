@@ -27,7 +27,7 @@ export default function FooterMain() {
                     <FooterLink href="https://docs.prismio.org" external>Documentation</FooterLink>
                     <FooterLink href="https://developers.prismio.org" external>Developer Portal</FooterLink>
                     <FooterLink href="/">Package Registry</FooterLink>
-                    <FooterLink href="https://playground.prismio.org" external>Interactive Playground</FooterLink>
+                    <FooterLink href="https://play.prismio.org" external>Interactive Playground</FooterLink>
                 </div>
 
                 {/* Column — Project */}

@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
     ArrowLeft,
     ArrowUpRight,
-    Camera,
     Code2,
     Cpu,
     Mail,
@@ -170,31 +170,39 @@ export default function SakshamAuthorPage() {
                             <div className="relative rounded-[1.75rem] bg-[#0d0d12] border border-white/15 p-5 shadow-2xl backdrop-blur-xl">
                                 
                                 {/* Photo Area / Target Container */}
-                                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden border border-white/10 bg-gradient-to-b from-[#14141d] to-[#0a0a0f] flex flex-col items-center justify-center text-center p-6">
-                                    
+                                <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden border border-white/10 bg-gradient-to-b from-[#14141d] to-[#0a0a0f] group">
+                                    {/* Real Portrait Image */}
+                                    <Image
+                                        src="/images/team/saksham.jpeg"
+                                        alt="Saksham Jaiswal — Creator & Compiler Architect"
+                                        fill
+                                        className="object-cover object-center grayscale-[10%] contrast-[1.05] group-hover:grayscale-0 transition-all duration-500"
+                                        priority
+                                        sizes="(max-width: 768px) 100vw, 384px"
+                                    />
+
+                                    {/* Vignette overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d12]/90 via-transparent to-black/20 pointer-events-none" />
+
                                     {/* Viewfinder Registration Corners */}
-                                    <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-white/40" />
-                                    <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-white/40" />
-                                    <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-white/40" />
-                                    <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-white/40" />
+                                    <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-white/50 pointer-events-none" />
+                                    <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-white/50 pointer-events-none" />
+                                    <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-white/50 pointer-events-none" />
+                                    <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-white/50 pointer-events-none" />
 
-                                    {/* Center Icon */}
-                                    <div className="w-16 h-16 rounded-full bg-white/[0.04] border border-white/15 flex items-center justify-center mb-4">
-                                        <Camera size={26} className="text-zinc-400" />
-                                    </div>
-
-                                    {/* Placeholder Label with Fraunces */}
-                                    <div className="space-y-1">
-                                        <span className="font-fraunces text-2xl text-white block">
-                                            Saksham Jaiswal
+                                    {/* Identification Label on Bottom */}
+                                    <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-lg bg-[#0d0d12]/85 backdrop-blur-md border border-white/10 flex items-center justify-between">
+                                        <div>
+                                            <span className="font-fraunces text-sm text-white block font-medium">
+                                                Saksham Jaiswal
+                                            </span>
+                                            <span className="text-[10px] font-mono text-zinc-400 block">
+                                                Creator & Compiler Architect
+                                            </span>
+                                        </div>
+                                        <span className="text-[10px] font-mono text-indigo-300 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+                                            Maintainer
                                         </span>
-                                        <span className="text-xs font-mono text-zinc-400 block">
-                                            Creator & Compiler Architect
-                                        </span>
-                                    </div>
-
-                                    <div className="mt-4 px-3 py-1 rounded-full text-[10px] font-mono text-zinc-500 bg-white/[0.03] border border-white/[0.06]">
-                                        Photo Space · 4:5 Aspect Ratio
                                     </div>
                                 </div>
 

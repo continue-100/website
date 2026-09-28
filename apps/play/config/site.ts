@@ -6,7 +6,7 @@ export const siteConfig = {
     description: "Interactive online compiler workbench for the Prismio systems programming language. Write, compile, inspect AIF memory tiers, view LLVM IR, and analyze AST.",
     author: "Saksham Jaiswal",
     authorURL: "https://saksham1319.vercel.app",
-    siteUrl: "https://playground.prismio.org",
+    siteUrl: "https://play.prismio.org",
     links: {
         github: "https://github.com/prismio-lang/prismio",
         docs: "https://docs.prismio.org",
