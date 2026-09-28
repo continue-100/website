@@ -33,6 +33,8 @@ export function DocsLayout({ config, docs, children }: DocsLayoutProps) {
                 siteConfig={config.site}
                 navList={config.navigation}
                 brandTag={config.brandTag}
+                accentColor={config.accentColor}
+                showInstall={config.showInstall}
                 installUrl={config.installUrl}
             />
             <DocsSearchModal docs={docs} config={config.search} />

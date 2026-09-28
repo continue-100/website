@@ -17,7 +17,8 @@ Choose the inspection boundary that can still reproduce the failure.
 | Where will values live? | `prismio aif` and `--why` |
 | Did runtime ownership match the plan? | `prismio build --verify` |
 | Is generated IR valid? | Emit `.ll` and use LLVM verification |
-| Which native build stage is slow? | `PRISMIO_BUILD_TRACE=1` |
+| Which native build stage is slow? | `PRISMIO_BUILD_TRACE=1` (then `PRISMIO_SAVE_IR=<file>` to time `opt`/`llc` on the exact module) |
+| Is a parallel-codegen partition malformed? | `PRISMIO_CODEGEN_VERIFY=1`, or `PRISMIO_CODEGEN_THREADS=1` to emit whole |
 | Do source-level debugger views match? | Build with `-g`, then use LLDB or GDB |
 
 ## Targets

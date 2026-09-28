@@ -43,17 +43,17 @@ export default function PackagesPage() {
                         <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block mb-4">Development Roadmap</span>
                         
                         <div className="flex items-center justify-between text-xs">
+                            <span className="text-zinc-400 font-mono">Local Resolver & Lockfile (UMS)</span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Completed</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-xs">
                             <span className="text-zinc-400 font-mono">Registry CLI publishing tools</span>
                             <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">In Progress</span>
                         </div>
                         
                         <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400 font-mono">Package Search Engine UI</span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#16161c] text-zinc-500 border border-white/[0.04]">Planning</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between text-xs">
-                            <span className="text-zinc-400 font-mono">Dependency Resolver Algorithm</span>
+                            <span className="text-zinc-400 font-mono">Remote Package Search & Web UI</span>
                             <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#16161c] text-zinc-500 border border-white/[0.04]">Planning</span>
                         </div>
                     </div>

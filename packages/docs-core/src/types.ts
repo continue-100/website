@@ -97,7 +97,8 @@ export interface DocsAppConfig {
     navigation: DocsSection[];
     search: DocsSearchConfig;
     home: DocsHomeConfig;
-    accentColor?: "violet" | "purple";
+    accentColor?: "violet" | "purple" | "gray";
     brandTag?: string;
     installUrl?: string;
+    showInstall?: boolean;
 }

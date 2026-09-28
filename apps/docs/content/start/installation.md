@@ -88,7 +88,6 @@ That writes a self-contained prefix:
 dist/Prismio/
   bin/prismio                     the compiler
   lib/runtime/*.bc                merged into every program you build
-  lib/backend.a                   linked only when building a compiler
   lib/runtime.hash                which sources those modules came from
   stdlib/*.plib                   what `import std.*` resolves to
 ```

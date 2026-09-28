@@ -48,12 +48,18 @@ parses the complete manifest, including UMS changes the installed compiler may
 not understand. A broken host falls back before command execution, while a
 hosted command failure is returned without replaying the command globally.
 
-The manifest's unnamed `compiler { ... }` target takes its name from
-`project.name` and links the backend and LLVM; ordinary application targets
-remain runtime-only. A self-build leaves a checked `.next` sibling, which the
-global parent atomically promotes after the hosted process exits. Do not invoke
-project mode directly through `.prismio/build/debug/prismio`: without its global
-parent it cannot safely replace itself on every supported platform.
+The manifest's `executable("prismio")` target is an ordinary executable whose
+C runtime and backend are listed as `native` sources, with
+`runtime = "none"` (it carries this checkout's runtime) and LLVM linked through
+`third_party/llvm-link.rsp`, which `python3 tools/setup_llvm.py` writes. Nothing
+about the compiler is built into the toolchain. A self-build leaves a checked
+`.next` sibling, which the global parent atomically promotes after the hosted
+process exits, and records the promoted host as built on this machine: the
+launcher runs no other. Do not invoke project mode directly through
+`.prismio/build/debug/prismio`: without its global parent it cannot safely
+replace itself on every supported platform. To make a named generation the
+project's compiler, run it from the checkout -- `build/gen2 build` -- which
+builds the host with that generation and promotes it.
 
 The bootstrap scripts stay separate because a self-hosting chain must name and
 compare its generations. Continue to use `build/gen1`, `build/gen2`, and

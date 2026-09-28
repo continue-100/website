@@ -125,7 +125,8 @@ When a struct contains another move-only value, constructing the outer struct tr
 
 - Methods and associated functions are written in [`impl` blocks](/language/traits),
   inherent or for a trait, and an `impl` may be generic. There is no dedicated
-  constructor form: write an associated function that returns the struct.
+  constructor declaration: write an associated `new` that returns the struct, and
+  `Point(3, 4)` calls it — see [calling a type](/language/methods#calling-a-type-calls-its-new).
 - A field has no visibility of its own; `public`, `private` and `internal` apply to functions and methods, not to types or their fields. See [visibility](/language/modules#visibility).
 - Structs may be [generic](/language/generics); there are no field defaults. A literal that omits a field is accepted, and the omitted field is zero-initialised — a null pointer, a zero number, zeroed array elements, or a recursively zeroed inline struct.
 - A generic struct cannot hold an `Array<T, N>` field yet.

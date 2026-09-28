@@ -101,7 +101,29 @@ loop {
 }
 ```
 
-A `loop` with no `break` never finishes, and the compiler knows it: it satisfies definite-return analysis, and code after it is rejected as unreachable.
+A `loop` with no `break` of its own never finishes, and the compiler knows it: it satisfies definite-return analysis, and code after it is rejected as unreachable. A `break` inside a nested loop leaves that loop, not this one, so it does not count — unless it names this loop, or one outside it, by its label:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+
+fn firstAtLeast(xs: [Int], floor: Int) -> Int {
+    let mut i = 0
+    loop {
+        while (i < 4) {
+            if (xs[i] >= floor) { break }   // leaves the while, not the loop
+            i = i + 1
+        }
+        if (i < 4) { return xs[i] }
+        return -1
+    }
+}
+
+fn main() -> Int {
+    println(firstAtLeast([3, 8, 1, 9], 5))   // 8
+    return 0
+}
+```
 
 ## `repeat`
 
@@ -212,9 +234,7 @@ fn main() -> Int {
     for score in scores { total += score }
     println(total)
 
-    let ages = mapNew<String, Int>()
-    ages.set("ann", 31)
-    ages.set("bob", 42)
+    let ages: Map<String, Int> = { "ann": 31, "bob": 42 }
     for (name, age) in ages {
         println(name.concat(" is ", age.toString()))
     }

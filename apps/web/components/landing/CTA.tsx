@@ -7,7 +7,7 @@ const AVAILABLE = [
     'Self-hosted native compiler',
     'AIF storage plans and runtime verification',
     'Generics, traits, closures, enums, and pattern matching',
-    'Lists, maps, slices, data views, files, and processes',
+    'Vectors (Vec<T>), maps, slices, data views, files, and processes',
     'Native tasks and typed blocking channels',
     'UMS projects, native linking, JSON diagnostics, and DWARF',
 ];

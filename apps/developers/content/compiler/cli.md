@@ -12,8 +12,7 @@ related: [start/local-compiler-loop, aif/overview, tooling/debugging-targets-and
 
 ```text
 prismio build <source.psm> [-o output] [options]
-prismio run <source.psm> [options]
-prismio bootstrap [source.psm] [-o output]
+prismio run <source.psm> [options] [-- program-args...]
 prismio check <source.psm> [--diagnostic-format=json]
 prismio dump-ast <source.psm>
 prismio aif <source.psm> [aif-options]
@@ -27,14 +26,18 @@ The same commands with **no source named** act on the project the nearest ancest
 
 ```text
 prismio init [name]
-prismio build|run|test|clean [--release]
+prismio build [--release] [target...]
+prismio run [--release] [target] [-- program-args...]
+prismio test [--release] [test...]
+prismio clean [--release]
 prismio <declared-command> [args...]
 ```
 
 Built-in commands take precedence, so a manifest cannot redefine one. See the
 [`build.ums` reference](/tooling/build-manifest) for project configuration and declared commands.
 
-`--help` prints the command summary. `--version` reports the Prismio compiler and linked/pinned LLVM version information used to identify documentation compatibility.
+`--help` prints the user command summary and, in a project, its declared commands; `--help-all`
+adds `dump-ast`, `aif`, `runtime-hash` and the analysis flags. `--version` reports the Prismio compiler and linked/pinned LLVM version information used to identify documentation compatibility.
 
 ## `build`
 
@@ -52,15 +55,19 @@ If `-o` is omitted, the driver chooses its current default output. Automation sh
 prismio run components/main.psm
 ```
 
-`run` performs a build and launches the resulting program after successful compilation. Compiler or linker failure exits nonzero and does not execute a stale artifact as though it were the requested program.
+`run` performs a build and launches the resulting program after successful compilation, passing it
+everything after `--` as its argument vector and exiting with its status. Every program the driver
+starts -- `run`'s, a project command's step, a forwarded host -- is started through
+`compiler_spawn_wait` (runtime/build_driver.c) with an argument vector, never a shell line.
 
-## `bootstrap`
+## Building a compiler
 
-```bash
-prismio bootstrap components/main.psm -o build/prismio-next
-```
-
-`bootstrap` is the compiler-development path. It builds the compiler with repository backend/runtime sources rather than linking only the installed application runtime. Prefer repository bootstrap scripts for multi-generation and platform-specific orchestration.
+There is no `bootstrap` command. It compiled a compiler from a table of backend sources every
+shipped compiler carried; the compiler is now an ordinary UMS target whose `native` block lists
+those sources, so `prismio build` in the checkout builds one and nothing installed knows which files
+make one. `tools/bootstrap.sh` / `tools/bootstrap.ps1` remain the independent path, including from
+the committed seed. A named generation run from the checkout (`build/gen2 build`) builds and
+promotes the project host with that generation.
 
 ## Inspection commands
 

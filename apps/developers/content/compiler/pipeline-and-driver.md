@@ -47,7 +47,7 @@ PRISMIO_BUILD_TRACE=1 prismio build hello.psm -o hello
 Built hello
 ```
 
-An ordinary program build prints exactly those two lines. The `link` line and the per-runtime-file timings only show up on the path that compiles runtime C sources itself — `prismio bootstrap` and a few special build modes — because an ordinary build links precompiled bitcode instead of recompiling the runtime.
+An ordinary program build prints exactly those two lines. A per-source timing line appears for each C source a target's `native` block names -- the compiler's own build has eight -- because those are compiled, where the installed runtime is precompiled bitcode.
 
 `check` and `dump-ast` run the same frontend and stop before any of this. `dump-ast` serializes the resolved **AST** (abstract syntax tree) as JSON for tooling and the AIF oracle to read:
 

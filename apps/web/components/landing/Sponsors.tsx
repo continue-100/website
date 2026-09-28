@@ -80,7 +80,7 @@ export default function Sponsors() {
                     </div>
                     <div className="border-b border-white/[0.07] px-4 py-5 md:border-b-0 md:border-r">
                         <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">License</span>
-                        <span className="mt-1 font-mono text-sm font-semibold text-emerald-300">Apache-2.0 / MIT</span>
+                        <span className="mt-1 font-mono text-sm font-semibold text-emerald-300">Apache-2.0</span>
                     </div>
                     <div className="border-r border-white/[0.07] px-4 py-5">
                         <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">Stewardship</span>

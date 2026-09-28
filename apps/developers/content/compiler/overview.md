@@ -73,7 +73,7 @@ PRISMIO_BUILD_TRACE=1 prismio build hello.psm -o hello
 Built hello
 ```
 
-That is the supported way to attribute a compile-time question to a stage. An ordinary program build prints those two lines. The `link` line and the per-runtime-file lines come from the path that compiles runtime C sources, which `prismio bootstrap` and a few special build modes take.
+That is the supported way to attribute a compile-time question to a stage. An ordinary program build prints those two lines. The per-source lines come from a target's `native` sources, which the compiler's own build.ums declares.
 
 ## Which stage rejected my program?
 

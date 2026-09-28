@@ -33,7 +33,7 @@ const PILLARS = [
     },
     {
         icon: Zap,
-        title: "LLVM 22 Native Backend",
+        title: "LLVM 23 Native Backend",
         subtitle: "Zero intermediate runtimes, pure native code",
         description:
             "Prismio compiles directly to optimized LLVM IR and links native binaries using platform toolchains. Full DWARF debug symbol parity allows stepping through Prismio code in GDB and LLDB with exact source line mappings.",
@@ -76,7 +76,7 @@ const PRINCIPLES = [
     {
         num: "04",
         title: "100% Permissive Open Source",
-        copy: "Prismio's compiler, runtime shims, standard library, and tooling are released under Apache-2.0 / MIT. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library component.",
+        copy: "Prismio's compiler, runtime shims, standard library, and tooling are released under Apache-2.0. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library component.",
     },
 ];
 
@@ -95,8 +95,8 @@ const TIMELINE = [
     },
     {
         phase: "Early 2026",
-        title: "LLVM 22 Backend & Toolchain",
-        detail: "Lowered the typed AST directly into LLVM IR, integrated native linking, built the package registry (packages.prismio.org), and shipped DWARF support.",
+        title: "LLVM 23 Backend & Toolchain",
+        detail: "Lowered the typed AST directly into LLVM IR, integrated native linking, built the Unified Manifest System (UMS) and local dependency resolver, and shipped DWARF support.",
         status: "Completed",
     },
     {
@@ -136,7 +136,7 @@ export default function AboutPage() {
                             Prismio is a self-hosted, statically typed systems programming language
                             engineered to eliminate the decades-old trade-off between manual memory
                             fragility and non-deterministic garbage collection. By pairing our
-                            Adaptive Inference Framework (AIF) with an LLVM 22 native backend,
+                            Adaptive Inference Framework (AIF) with an LLVM 23 native backend,
                             Prismio gives developers high-level static expression with low-level systems control.
                         </p>
 
@@ -177,7 +177,7 @@ export default function AboutPage() {
                             </div>
                             <div className="flex items-center justify-between pt-3">
                                 <dt className="text-zinc-400">Codegen Backend</dt>
-                                <dd className="font-mono text-zinc-200 font-medium">LLVM 22 Native</dd>
+                                <dd className="font-mono text-zinc-200 font-medium">LLVM 23 Native</dd>
                             </div>
                             <div className="flex items-center justify-between pt-3">
                                 <dt className="text-zinc-400">Runtime Latency</dt>
@@ -189,7 +189,7 @@ export default function AboutPage() {
                             </div>
                             <div className="flex items-center justify-between pt-3">
                                 <dt className="text-zinc-400">License</dt>
-                                <dd className="font-mono text-zinc-200 font-medium">Apache-2.0 / MIT</dd>
+                                <dd className="font-mono text-zinc-200 font-medium">Apache-2.0</dd>
                             </div>
                         </dl>
 

@@ -26,13 +26,13 @@ const EXPENSE_AREAS = [
         icon: Server,
         title: "Dedicated Bare-Metal CI Hardware",
         tag: "x86_64 & AArch64",
-        detail: "Prismio's test suite compiles native binaries, validates DWARF emission, and runs 73 canonical benchmarks against Clang and GCC. Maintaining dedicated bare-metal instances ensures reproducible, non-virtualized timing data and eliminates noisy-neighbor variance.",
+        detail: "Prismio's test suite compiles native binaries, validates DWARF emission, and runs 78 canonical benchmarks against Clang++ and Rust (rustc). Maintaining dedicated bare-metal instances ensures reproducible, non-virtualized timing data and eliminates noisy-neighbor variance.",
     },
     {
         icon: Cpu,
         title: "Core Compiler Research Grants",
         tag: "Uninterrupted Engineering",
-        detail: "Funding dedicated developer time to tackle foundational language engineering: proving Adaptive Inference Framework (AIF) placement theorems, writing native LLVM 22 lowering passes, and designing memory-safe concurrency primitives.",
+        detail: "Funding dedicated developer time to tackle foundational language engineering: proving Adaptive Inference Framework (AIF) placement theorems, writing native LLVM 23 lowering passes, and designing memory-safe concurrency primitives.",
     },
     {
         icon: Terminal,
@@ -88,7 +88,7 @@ const SPONSORSHIP_LEVELS = [
 const STEWARDSHIP_PRINCIPLES = [
     {
         title: "100% Permissive Open Source",
-        copy: "The compiler, standard library, verifier shims, and documentation are published under Apache-2.0 / MIT. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library module.",
+        copy: "The compiler, standard library, verifier shims, and documentation are published under Apache-2.0. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library module.",
     },
     {
         title: "Technical RFC Governance",
@@ -152,7 +152,7 @@ export default function SponsorsPage() {
                             Our commitment
                         </div>
                         <p className="mt-3 text-sm leading-6 text-zinc-400">
-                            Prismio will remain completely free and permissively licensed under Apache-2.0 / MIT.
+                            Prismio will remain completely free and permissively licensed under Apache-2.0.
                             Sponsorship sustains dedicated engineering focus and bare-metal verification infrastructure.
                         </p>
                     </aside>

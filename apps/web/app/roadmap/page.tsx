@@ -16,7 +16,7 @@ const SHIPPED = [
         detail: "The lexer, parser, AST, import resolver, semantic analysis, and LLVM IR generator are written in Prismio.",
     },
     {
-        title: "Native code through LLVM 22",
+        title: "Native code through LLVM 23",
         detail: "Prismio lowers to LLVM IR, then links a native executable through the platform toolchain.",
     },
     {
@@ -65,7 +65,7 @@ const NEXT = [
 const GAPS = [
     {
         title: "Library surface",
-        detail: "Linked/deque containers, ordered maps and sets, priority queues, map deletion, regex, JSON, and generic serialization are not implemented in the standard surface.",
+        detail: "Linked/deque containers, ordered maps and sets, priority queues, regex, JSON, and generic serialization are not implemented in the standard surface.",
     },
     {
         title: "Concurrency surface",

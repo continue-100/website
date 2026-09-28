@@ -3,7 +3,7 @@ title: Lexical structure
 description: Prismio 0.1 identifiers, comments, literals, punctuation, and reserved words.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-27"
 tags: [lexer, comments, literals, keywords]
 related: [specification/grammar, language/operators, language/types]
 ---
@@ -62,6 +62,78 @@ Documentation-comment syntax is not supported in 0.1. Consecutive `//` lines are
 
 Identifiers name bindings, functions, fields, structs, enums, variants, and regions. Use letters or `_` at the beginning and letters, digits, or `_` afterward. Identifiers are case-sensitive: `point`, `Point`, and `POINT` are different names.
 
+A letter is a letter in any script. Identifiers follow [UAX #31](https://www.unicode.org/reports/tr31/), Unicode's standard for identifiers, at Unicode 18.0.0: the first character is `XID_Start` or `_`, and the rest are `XID_Continue`, which adds digits, combining marks and connector punctuation.
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+
+struct Точка {
+    x: Int,
+    y: Int
+}
+
+fn 合計(左: Int, 右: Int) -> Int {
+    return 左 + 右
+}
+
+fn main() -> Int {
+    let p = Точка { x: 1, y: 2 }
+    let π = 3
+    println(合計(p.x, p.y) + π)
+    return 0
+}
+```
+
+```
+6
+```
+
+Three rules are Prismio's own:
+
+- **Identifiers are compared in NFC.** `é` typed as one character and `é` typed as `e` followed by a combining accent are the same name, because they are the same text.
+- **ZERO WIDTH JOINER and ZERO WIDTH NON-JOINER are not allowed**, although Unicode lists both as `XID_Continue`. They are invisible, so two names differing only by one would look identical.
+- **Reserved words are ASCII** and stay reserved in every script.
+
+A character outside these sets is an error naming it by code point — `unexpected character U+1F600` for an emoji — and a byte that is not UTF-8 is reported as a byte. Source files are UTF-8.
+
+### Names that mislead
+
+Two more checks come from [UTS #39](https://www.unicode.org/reports/tr39/), Unicode's security mechanisms. Both are **warnings**: the program still compiles, because an uncommon letter can be the right one and a look-alike pair can be deliberate.
+
+- **P2003**, a restricted character: one UTS #39's General Security Profile does not allow in identifiers — obsolete, technical, limited-use, or changed by NFKC normalization.
+- **P2004**, confusable identifiers: two different names in the program that look the same, because they have the same UTS #39 skeleton. It names the one declared first.
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+
+fn main() -> Int {
+    let paypal = 1
+    let pаypal = 2
+    let ſum = paypal + pаypal
+    println(ſum)
+    return 0
+}
+```
+
+The second `pаypal` has a Cyrillic `а`, and `ſum` starts with LONG S:
+
+```
+warning[P2003]: identifier `ſum` contains U+017F, which UTS #39 restricts in identifiers: it is uncommon, obsolete or easily mistaken
+ --> names.psm:6:9
+  |
+6 |     let ſum = paypal + pаypal
+  |         ^^^
+warning[P2004]: identifier `pаypal` looks like `paypal` (UTS #39 confusables); a reader cannot tell which one is meant
+ --> names.psm:5:9
+  |
+5 |     let pаypal = 2
+  |         ^^^^^^
+```
+
+A program whose identifiers are all ASCII is never checked, and two ASCII names are never reported as confusable: that `l` and `I` look alike is a reader's everyday problem, not an attack.
+
 By convention, types and enum variants use `UpperCamelCase`, while functions, bindings, fields, and region names use `snake_case`. These are conventions, not compiler-enforced casing rules.
 
 A reserved word cannot be used as an identifier. Name resolution also distinguishes declaration kinds: a local binding can shadow an outer binding, while duplicate top-level declarations of the same kind are normally rejected.
@@ -70,12 +142,46 @@ A reserved word cannot be used as an identifier. Name resolution also distinguis
 
 Integer literals are decimal — `0`, `42`, `5000000000` — or hexadecimal, octal and binary with a prefix: `0xFF`, `0o755`, `0b1010`. A leading zero is not octal: `010` is ten. A leading `-` is a unary operator rather than part of the token, which matters when the compiler checks types and constant expressions.
 
-Literal values are checked against their contextual type. For example, `255` fits `U8`, but `256` does not. There are no digit separators in 0.1.
+Literal values are checked against their contextual type. For example, `255` fits `U8`, but `256` does not.
 
 ```prismio
 let signed: Int = -42
 let byte: U8 = 255
 let wide: U64 = 5000000000
+```
+
+### Digit separators
+
+A long number is hard to read at a glance: is `100000000` ten million or a hundred million? An underscore between two digits groups them and means nothing else, so you can write the value the way you would say it:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.display
+
+fn main() -> Int {
+    let million = 1_000_000
+    let lakh = 1_00_000            // any grouping you like
+    let mask = 0xFF_FF             // in every base
+    let flags = 0b1010_0001
+    let pi = 3.141_592_653         // and in a Float, exponent included
+    println("${million} ${lakh} ${mask} ${flags} ${pi}")
+    return 0
+}
+```
+
+This prints `1000000 100000 65535 161 3.141592653`. A separator must have a digit on both sides, so `1_`, `1_.5`, `0x_FF` and `1e_5` are errors rather than a silent change of meaning:
+
+<!-- prismio-check: fail -->
+```prismio
+fn main() -> Int {
+    let budget = 1_000_
+    return 0
+}
+```
+
+```
+error[P2001]: a digit separator `_` goes between two digits, as in `1_000_000`
 ```
 
 ## Floating-point and Boolean literals
@@ -201,10 +307,35 @@ fn main() -> Int {
 
 This program is invalid because the 0.1 lexer does not allow the NUL escape inside a string. The same escape is valid in a `Char` literal.
 
+**Bidirectional controls must be escaped (P2002).** The overrides and isolates, U+202A to U+202E and U+2066 to U+2069, change the order in which a line is *displayed* without changing its bytes. Written raw in a comment or a string, one can make an editor or a code review show code that is not the code that compiles — the attack known as Trojan Source (CVE-2021-42574). The lexer refuses them, and the diagnostic shows the character as `�` rather than letting the terminal apply it:
+
+```
+error[P2002]: unescaped bidirectional control U+202E in a string literal: it reorders how the line is displayed, so what a reader sees is not what compiles; write it as `\u{202E}` so it is visible
+ --> main.psm:4:23
+  |
+4 |     let access = "user� // admin"
+  |                       ^
+```
+
+A string that needs one writes the escape, which says what it is:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+
+fn main() -> Int {
+    let reversed = "abc\u{202E}def"
+    println(reversed.scalarCount)   // 7
+    return 0
+}
+```
+
+In a comment there is nothing to escape, so the fix is to remove it. Other characters that share the first byte of their UTF-8 encoding — an em dash, an arrow — are ordinary text.
+
 ## Current limitations
 
 - Comments are `//` to the end of the line and `/* ... */`, which nests.
-- Numeric bases and numeric separators are unavailable.
 - A byte-string prefix is unavailable; for raw text use a triple-quoted string, which takes its content as written.
 - `Char` is byte-sized rather than a complete Unicode character abstraction.
 - Reserved future words cannot be repurposed as identifiers even though their features are not parsed.

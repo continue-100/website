@@ -3,7 +3,7 @@ title: String representation and performance
 description: How Prismio stores inline, owned, and view strings in 16 bytes, proves view lifetimes, and measures the resulting performance.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-11"
+lastUpdated: "2026-09-26"
 tags: [compiler, strings, memory, ownership, performance]
 related: [runtime/supported-surface, aif/overview, aif/regions-views-and-provenance, runtime/collection-representations]
 ---
@@ -15,7 +15,7 @@ sound, and the measurements that led to it.
 
 This is an implementation deep dive for compiler and runtime contributors. It
 describes Prismio 0.1 at compiler commit
-[`43107cff86c1`](https://github.com/prismio-lang/prismio/commit/43107cff86c140fbf130c27211379d775d25c727),
+[`0064491c6338`](https://github.com/prismio-lang/prismio/commit/0064491c63384d692b0a91b481cc9d37cee892d4),
 not a stable ABI promise. Application developers should use the source-level
 [standard-library boundary](/runtime/supported-surface); code cannot select or observe a storage class.
 
@@ -194,13 +194,17 @@ The LLVM-level value remains a two-field pair:
 ; field 1, bits  0..30   byte length (maximum 2 GiB)
 ; field 1, bit      31   INLINE
 ; field 1, bits 32..63   INLINE ? data[8..11]
-;                               : bit 32 = VIEW, bits 33..63 reserved
+;                               : bit 32 = VIEW, bit 33 = GEOMETRIC,
+;                                 bits 34..63 reserved
 ; field 0                INLINE ? data[0..7]
 ;                               : data pointer
 ```
 
 Bit 32 is text data when `INLINE` is set and the `VIEW` flag when it is clear.
-The tests are unambiguous because every consumer checks `INLINE` first.
+The tests are unambiguous because every consumer checks `INLINE` first. Bit 33
+is not a storage class: it marks a long owned string whose capacity follows the
+consuming-append growth policy described in
+[Growing an owned string in place](#growing-an-owned-string-in-place).
 
 Three choices in this layout are load-bearing.
 
@@ -209,7 +213,7 @@ Three choices in this layout are load-bearing.
 Putting the tag in bit 63 would make it share a byte with the twelfth inline
 character. The inline form would then cover about 80% rather than 81.3% of the
 measured allocation population. Using bit 31 caps the byte length at just under
-2 GiB instead of 4 GiB and adds one mask operation to `.length()`.
+2 GiB instead of 4 GiB and adds one mask operation to `.length`.
 
 ### The tag is explicit
 
@@ -225,7 +229,7 @@ unchanged producers kept making valid owned strings, while readers used the new
 path only when `INLINE` was set.
 
 The implementation is in
-[`runtime/llvm-api-backend.c`](https://github.com/prismio-lang/prismio/blob/43107cff86c140fbf130c27211379d775d25c727/runtime/llvm-api-backend.c#L426-L474).
+[`runtime/llvm-api-backend.c`](https://github.com/prismio-lang/prismio/blob/0064491c63384d692b0a91b481cc9d37cee892d4/runtime/llvm-api-backend.c#L481-L537).
 
 ### Why Prismio does not store a four-byte prefix
 
@@ -239,12 +243,12 @@ as `strCopyRangeInto` and the builders in `std/string.psm`. Database engines
 often materialize a value in one operation and can compute a prefix as the bytes
 pass through; Prismio's current builders do not provide that hook.
 
-The reserved bits remain available for future measurements. They do not contain
-a prefix today.
+Bits 34–63 remain available for future measurements. They do not contain a
+prefix today.
 
 ## Representation invariants
 
-The implementation depends on five invariants:
+The implementation depends on eight invariants:
 
 | # | Invariant | Established by | Failure if violated |
 | ---: | --- | --- | --- |
@@ -253,6 +257,9 @@ The implementation depends on five invariants:
 | 3 | `count > 12` implies the source is not inline before a view is created | `strSubstring` checks the count immediately before choosing the view path | A view can offset a non-pointer |
 | 4 | A view is not assumed to be NUL-terminated | Its end is described by its length inside a larger buffer | A consumer can read past the view |
 | 5 | `__builtin_string_put_byte` writes only long-form buffers | Callers write into fresh `str_with_capacity` results | A write can land in a temporary materialization and be lost |
+| 6 | `str_append_reuse` and `str_append_reuse_many` receive an owned inline or long-form base whose old value dies at the assignment | Code generation uses them only for an AIF-proved owning `s = s + a` or `s = s + a + b …` | Read-only, arena, or shared storage is reallocated |
+| 7 | Every aliased suffix is rebased after growth, and a `+` chain grows once | The runtime records each suffix's offset before `realloc` and appends with `memmove`; a chain is one call | `s = s + s`, `s = s + x + s`, or appending a view reads a freed address |
+| 8 | A `GEOMETRIC` long string has capacity `bit_ceil(length + 1)`, minimum 16 | Append sets bit 33 whenever it promotes or reallocates | An in-place append writes past the block |
 
 The first invariant enables the short-string equality fast path. If lengths and
 text are equal and every byte beyond the length is zero, the complete 16-byte
@@ -260,6 +267,14 @@ values are identical. Equality therefore becomes two integer comparisons in
 registers, without a pointer dereference or function call. Four million
 short-string comparisons measured at **193 µs**, compared with **9.35 ms**
 through `strcmp`: a **48× improvement** on that microbenchmark.
+
+The same invariant lets two short strings order from their pairs. Byte-swapping
+field 0 and each half of field 1 in place turns the pair into one 128-bit
+unsigned integer holding the twelve bytes most significant first, with the
+length below them, so `compare` is one integer comparison in registers
+([`ir_str_compare`](https://github.com/prismio-lang/prismio/blob/0064491c63384d692b0a91b481cc9d37cee892d4/runtime/llvm-api-backend.c#L4428)).
+Over the `sort_strings` keys that measured **1.13 ns** per call, against 3.28 ns
+for the byte loop it replaced and 1.53 ns for libc++'s `std::string::compare`.
 
 The same zero-tail rule constrains the copy ladder. For lengths from 8 through
 12, the intervals `[0, 8)` and `[n-8, n)` cover exactly the initialized range;
@@ -278,7 +293,7 @@ must keep that base storage alive for every use of the view.
 
 `__builtin_string_view(source, start, count)` is declared to alias its first
 argument by
-[`aifFfiAliasOf`](https://github.com/prismio-lang/prismio/blob/43107cff86c140fbf130c27211379d775d25c727/src/aif/contracts.psm#L231-L245).
+[`aifFfiAliasOf`](https://github.com/prismio-lang/prismio/blob/0064491c63384d692b0a91b481cc9d37cee892d4/src/aif/contracts.psm#L295-L311).
 This is Prismio's existing FFI `alias` contract: the return value reaches memory
 through an argument rather than introducing a fresh allocation.
 
@@ -290,9 +305,10 @@ Two properties follow:
   the immediate expression extends the required lifetime of that base.
 
 `strSubstring` returns `__builtin_string_view` on its long path. The analysis
-then marks `strSubstring` as a function that may return a view of its parameter,
-and propagates that fact through compiler and standard-library callers. At the
-recorded commit, the self-hosted compiler reached a fixpoint, the full suite
+then marks `strSubstring` as a function that may return a view of its parameter
+(`aif_fn_may_return_view_of_param`), and propagates that fact through compiler
+and standard-library callers. When the view class landed, the self-hosted
+compiler reached a fixpoint, the full suite
 passed 285/285 tests, and the verification ledger balanced. These are practical
 implementation checks; they are not presented as a formal proof of the entire
 runtime.
@@ -372,7 +388,8 @@ searches for a NUL terminator. Both copies go by length.
 
 When a view crosses a C FFI boundary, code generation creates a terminated copy
 behind a branch and releases it after the call. Inline and owned strings do not
-pay for the view-specific branch body. See [AIF foreign-function contracts](/aif/ffi-contracts)
+pay for the view-specific branch body. Swift takes the same shape for its own
+small-string form when a `String` reaches a C parameter. See [AIF foreign-function contracts](/aif/ffi-contracts)
 for the source-level contract rules.
 
 **The copy is a stack slot wherever it fits.** Measured on the compiler compiling
@@ -405,6 +422,58 @@ reports it as an `E-BIND` at the binding.
 Byte access and owned-string release required no further representation change:
 a view supplies a usable data pointer in field 0, while its tag already tells
 the release path that the allocation belongs to its base.
+
+## Growing and producing strings without extra allocation
+
+### Growing an owned string in place
+
+Ordinary `concat` stays immutable: it builds an independent result and copies
+its arguments. One assignment shape carries stronger information. `s = s + suffix`
+says the old `s` is dead at the store, and AIF can prove whether that slot owns
+its value. For that shape, and for a chain `s = s + a + b …` of up to five
+suffixes, code generation calls
+[`str_append_reuse` / `str_append_reuse_many`](https://github.com/prismio-lang/prismio/blob/0064491c63384d692b0a91b481cc9d37cee892d4/runtime/lang_runtime.c#L963-L1002);
+every other spelling keeps the ordinary concat path. A chain grows once for its
+total, which is a correctness requirement as well as a saving: a later suffix can
+point into the old buffer, and one call per suffix would read it after the
+previous call's `realloc` had freed it.
+
+The 16-byte pair has nowhere to store a capacity word, so bit 33 records a
+narrower fact: this long string was allocated by the consuming-append growth
+policy. For such a value the capacity is exactly `bit_ceil(length + 1)`, with a
+minimum of 16, derived with five shifts and ORs. An inline accumulator promotes
+directly to that form, and an unmarked long owner is reallocated and marked on
+its first consuming append. Repeated append is therefore amortized O(1) per byte
+instead of copying the whole prefix on every iteration, without widening every
+`String`, struct field, `Vec` element, or call boundary to 24 bytes.
+
+The marker replaced an earlier correct but slower implementation that queried
+`malloc_size`, `malloc_usable_size`, or `_msize` on every append. The macOS query
+measured about 14 ns, which is visible ten thousand times in `csv_parse`. The
+logical-capacity marker is allocator-independent and ABI-neutral.
+
+This combines Prismio's representation with the growth rule that Swift uses for
+uniquely owned contiguous `String` storage and Rust uses for `String::push_str`.
+The ownership proof is the boundary: capacity is an implementation detail of a
+value with one owner, never permission to mutate a value another binding can
+observe.
+
+### Short results stay in the pair
+
+Small-string storage only pays when producers use it. Three general producers
+do:
+
+- mutable string literals of at most twelve bytes are stored inline rather than
+  cloned;
+- every 32-bit `Int.toString()` is formatted directly into the pair with a
+  two-digit lookup table (including `Int.min`, at eleven bytes); and
+- every fixed-arity `String.concat` of two through six operands first sums the
+  lengths and builds the result inline when the total is at most twelve.
+
+The concat size test stays in `std/string.psm`; its
+`__builtin_string_concat_inline2` through `__builtin_string_concat_inline6`
+builtins emit only the copies. Longer results keep the ordinary exact-size
+allocation.
 
 ## Results
 
@@ -457,6 +526,34 @@ for a single pass was about ±4%.
 | `borrow` → `readonly`, short haystack searched in a loop | Minimum 5.28 ms → 4.84 ms |
 | Copy ladder vs `memcpy` call | 1.107× on the complete tokenization row |
 
+### Repeated append and `csv_parse`
+
+The scale-4 CSV workload builds 10,000 rows (327,647 final bytes) with
+`csvData = csvData + line`, then parses them. Before consuming append,
+construction copied 1,637,899,970 cumulative bytes, about 4,999 times the final
+size, and accounted for 99.7% of the row.
+
+Medians on the same host, from a nine-run baseline and 21-run stage comparisons:
+
+| Implementation stage | Median |
+| --- | ---: |
+| Original Prismio | 103.827 ms |
+| + consuming append | 1.958 ms |
+| + inline literals and `Int`, logical capacity | 1.303 ms |
+| **+ allocation-free short concat** | **1.074 ms** |
+| C++ in the final run | 1.340 ms |
+| Rust in the final run | 1.935 ms |
+
+The final implementation is **96.7× faster** than the starting Prismio row,
+19.8% faster than C++, and 44.5% faster than Rust. Every row returned checksum
+`664934317`, and the tracked benchmark sources were unchanged.
+
+Under `--verify`, the complete workload reports 23,218 allocations and 23,218
+releases, with no leaks, no invalid or double releases, and 786 KB of peak live
+memory. `tests/test_100_string_append_reuse.psm` keeps the complexity check
+deterministic: 9,192 logical appends plus 1,000 integer conversions must stay at
+or below 80 allocations (currently 40), rather than timing a noisy CI host.
+
 ## Experiments that were rejected
 
 Recording negative results prevents attractive but ineffective changes from
@@ -501,6 +598,29 @@ because the selected pointer may refer to that same scratch. A branch removed
 the aliasing concern but measured at 328 µs versus 262 µs; its control-flow cost
 was greater than the stores it avoided.
 
+### Selecting between both byte reads
+
+A single byte does not need materialization at all: it can be read from the
+pair with a shift, or from the heap pointer. The first store-free form computed
+both reads and chose one with `select`, loading the heap arm through the scratch
+slot when the string was inline. Where LICM lifted the loop-invariant half, this
+cost nothing. In the tokenizer, where `charAt` is inlined into a loop too large
+to unswitch, both arms ran on every character: 209 µs against 150 µs for the
+materializing form it replaced.
+
+`ir_str_byte_at` now branches on the inline tag, with `!prof` weights that make
+the heap arm the fall-through. That measured 178 µs (medians throughout), and
+the vectorised byte loops were unchanged. The rest came from `charAt`. With the
+branch, the `index < 0` half of its two-sided range check stayed in the loop as
+a sign test per character. One unsigned comparison covers both ends and measured
+156 µs. Under the `select` form the same rewrite changed no instruction, so it
+only mattered once the read was a branch.
+
+The branch still costs one predicted test per byte when a loop reads a `let mut`
+string through `byteAt`, because nothing resolves that binding's pointer.
+`csv_parse` is about 3% slower than it was with scratch stores. Forcing LLVM to
+unswitch the loop removes the test but does not recover the 3%.
+
 ### Masking the copy length before `llvm.memcpy`
 
 Masking `count` to four bits made the maximum length visible to LLVM, but the
@@ -534,10 +654,10 @@ prismio build tests/test_09_strings.psm -o /tmp/prismio-string-probe --verify
 /tmp/prismio-string-probe
 ```
 
-The exact historical values are tied to commit `43107cff86c1`. The maintained
+The tokenization history on this page is tied to commit `43107cff86c1`. The maintained
 runner, language build flags, workload catalog, checksum policy, and output files
 are documented in
-[`benchmarks/README.md`](https://github.com/prismio-lang/prismio/blob/43107cff86c140fbf130c27211379d775d25c727/benchmarks/README.md).
+[`benchmarks/README.md`](https://github.com/prismio-lang/prismio/blob/0064491c63384d692b0a91b481cc9d37cee892d4/benchmarks/README.md).
 
 The allocation-length histogram was produced by temporary instrumentation in
 `str_with_capacity` and is not part of the maintained harness. It cannot be
@@ -570,11 +690,12 @@ does not map through `LLVMGetEnumAttributeKindForName`, so Prismio skips that
 attribute. `readonly`, the property required for the measured loop hoisting,
 does map correctly.
 
-### Reserved bits remain unused
+### Most reserved bits remain unused
 
-Bits 33–63 of a long string's length word are available. The current incremental
-construction path prevents a reliable prefix, but a cached hash is a possible
-future experiment rather than a committed design.
+Bit 33 records the consuming-append growth policy; bits 34–63 of a long string's
+length word are available. The incremental construction path prevents a
+reliable prefix, but a cached hash is a possible future experiment rather than a
+committed design.
 
 ## References
 
@@ -600,3 +721,18 @@ future experiment rather than a committed design.
 - Raymond Chen,
   [*An informal comparison of the three major implementations of `std::string`*](https://devblogs.microsoft.com/oldnewthing/20240510-00/?p=109742)—the
   measured platform's `libc++` small-string capacity.
+- LLVM libc++,
+  [`basic_string`](https://github.com/llvm/llvm-project/blob/main/libcxx/include/string)—the
+  inline/long union representation and growth machinery behind the C++
+  comparison.
+- David Tolnay, [`itoa`](https://github.com/dtolnay/itoa)—allocation-free integer
+  formatting into caller-owned storage.
+- Swift,
+  [`String.swift`](https://github.com/swiftlang/swift/blob/main/stdlib/public/core/String.swift)
+  and
+  [`StringDesign.rst`](https://github.com/swiftlang/swift/blob/main/docs/StringDesign.rst)—value
+  semantics, unique-buffer mutation, small strings, and exponential growth.
+- Rust,
+  [`String`](https://doc.rust-lang.org/alloc/string/struct.String.html) and
+  [`RawVec`](https://github.com/rust-lang/rust/blob/main/library/alloc/src/raw_vec/mod.rs)—`push_str`,
+  reserve checks, and amortized growth.

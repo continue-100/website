@@ -1,9 +1,9 @@
 ---
 title: Map
-description: The std.map hash table — its methods, O(1) removal, the Key bound its keys satisfy, and why values stay scalar in Prismio 0.1.
+description: The std.map hash table — creating one, map literals, its methods, O(1) removal, the Key bound its keys satisfy, and why values stay scalar in Prismio 0.1.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-28"
 tags: [standard-library, map, collections, generics, traits, hash]
 related: [stdlib/vec, language/generics, language/traits]
 ---
@@ -22,10 +22,7 @@ import std.option
 import std.string
 
 fn main() -> Int {
-    let stock = mapNew<String, Int>()
-    stock.set("apples", 12)
-    stock.set("pears", 4)
-    stock.set("plums", 30)
+    let stock: Map<String, Int> = { "apples": 12, "pears": 4, "plums": 30 }
     println(stock.set("pears", 5))          // true: pears was already there
 
     println(stock["apples"])                // 12
@@ -46,11 +43,79 @@ fn main() -> Int {
 }
 ```
 
+## Creating a map
+
+Five spellings, and they all build the same thing:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.map
+
+fn main() -> Int {
+    let a = Map<String, Int>()              // the type, called
+    let b: Map<String, Int> = Map()         // the annotation supplies <String, Int>
+    let c: Map<String, Int>                 // no initializer: an empty map
+    let d: Map<String, Int> = {}            // an empty literal
+    let e = Map<Int, Int>.withCapacity(1000)  // room for 1000 entries before it grows
+
+    c.set("ready", 1)
+    println(a.length + b.length + c.length + d.length + e.length)   // 1
+    return 0
+}
+```
+
+**Calling a type calls its `new`.** `Map<String, Int>()` is `Map<String, Int>.new()`, and the same holds for any struct whose `impl` declares a `new` — `Parser(source)` calls `Parser.new(source)`. A type without one is an error that says so: *`Bare` has no `new`, so it cannot be called*.
+
+The type arguments come from the call or from the context. `let m = Map()` has neither, and is an error: *`Map()` needs its type arguments*. `mapNew<K, V>()`, the older spelling, still works, and takes its arguments from an annotation the same way.
+
+**A `let` with no initializer is an empty map**, as one of a `Vec` is an empty `Vec`. It is not a zeroed value that crashes on first use.
+
+## Map literals
+
+`{ key: value, ... }`, the way Python and JSON write one:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.map
+import std.string
+
+fn main() -> Int {
+    let ages: Map<String, Int> = {
+        "Alice": 20,
+        "Bob": 25,
+    }
+    let codes = { 200: "ok".length, 404: "not found".length }   // Map<Int, Int>
+    let limits: Map<String, U8> = { "max": 255 }                // 255 is a U8 here
+
+    let who = "Carol"
+    let scores = { who: 91, "Dan": 78 }       // keyed on the *value* of `who`
+
+    println(ages["Bob"] + codes[404] + scores["Carol"])   // 25 + 9 + 91
+    println(limits["max"])                                  // 255
+    return 0
+}
+```
+
+- **Types.** Under an annotation, every key and value takes the annotation's type, so a literal `255` fits a `U8`. With no annotation, the first entry decides, as a `Vec` literal's first element does; a later entry of another type is *map literal value: expected Int, found String*.
+- **Keys are expressions.** `{ who: 91 }` uses the value of `who`, as in Python — never the string `"who"`, as in JavaScript. A computed key such as `{ name.concat("!"): 1 }` is fine.
+- **`{}` needs a type.** `let m: Map<String, Int> = {}` is an empty map; `let m = {}` has nothing to say what it maps, and is an error.
+- **A key written twice is an error** when both are literals: *this key is already in the map literal*. Python keeps the second value silently, which is a classic bug. Two computed keys that happen to be equal cannot be seen at compile time; the later one wins, as `set` would.
+- **Order is preserved.** Entries go in in the order they are written, so iteration visits them in that order.
+- **A trailing comma is allowed**, and a literal may span lines.
+- **Needs `import std.map`**, like every other use of `Map`.
+
+A literal is sized once, for exactly its entries, so building it never grows the table.
+
+**Two limits in 0.1.** A literal holding a *computed* owned key — `{ s.concat("!"): 1 }`, as opposed to a literal, a variable or an integer — leaks its map when it is stored straight into a struct field, and leaks the key when it is returned straight from a function; bind it to a `let` first. Literals of plain keys, which is nearly all of them, have neither problem. Separately, two different `Map<String, ...>` types in one program each holding a key built at run time leak one key copy. Both are gaps in the compiler's ownership analysis, not in the map, and are tracked.
+
 ## Operations
 
 | On a `Map<K, V>` | Returns |
 |---|---|
-| `mapNew<K, V>()` | an empty map. Type arguments must be written; there is no argument to infer them from. |
+| `Map<K, V>()`, `mapNew<K, V>()` | an empty map. The type arguments may come from an annotation instead: `let m: Map<K, V> = Map()`. |
+| `Map<K, V>.withCapacity(n)` | an empty map with room for `n` entries before it grows |
 | `m.length`, `m.isEmpty` | `Int`, `Bool`; [properties](/language/methods#properties) |
 | `m.has(key)` | `Bool` |
 | `m.get(key)` | [`Option<V>`](/stdlib/option): the value, or `None` |
@@ -123,7 +188,7 @@ impl Copy for Point {
 }
 
 fn main() -> Int {
-    let places = mapNew<Point, Int>()
+    let places = Map<Point, Int>()
     places.set(Point { x: 1, y: 2 }, 12)
     println(places[Point { x: 1, y: 2 }])
     return 0

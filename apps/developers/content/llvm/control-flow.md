@@ -395,6 +395,18 @@ Before ordinary loop emission, code generation may prove a specialized path:
 - `generateWholeBufferZeroFill` recognizes full zero initialization; and
 - `generateLoopPushGuard` reserves capacity once for a bounded run of pushes.
 
+The last one has two entry points. A `while` loop's trip count is read out of its condition and
+its `i = i + 1`; a range `for` knows its count without either (`end - start`, one more for an
+included end, the other way round counting down), so `generateForPushGuard` computes it and both
+share `generateTripPushGuard`. Before the `for` half existed, a fill written `for i in 0..<n`
+called `list_push_inline_scalar` per element where the equivalent `while` stored inline, which
+made `large_buffer_copy` 1.80x of C++ instead of 1.20x. `tests/test_216_for_push_guard.psm` builds
+every list with exactly the room its loop needs or one element less, and runs under
+`tools/sanitizer_smoke.py`, so a count one too low is a heap-buffer-overflow rather than a pass.
+The zero-fill and whole-buffer-copy paths are still `while`-only. A `for` fill and copy measured
+at parity with them anyway (2,000,000 elements: zero fill 117 µs both ways, copy 241 µs as a `for`
+against 257 µs as a `while`), so neither has been extended.
+
 Every transformation keeps a correct fallback edge. It must not change source semantics when the
 runtime guard is false. See the dedicated loop-guards article for the proof conditions and
 performance evidence.

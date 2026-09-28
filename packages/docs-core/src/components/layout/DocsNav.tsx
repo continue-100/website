@@ -47,16 +47,16 @@ export function DocsNav({ navList, className, onItemClick }: DocsNavProps) {
 
     const renderNodes = (nodes: DocNavNode[], parents: string[], depth: number) => (
         <ul className={depth === 0 ? "space-y-0.5" : "mt-1 space-y-0.5"}>
-            {nodes.map((node) => {
+            {nodes.map((node, index) => {
                 const labels = [...parents, node.label];
                 const key = keyFor(labels);
                 const isOpen = openKeys.includes(key);
                 const isActive = node.href === pathname;
                 const hasChildren = Boolean(node.items?.length);
-                const controlId = `nav-${key.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+                const controlId = `nav-${key.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${index}`;
 
                 return (
-                    <li key={key}>
+                    <li key={`${key}-${node.href ?? index}`}>
                         {hasChildren ? (
                             <>
                                 <button

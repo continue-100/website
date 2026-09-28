@@ -158,7 +158,7 @@ export default function Hero() {
 
                     <div className="mt-9 max-w-2xl border-t border-white/[0.08] pt-6">
                         <div className="mb-3 flex items-center justify-between text-xs text-zinc-500">
-                            <span>Install Primsio</span>
+                            <span>Install Prismio</span>
                         </div>
                         <div className="flex items-center justify-between gap-4 rounded-xl bg-[#0c0d11] px-4 py-3 ring-1 ring-white/[0.08] transition-colors hover:ring-white/[0.14]">
                             <code className="min-w-0 overflow-x-auto whitespace-nowrap font-mono text-xs sm:text-sm">
@@ -272,7 +272,6 @@ export default function Hero() {
                                             <span>Scoped heap</span><span>0</span>
                                             <span>Shared heap</span><span>0</span>
                                             <span>Cycle-managed heap</span><span>0</span>
-                                            <span>Cross-thread heap</span><span>0</span>
                                         </div>
                                     </div>
 

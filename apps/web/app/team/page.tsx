@@ -50,7 +50,7 @@ const WORKING_GROUPS = [
         icon: Zap,
         lead: "Toolchain WG",
         description:
-            "Lowers typed AST structures to LLVM 22 IR, optimizes register allocations, emits platform DWARF debug symbols, and integrates platform linkers.",
+            "Lowers typed AST structures to LLVM 23 IR, optimizes register allocations, emits platform DWARF debug symbols, and integrates platform linkers.",
         badge: "Performance & Codegen",
     },
     {
@@ -74,7 +74,7 @@ const WORKING_GROUPS = [
         icon: GitBranch,
         lead: "Quality & CI WG",
         description:
-            "Maintains bare-metal test runners, reproducible benchmarks against Clang and GCC, regression tracking, and multi-architecture verification (x86_64, AArch64).",
+            "Maintains bare-metal test runners, reproducible benchmarks against Clang++ and Rust (rustc), regression tracking, and multi-architecture verification (x86_64, AArch64).",
         badge: "Infrastructure",
     },
 ];
@@ -223,7 +223,7 @@ export default function TeamPage() {
                                         Saksham designed and bootstrapped Prismio from the ground up to solve
                                         the systemic tension in modern software: developer velocity vs. deterministic
                                         systems latency. He is the author of the Prismio self-hosted compiler, the
-                                        Adaptive Inference Framework (AIF), and the LLVM 22 code generator.
+                                        Adaptive Inference Framework (AIF), and the LLVM 23 code generator.
                                     </p>
                                     <p>
                                         His research centers on compiler-directed memory placement, escape analysis
@@ -307,7 +307,7 @@ export default function TeamPage() {
 
                                 <div className="rounded-xl border border-indigo-500/20 bg-indigo-950/[0.2] p-4 text-xs text-indigo-200">
                                     <span className="font-semibold block mb-1 text-white">Stewardship Commitment</span>
-                                    All source code and documentation will remain open-source forever under Apache-2.0 / MIT.
+                                    All source code and documentation will remain open-source forever under Apache-2.0.
                                 </div>
                             </div>
                         </div>

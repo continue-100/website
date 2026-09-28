@@ -212,6 +212,37 @@ fn main() -> Int {
 
 `Self.name()` calls one from inside the block. `default` is allowed as the name, and `Config.default()` is then the type's own default. The `default` keyword on its own stays the compiler's zero value. A bare call, `named("web")`, is an unknown function, and the error names the type it belongs to.
 
+#### Calling a type calls its `new`
+
+A type written as a call is a call to its `new`: `Box(5)` is `Box.new(5)`, and `Box<String>("x")` is `Box<String>.new("x")`. It is the same function, so overloading, generics and ownership are all `new`'s; the spelling is the only difference.
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.map
+
+struct Point {
+    x: Int,
+    y: Int
+}
+
+impl Point {
+    fn new(x: Int, y: Int) -> Point { return Point { x: x, y: y } }
+}
+
+fn main() -> Int {
+    let p = Point(3, 4)                       // Point.new(3, 4)
+    let seen = Map<String, Int>()             // Map<String, Int>.new()
+    let empty: Map<String, Int> = Map()       // <String, Int> from the annotation
+    let mut words = Vec<String>()             // an empty Vec, as `[]` is
+    words.push("hi")
+    println(p.x + p.y + seen.length + empty.length + words.length)   // 8
+    return 0
+}
+```
+
+A type with no `new` is an error that says so, rather than an unknown function. A generic type's arguments come from the call's own arguments, from the call's written `<...>`, or from the annotation it is assigned to — `let m = Map()` has none of the three and is *`Map()` needs its type arguments*.
+
 ### `self`
 
 `self` is not a reserved word. Inside an `impl` block, a parameter written as a

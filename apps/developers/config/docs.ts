@@ -7,8 +7,8 @@ export const docsConfig: DocsAppConfig = {
         description: "Implementation reference for the self-hosted Prismio compiler, AIF, LLVM backend, runtime, and UMS.",
         currentVersion: "0.1.0",
         author: "Saksham Jaiswal",
-        authorURL: "https://saksham-1.vercel.app",
-        email: "vibrant.official275@gmail.com",
+        authorURL: "https://saksham1319.vercel.app",
+        email: "saksham6975@gmail.com",
         siteUrl: "https://developers.prismio.org",
         links: {
             github: "https://github.com/prismio-lang/prismio",
@@ -17,6 +17,7 @@ export const docsConfig: DocsAppConfig = {
     },
     brandTag: "Developers",
     accentColor: "purple",
+    showInstall: false,
     search: {
         placeholder: "Search compiler internals, AIF, LLVM, UMS…",
         emptyPrompt: "Search versioned implementation pages by title, subsystem, source concept, or diagnostic.",

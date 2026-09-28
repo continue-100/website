@@ -29,7 +29,6 @@ const HeaderMain: React.FC = () => {
     }, []);
 
     const navLinks: NavItem[] = [
-        {label: "About", href: "/about"},
         {label: "Packages", href: "https://packages.prismio.org", isExternal: true},
         {label: "Playground", href: "https://playground.prismio.org", isExternal: true},
         {label: "Benchmarks", href: "/benchmarks"},

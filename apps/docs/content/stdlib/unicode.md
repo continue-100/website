@@ -3,7 +3,7 @@ title: Unicode
 description: Terminal width, grapheme clusters and NFC/NFD normalization for Prismio strings.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-10"
+lastUpdated: "2026-09-26"
 tags: [standard-library, unicode, text, normalization, width]
 related: [stdlib/strings, language/operators]
 ---
@@ -12,9 +12,12 @@ related: [stdlib/strings, language/operators]
 cannot: how wide a string is on a terminal, and where one *character* ends when a
 character is several code points.
 
-It is a separate module because of what it carries — 100 KB of range tables
-generated from the Unicode database — and a program that lays out no columns and
+It is a separate module because of what it carries — range tables generated
+from the Unicode Character Database — and a program that lays out no columns and
 compares no user-entered text should not build them.
+
+The module implements **Unicode 18.0.0**. `unicodeVersion()`, from
+`std.unicode_tables`, returns that string.
 
 ## Three counts, all correct
 
@@ -67,6 +70,38 @@ table-drawing program agree on: a CJK ideograph is two columns, a combining mark
 is none, a control character is none. It is **not** a proportional font's answer,
 and no property in Unicode describes one.
 
+`scalarWidth` is 0 for nonspacing and enclosing marks, format characters (except
+SOFT HYPHEN, which terminals draw), controls, the line and paragraph separators,
+and the conjoining Hangul vowels and finals whose syllable takes its leading
+consonant's two columns. It is 2 for East Asian Wide and Fullwidth, and 1 for
+everything else, unassigned code points included.
+
+`displayWidth` measures **grapheme clusters**, not scalars, because a terminal
+draws a cluster as one glyph. An emoji sequence — a ZWJ family, a skin tone, a
+flag — is two columns however many scalars spell it, and a pictograph followed by
+VARIATION SELECTOR-16 (`©️`) is two where its text form (`©`) is one. Everything
+else is the sum of its scalars' widths.
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+import std.unicode
+
+fn main() -> Int {
+    println("👨‍👩‍👧".scalarCount)
+    println("👨‍👩‍👧".displayWidth)
+    println("é".displayWidth)
+    return 0
+}
+```
+
+```
+5
+2
+1
+```
+
 `std.string`'s `padStart` counts *characters*, which lines up every alphabet whose
 characters are one column wide. These count columns, for the ones that are not.
 
@@ -80,13 +115,14 @@ characters are one column wide. These count columns, for the ones that are not.
 
 A flag is two scalars and one grapheme. A ZWJ family emoji can be seven scalars
 and one. A letter with a combining mark is two and one. Hangul jamo compose into
-a syllable.
+a syllable, and a Devanagari consonant, virama and consonant (`क्ष`) are one
+conjunct.
 
-This is a documented **subset of UAX #29** — the rules that decide real text:
-marks join what precedes them, ZWJ sequences hold together, regional indicators
-pair, skin tones join their emoji, and Hangul jamo compose. `Prepend`, the
-`Extended_Pictographic` property and Unicode 15's indic conjunct rules are not
-implemented.
+These are UAX #29's **extended grapheme clusters**, every rule from GB1 to GB999
+as Unicode 18.0.0 states them — including `Prepend`, `SpacingMark`,
+`Extended_Pictographic` emoji sequences and the Indic conjunct rule GB9c. A ZWJ
+joins two pictographs and nothing else, so `a` ZWJ `b` is two clusters.
+`graphemeWidthAt` expects a cluster boundary: pass `0` or a value it returned.
 
 ## Normalization
 
@@ -136,14 +172,19 @@ Normalize once, where text enters the program, and compare afterwards.
 
 ## Where the tables come from
 
-`tools/generate_unicode_tables.py` reads the Unicode database bundled with
-CPython and writes `std/unicode_tables.psm`. **The tables are generated, never
-edited**: a hand-maintained range list for East Asian Width or combining classes
-is wrong the day it is written and wronger every year after.
+`tools/generate_unicode_tables.py` writes `std/unicode_tables.psm` from the
+official Unicode Character Database. **The version is pinned in the generator**,
+along with the SHA-256 of every source file it reads, and every generated file
+records the version, the sources, their hashes and the generator's own hash. The
+tables are never edited and never taken from whatever Unicode the developer's
+Python happens to bundle — which is how an earlier version of these tables called
+every unassigned code point two columns wide.
 
-The composition table is derived from NFC itself — a pair composes exactly when
-the reference normalizer says it does — so singletons, non-starter decompositions
-and every script-specific exclusion are accounted for without a second list to
-maintain. The current tables are Unicode 13.0.0, and the normalizer agrees with
-CPython's over 800 comparisons covering decomposables, multi-mark sequences in
-random order, and Hangul.
+Each table is a sorted array of scalar ranges searched by binary search. The
+composition table is UAX #15's primary composites: the two-scalar canonical
+mappings less `Full_Composition_Exclusion`.
+
+`tools/unicode_conformance.py` runs this module against the UCD's own test
+files. At 18.0.0 it passes all 853 lines of `GraphemeBreakTest.txt`, all 20,171
+lines of `NormalizationTest.txt`, and the 1,094,910 scalars that file says both
+forms leave unchanged.

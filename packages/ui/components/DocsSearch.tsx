@@ -58,7 +58,7 @@ export default function DocsSearch({
             onClick={handleClick}
             aria-label={placeholder}
             aria-keyshortcuts={isMac ? "Meta+K" : "Control+K"}
-            className={`group relative mx-auto hidden h-9 w-full max-w-md items-center gap-2.5 rounded-lg border border-zinc-200/80 bg-zinc-50/70 px-3 text-left text-sm text-zinc-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)] backdrop-blur-xs transition-all duration-150 hover:border-zinc-300 hover:bg-zinc-100/80 hover:text-zinc-800 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/50 lg:flex dark:border-zinc-800/80 dark:bg-zinc-900/60 dark:text-zinc-400 dark:shadow-none dark:hover:border-zinc-700 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200 dark:focus-visible:ring-zinc-600 ${className}`}
+            className={`group relative mx-auto hidden h-9 w-full max-w-md items-center gap-2.5 rounded-lg border border-zinc-200/80 bg-zinc-50/70 px-3 text-left text-sm text-zinc-500 backdrop-blur-xs transition-all duration-150 hover:border-zinc-300 hover:bg-zinc-100/80 hover:text-zinc-800 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/50 lg:flex dark:border-zinc-800/80 dark:bg-zinc-900/60 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-200 dark:focus-visible:ring-zinc-600 ${className}`}
         >
             <Search
                 aria-hidden="true"

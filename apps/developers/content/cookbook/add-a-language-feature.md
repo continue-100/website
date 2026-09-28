@@ -148,7 +148,7 @@ python3 tools/run_suite.py
 python3 tools/aif_differential.py --compiler build/gen2
 ```
 
-These are expensive and change shared build state, so they are not run as part of writing this page — `tools/release_gate.py` composes the same checks for a release candidate. Do not run `prismio bootstrap` or the seed refresh against a checkout you are not prepared to rebuild from.
+These are expensive and change shared build state, so they are not run as part of writing this page — `tools/release_gate.py` composes the same checks for a release candidate. Do not run a bootstrap or the seed refresh against a checkout you are not prepared to rebuild from.
 
 ## If you are changing the frontend, semantics, or codegen
 

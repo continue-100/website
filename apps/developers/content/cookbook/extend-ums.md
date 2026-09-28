@@ -111,7 +111,7 @@ error[P1062]: a project command cannot be named `build`
   note: that name is a built-in command and built-ins win; rename it in build.ums
 ```
 
-This is deliberate, and it is a CLI decision, not a UMS one: `init`, `build`, `run`, `test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast`, and `runtime-hash` are reserved because `src/main.psm` dispatches them directly, and UMS validates a command's *shape* without knowing that list itself.
+This is deliberate, and it is a CLI decision, not a UMS one: `init`, `build`, `run`, `test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast`, `runtime-hash` and any name ending `.psm` are reserved because `src/main.psm` dispatches them directly -- `prismioBuiltinCommands` in `src/project/commands.psm` is the one list, read by the `P1062` check and the `P1039` note -- and UMS validates a command's *shape* without knowing that list itself.
 
 ## A worked example: adding a project command needs no grammar change
 

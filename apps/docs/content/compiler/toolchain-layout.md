@@ -14,7 +14,6 @@ A Prismio compiler is a **layout, not a file**. The executable resolves everythi
 <prefix>/
   bin/prismio                     the compiler
   lib/runtime/*.bc                LLVM bitcode merged into every program
-  lib/backend.a                   linked only when building a compiler
   lib/runtime.hash                which sources those modules came from
   stdlib/*.plib                   what `import std.*` resolves to
   bin/LLVM-C.dll                  Windows only

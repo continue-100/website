@@ -270,7 +270,7 @@ PRISMIO_BUILD_TRACE=1 $P build listy.psm -o listy
 Built listy
 ```
 
-`PRISMIO_OBJ_CACHE_TRACE=1` prints one line per toolchain object saying whether it came from the cache, and `PRISMIO_OBJ_CACHE=0` bypasses the cache entirely. Both apply to the path that compiles runtime C sources — `prismio bootstrap` and a few special build modes — not to an ordinary application build: running `PRISMIO_OBJ_CACHE_TRACE=1` against `listy.psm` above prints nothing, because no toolchain object needed compiling. Reproduce with object caching disabled only *after* a default run, and keep both results — the two are answering different questions.
+`PRISMIO_OBJ_CACHE_TRACE=1` prints one line per toolchain object saying whether it came from the cache, and `PRISMIO_OBJ_CACHE=0` bypasses the cache entirely. Both apply to C sources a target's `native` block names -- the compiler's own build has eight -- not to an ordinary application build: running `PRISMIO_OBJ_CACHE_TRACE=1` against `listy.psm` above prints nothing, because no toolchain object needed compiling. Reproduce with object caching disabled only *after* a default run, and keep both results — the two are answering different questions.
 
 ## Running one fixture instead of the whole suite
 

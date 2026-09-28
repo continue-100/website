@@ -57,12 +57,13 @@ function expecting `char *` would receive a two-word aggregate.
 ## Arrays
 
 An array is an `[N x T]` `alloca`, and the binding holds a `ptr` to element 0 — which is why the
-table above lists arrays as `ptr`. Four backend entry points build and fill that storage, all in
+table above lists arrays as `ptr`. These backend entry points build and fill that storage, all in
 `runtime/llvm-api-backend.c`:
 
 | Entry point | Emitted for | What it builds |
 | --- | --- | --- |
 | `ir_array_alloca` | an array literal | the slot; codegen then stores each element |
+| `ir_array_literal_begin` / `_elem` / `_end` | an array literal of numeric literals past 64 bytes | a private `unnamed_addr constant [N x T]`, the slot, and one `memcpy` from the constant |
 | `ir_array_alloca_zeroed` | `let m: Array<T, N>` with no initializer | the slot, and one store of `[N x T]`'s null constant |
 | `ir_array_copy` | `let b = a` where `typeArrayCopies` holds | a new slot and one `memcpy` of the whole array |
 | `ir_array_copy_into` | `d = c` where `typeArrayCopies` holds | one `memcpy` into `d`'s existing storage |
@@ -70,6 +71,14 @@ table above lists arrays as `ptr`. Four backend entry points build and fill that
 | `ir_array_from_value` | a call to a `-> Array<T, N>` function | an entry-block slot of the caller's, and one store of the returned aggregate |
 | `ir_array_zero_key` | a struct literal, for every array field | one store of `[N x T]`'s null constant into the field |
 | `ir_array_copy_key` | a named array field in a literal, and `s.data = x` | one `memcpy` into the field |
+
+A table written as a literal is the case the constant path is for. Stored element by element, a
+1642-element range table was rebuilt in the frame on every call, and a binary search over it
+measured 2.4x slower than the same ranges decoded from hex digits in a string. Copied from a
+constant, LLVM drops the copy where the frame array is only read and indexes the constant directly:
+4.2x *faster* than the string. The 64-byte threshold is clang's (`shouldSplitConstantStore`).
+The array is still frame storage the program may write — the constant is only where its initial
+contents come from.
 
 **Every array slot is created in the entry block** (`array_slot`), wherever codegen is when it asks,
 exactly as `ir_alloca` does for scalars. Two reasons, both measured before the change:

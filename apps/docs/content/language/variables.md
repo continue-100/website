@@ -44,7 +44,7 @@ let bytes: [U8] = [80, 83, 77]
 let pointer: Ptr? = none
 ```
 
-An annotation without an initializer is accepted by the current compiler and allocates storage, but 0.1 does not implement a complete definite-initialization analysis for later reads. Prefer initializing a binding at its declaration — with [`default`](#default-values) when there is no better value yet. Reading annotation-only storage before assigning it can expose unspecified backend data and should not be used as a language feature. (Two annotation-only forms are defined: `let v: Vec<T>` is an empty Vec, and `let a: Array<T, N>` of numbers is zeroed.)
+An annotation without an initializer is accepted by the current compiler and allocates storage, but 0.1 does not implement a complete definite-initialization analysis for later reads. Prefer initializing a binding at its declaration — with [`default`](#default-values) when there is no better value yet. Reading annotation-only storage before assigning it can expose unspecified backend data and should not be used as a language feature. (Three annotation-only forms are defined: `let v: Vec<T>` is an empty Vec, `let m: Map<K, V>` is an empty Map, and `let a: Array<T, N>` of numbers is zeroed.)
 
 ## Default values
 

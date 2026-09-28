@@ -18,7 +18,6 @@ threads, processes, paths, libraries, and object formats differ.
 <prefix>/
   bin/prismio                     the compiler
   lib/runtime/*.bc                one bitcode module per runtime translation unit
-  lib/backend.a                   compiler-only; LLVM-facing backend
   lib/runtime.hash                the source hash those modules were built from
   stdlib/*.plib                   one compiled artifact per standard-library module
   bin/LLVM-C.dll                  Windows only; elsewhere LLVM is linked into bin/prismio
@@ -35,18 +34,22 @@ only worked on the machine that built it.
 Everything is located relative to the running executable — `find_in_lib_dir` searches
 `<exe>/../lib` then `<exe>/lib`, and `standardModulePath` reads `<exe>/../stdlib` — so a prefix
 relocates as a unit and there is no installation path compiled in. **A lone `bin/prismio` is not a
-compiler**: it can build compiler generations through the bootstrap path, which uses repository
-sources, and cannot build a single ordinary program.
+compiler**: it can build a compiler from a checkout, whose build.ums names every C source it needs,
+and cannot build a single ordinary program.
 
 `lib/` holds what the driver consumes and a user never names. `stdlib/` sits outside it because it
 *is* named — `import std.io` resolves through it — which is the line the split follows. Formats
 are not the criterion: a `.plib` contains bitcode too. See
 [Library artifacts](/runtime/library-artifacts) for both formats.
 
-The application runtime is distinct from the compiler backend. Ordinary programs need language and
-program support; a self-hosted compiler generation additionally links `backend.a` and the pinned
-LLVM, which is why building a compiler (unlike building a program) still needs a checkout with
-`third_party/llvm` set up.
+The application runtime is distinct from the compiler backend, and **the backend is not in the
+package**. It used to be, as `lib/backend.a`, which nothing a user builds could link. A compiler is
+built from its checkout like any other UMS project: the `prismio` target in `build.ums` lists the
+runtime and backend C files as `native` sources, declares `runtime = "none"` because it carries the
+checkout's runtime instead of the installed one, and links the pinned LLVM through
+`third_party/llvm-link.rsp`, which `tools/setup_llvm.py` writes with `third_party/llvm-compile.rsp`.
+That is why building a compiler (unlike building a program) still needs a checkout with
+`third_party/llvm` set up -- and why no compiler you install knows which files make one.
 
 ## The local toolchain
 

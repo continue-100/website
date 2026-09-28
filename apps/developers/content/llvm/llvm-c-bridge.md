@@ -161,9 +161,11 @@ may be silently dropped.
 
 Add the declaration to `bridge.psm`, the prototype to `prismio_llvm.h`, and the implementation
 to `llvm-api-backend.c`. **A new LLVM-C function or enum value also goes in `prismio_llvm.h`.**
-Bootstrap compiles the backend against the real LLVM headers, but `tools/package.py` compiles it
-against that hand-kept subset, so a bridge using `LLVMBuildFRem` or `LLVMRealUNE` that is missing
-there builds a compiler and then fails to package with "call to undeclared function". Accept type keys and value handles rather than exposing LLVM addresses.
+Every compiler build compiles the backend against the real LLVM headers (the manifest defines
+`PRISMIO_LLVM_REAL_HEADERS`), and the hand-kept subset is what a translation unit without them
+sees, so keep it complete: a bridge using `LLVMBuildFRem` or `LLVMRealUNE` that is missing there
+fails with "call to undeclared function" the first time anything compiles the backend without the
+real headers. Accept type keys and value handles rather than exposing LLVM addresses.
 Check for a terminated block, use `type_from_key` and `resolve_value`, intern any produced
 value, attach applicable debug/TBAA metadata, and test the operation in
 `runtime/test_llvm_backend.c` plus a source-level regression. A bridge function is complete only

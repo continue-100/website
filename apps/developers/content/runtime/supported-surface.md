@@ -157,7 +157,7 @@ leaks or violations.
 | `std.platform` | The target's operating system, architecture, and ABI environment, answered at compile time |
 | `std.map` | `Map<K, V>`: `get`, `set`, `has`, `remove`, `clear`, `m[k]`, `length`, `values()`, `keyAt` / `valueAt` |
 | `std.option` | `Option<T>`, `Result<T, E>`, and their `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `okOr` family |
-| `std.vec` | `Vec<T>`'s library methods (`get`, `contains`, `indexOf`, `pop`, `removeAt`, `extend`, `reverse`, `clone`, `sort`, `sortBy`, `filter`, `binarySearch`), **the Vec literal** `[a, b, c]`, and `Vec<T>.withCapacity(n)` |
+| `std.vec` | `Vec<T>`'s library methods (`get`, `contains`, `indexOf`, `pop`, `removeAt`, `extend`, `reverse`, `clone`, `sort`, `sortBy`, `filter`, `binarySearch`), **the Vec literal** `[a, b, c]`, `Vec<T>.withCapacity(n)`, and `Vec<T>.filled(n, x)` (a scalar `T` needs no import; any other goes through `vecFilled`) |
 | `std.math` | Float `sqrt`, rounding, `pow`, logarithms, trigonometry, IEEE constants; integer `pow`, `gcd`, `floorMod`, `isqrt`; each numeric type's `MAX` / `MIN`, lowered through the `__builtin_f64_*` family |
 | `std.term` | Terminal colour and text styles as `String` methods, and `colorEnabled()` |
 | `std.key`, `std.ord`, `std.copy`, `std.eq`, `std.display`, `std.iter`, `std.default` | The `Key`, `Ord`, `Copy`, `Eq`, `Display`, `Iterator`, and `Default` bounds, including `==` on a struct and `for … in` over a user type |
@@ -217,16 +217,16 @@ in this order:
 
 | # | Looked for | Why |
 | ---: | --- | --- |
-| 1 | `<entry-dir>/std/<name>.psm` | A compiler checkout compiles against **its own** `std/` |
-| 2 | `std/<name>.psm` in each enclosing directory, nearest first | The same, for an entry below the root such as `src/main.psm` |
+| 1 | `<entry-dir>/std/<name>.psm`, when `<entry-dir>` is a Prismio checkout | A compiler checkout compiles against **its own** `std/` |
+| 2 | `std/<name>.psm` in each enclosing Prismio checkout, nearest first | The same, for an entry below the root such as `src/main.psm` |
 | 3 | `<toolchain>/stdlib/<name>.plib` | An installed toolchain's compiled module artifacts |
 | 4 | `<toolchain>/std/<name>.psm` | A build tree, where `build/gen2` sits beside `std/` |
 
-**Rules 1 and 2 mean a `std/` directory beside or above an entry file shadows the
-shipped library.** That is deliberate and load-bearing, because it makes the
-compiler's bootstrap use the tree being built rather than whatever is installed.
-It is also a real hazard for an application that happens to have a directory of
-that name.
+**Rules 1 and 2 apply only in a Prismio checkout** -- a directory holding
+`runtime/lang_runtime.c` beside its `std/`. That is load-bearing, because it makes
+the compiler's own build use the tree being built rather than whatever is
+installed. It used to be any directory: an application with a `std/io.psm` of its
+own got that one file from itself and every other module from the install.
 
 The same rules mean **a program inside a checkout never reads a `.plib`**, so a
 defect only the installed path has is invisible to anything built there. Test it

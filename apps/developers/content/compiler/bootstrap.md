@@ -34,7 +34,8 @@ PowerShell provides the corresponding Windows workflow. Each generation compiles
 The scripts also coordinate the pinned LLVM line and platform-specific executable naming/link requirements. Use them instead of manually reproducing their link command when validating self-hosting.
 
 `tools/bootstrap.sh` and `tools/bootstrap.ps1` are maintained counterparts. In seed mode they lower
-`bootstrap/prismio-seed.ll`; in compiler mode they invoke the named compiler's `bootstrap` command.
+`bootstrap/prismio-seed.ll`; in compiler mode they ask the named compiler to `build src/main.psm` to
+LLVM IR and link that themselves.
 Both compile the current C sources with real LLVM headers, use content-derived cache keys, link to a
 staging path, and atomically install the result. `PRISMIO_LLVM_DIR` overrides the toolchain recorded
 by `tools/setup_llvm.py`; `PRISMIO_OBJ_CACHE=0` provides a cache-bypass diagnostic path.

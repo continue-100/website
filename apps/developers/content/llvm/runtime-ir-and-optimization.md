@@ -3,7 +3,7 @@ title: Runtime IR and optimization
 description: Runtime-module curation, module linking, LLVM verification, optimization levels, alias metadata, object emission, and ORC JIT execution.
 status: experimental
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-28"
 tags: [llvm, runtime-ir, optimization]
 related: [llvm/llvm-c-bridge, compiler/loop-guards, performance/investigation-method]
 ---
@@ -109,11 +109,72 @@ parse error leaks compiler-process memory.
 
 ## Object and native output
 
-Target selection creates `LLVMTargetMachineRef` from the chosen triple. The object path sets the
-module triple/layout, runs verification and optimization, and emits a target object with
-`LLVMTargetMachineEmitToFile`. Runtime and standard-library bitcode has already been merged into
-that module, so the platform linker is invoked with the single program object plus UMS native link
-inputs.
+Target selection creates `LLVMTargetMachineRef` from the chosen triple. The object path
+(`ir_emit_object` in `runtime/llvm-api-backend.c`) sets the module triple/layout, runs verification
+and optimization, and emits target objects with `LLVMTargetMachineEmitToFile`. Runtime and
+standard-library bitcode has already been merged into that module, so the platform linker is
+invoked with the program's objects plus UMS native link inputs.
+
+### Internalization
+
+A *closed* executable -- no `native {}` sources, no linked objects or response files, no
+`exportDynamic` (`program_is_closed` in `build_driver.c`) -- has `main` as its only root, so
+every other definition is made internal before the pipeline runs (`internalize_executable`), and
+the pipeline starts with `globaldce`. This is the internalize step of an LTO link. Unused standard
+library functions and the tables they reach are never optimized, code-generated or linked; the
+benchmark suite went from 559 KB to 241 KB, and its optimization stage from 1.89 s to 1.06 s.
+
+Internal linkage changes inlining. LLVM inlines an internal function's **only** call whatever its
+size, which gave real wins (a string search specialised on its constant needle ran 0.55x) and
+one systematic cost: a slow path split out on purpose so its fast half can inline into a caller's
+loop is folded straight back. Size used to keep such halves apart. They must now say so --
+`cold fn` in Prismio ([cold functions](https://docs.prismio.org/language/functions#cold-functions))
+and `PRISMIO_NOINLINE` in the runtime. A new fast/slow split needs the same marker, or its fast
+half will quietly stop inlining.
+
+### Parallel machine code
+
+After the whole program is optimized **as one module**, it is split into up to eight partitions
+(heaviest function first onto the lightest partition, about 5,000 instructions each at least) and
+each is lowered on its own thread, in its own `LLVMContext`, from one shared bitcode image. This is
+LLVM's own LTO split, and the order is the point: every inlining and IPO decision has already been
+made on the whole program, so unlike rustc's codegen units nothing is given up for the
+parallelism. A local referenced across a partition boundary becomes a hidden global of the same
+name; constants are copied into each partition that reads them. Machine code for the compiler
+itself went from 2.1 s to 0.66 s. A `-g` build, or a module with aliases, ifuncs or inline
+assembly, is emitted whole.
+
+`delete_function_body` turns a body another partition owns into a declaration. It must erase
+every instruction before deleting any block: a branch in a later block still names an earlier
+block, and release LLVM does not assert on deleting a block that is still used. With one thread
+the freed memory was rarely reused in time; with eight it corrupted other partitions' IR.
+
+### Switches
+
+| Variable | Effect |
+| --- | --- |
+| `PRISMIO_BUILD_TRACE=1` | Stage timings, including `parse merged IR`, `IR pipeline`, `machine code` and the partition count |
+| `PRISMIO_CODEGEN_THREADS=n` | Exactly `n` partitions regardless of size; `1` emits the module whole |
+| `PRISMIO_CODEGEN_VERIFY=1` | Verify each partition's module before lowering it |
+| `PRISMIO_SAVE_IR=<file>` | Write the merged module the pipeline is about to run on, for timing `opt`/`llc` offline |
+
+On Mach-O the link passes `-dead_strip`, so unreferenced functions in native objects go too;
+exported symbols (`exportDynamic`) are roots and survive.
+
+### The merged module stays in memory
+
+`merge_libraries_into_program` still names a `libraries-<pid>.ll`, but a build no longer writes it:
+`ir_hold_merged_module` keeps the linked module and its context, and `ir_emit_object` adopts them
+when asked for that path. Printing and re-parsing it cost 70 ms of the benchmark suite's build
+(16 MB of text for the compiler). `run --jit` and `PRISMIO_CODEGEN=clang` still get the file.
+
+### What `exportDynamic` exports
+
+On macOS and Linux it is the target's native objects' defined symbols, read with the toolchain's
+`llvm-nm` and passed as `-exported_symbols_list` or `--dynamic-list` (`unix_export_flags`) -- what
+Windows has always done. It used to be `-rdynamic`, which for the compiler exported ~44,000 LLVM
+C++ symbols and made every one a `-dead_strip` root: the binary went from 135.8 MB to 125.2 MB. If
+nm cannot run, the link falls back to `-rdynamic`.
 
 An `.ll` output intentionally stops before native object/link stages. It is the best debugging
 boundary for checking type shapes, call attributes, ownership helpers, vtables, blocks, and

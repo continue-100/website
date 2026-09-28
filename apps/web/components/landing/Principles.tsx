@@ -16,13 +16,13 @@ const LANGUAGE_FEATURES = [
     },
     {
         title: 'Layout control for real hot loops',
-        copy: 'Flat values can live inline inside List<T>. Slice<T> provides bounded views, while soa and aos perform explicit structure-of-arrays conversion through checked DataView<T> access.',
+        copy: 'Flat values can live inline inside Vec<T>. Slice<T> provides bounded views, while soa and aos perform explicit structure-of-arrays conversion through checked DataView<T> access.',
         detail: 'The compiler specializes the element type before choosing its container representation.',
         icon: Rows3,
     },
     {
         title: 'A small, explicit standard surface',
-        copy: 'Strings, lists, maps, options, results, iterators, files, processes, ordering, equality, and display live in ordinary std.* modules. There is no implicit prelude pulling unused facilities into a program.',
+        copy: 'Strings, vectors, maps, options, results, iterators, files, processes, ordering, equality, and display live in ordinary std.* modules. There is no implicit prelude pulling unused facilities into a program.',
         detail: 'Import only the behavior the program intends to carry.',
         icon: Boxes,
     },

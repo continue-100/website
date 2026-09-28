@@ -3,7 +3,7 @@ title: Functions and calls
 description: Declaration staging, symbol selection, parameter attributes, direct and indirect calls, task thunks, vtables, and temporary ownership.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-27"
 tags: [llvm, functions, calls]
 related: [llvm/types-and-abi, compiler/traits-impls-and-dispatch, runtime/tasks-and-channels, compiler/closures-and-captures]
 ---
@@ -185,7 +185,11 @@ between the two states; only whether codegen trusted the declared contract.
 3. Add parameters through `ir_function_param` or `ir_function_param_unique`.
 4. Call `ir_function_body_start` to create the `LLVMValueRef` and entry block.
 5. Allocate one entry-block slot per source parameter and store the incoming `%p_name` value.
-6. Register variable type/debug information and cache string data pointers.
+6. Register variable type/debug information and, in a function that contains a loop, cache each
+   `String` parameter's data pointer. A loop-free function does not: the cache is three stores to
+   a scratch slot, and inlined into a caller's byte loop -- `strByteAt` is one line -- they landed
+   inside that loop between lifetime markers LICM will not hoist past, and the loop stayed
+   scalar. Summing `s.byteAt(i)` over 1 MB fifty times went from 18.8 ms to 0.58 ms without it.
 7. Emit the body through `generateBlock`.
 8. If control can still reach the closing brace, emit `ret void` for a `void` function, or
    `ret <type> 0` otherwise. In practice the non-`void` branch is a defensive fallback: semantic

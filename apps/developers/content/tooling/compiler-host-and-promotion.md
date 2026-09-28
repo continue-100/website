@@ -3,7 +3,7 @@ title: Project compiler host and promotion
 description: How an installed Prismio compiler delegates to a repository-local host, checks its generation, repairs a stale one, and atomically promotes successful self-builds.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-28"
 tags: [ums, self-hosting, compiler]
 related: [start/local-compiler-loop, compiler/bootstrap, testing/fixed-point-verification]
 ---
@@ -38,6 +38,29 @@ A manifest with no `toolchain` block has made no such choice and is told nothing
 and stderr retain their command contracts, and `cliWantsMachineOutput` suppresses the banner
 entirely when the command emits JSON diagnostics or an AIF manifest — the stream was never the
 question, since stdout would corrupt `aif --manifest` and stderr would corrupt JSON Lines.
+
+## Trust
+
+**The launcher runs only a host this machine promoted.** `toolchain.host` names a file the launcher
+executes on every command -- the probes below run it too -- and the IntelliJ plugin sends `check`
+when a file is opened, so a host that came with a cloned repository would run on opening it. The
+handshake is no defence: any program that exits 0 passes it.
+
+Every promotion (`promoteUmsCompilerCandidate`) writes `<host>.trusted` with the file's identity:
+device, inode, size and modification time to the nanosecond (volume serial, file index, size and
+last-write time on Windows) -- `host_identity` in `runtime/build_driver.c`. The launcher compares it
+before anything starts the host (`compiler_host_stamp_matches`). A clone cannot carry a matching
+stamp, because the inode and mtime are assigned when the checkout writes the file, and a host edited
+or replaced after promotion stops matching. On a mismatch the launcher warns `P1077` and serves the
+command itself; `prismio build` builds and promotes a host, which records it.
+
+Identity rather than a content hash, because hashing a 130 MB compiler would cost about a second on
+every command. `toolchain.host` must also be a path under `.prismio/` with no `..` (`UMS2405`,
+applied by the prefix reader too).
+
+A developer who wants a particular generation as the host runs it from the checkout under a name
+other than `prismio` -- `build/gen2 build` -- which builds the host target with that generation and
+promotes it. Copying a binary over the host no longer works: the copy is untrusted.
 
 ## Generation handshake
 
@@ -101,20 +124,27 @@ the entire newest UMS grammar before deciding which compiler should parse that g
 
 `dispatchToUmsHost` checks:
 
-1. whether the current invocation is already hosted with `compiler_is_hosted`;
+1. whether the current invocation is already hosted with `compiler_is_hosted`, which reads
+   `PRISMIO_INTERNAL_HOSTED` once and then removes it from the environment, so no program the
+   hosted compiler starts inherits it;
 2. whether a project host is configured and exists;
 3. whether it is the current executable via `compiler_is_current_executable`;
-4. whether it starts, via `compiler_check_executable`; and
-5. whether it is the current generation, via `compiler_check_host_abi`.
+4. whether this machine promoted it, via `compiler_host_stamp_matches`;
+5. whether it starts, via `compiler_check_executable`; and
+6. whether it is the current generation, via `compiler_check_host_abi`.
 
-`compiler_forward_cli(host)` sets a hosted-environment guard, forwards the original argument
-vector without re-tokenizing it, waits for the child, and restores the caller's environment.
-`compiler_hosted_env_begin` and `compiler_hosted_env_end` make that state scoped even on failure.
+`compiler_forward_cli(host)` sets a hosted-environment guard, starts the host with the original
+argument vector through the same argv spawn every driver-started program uses (`compiler_spawn_wait`
+-- posix_spawn, or CreateProcess with CommandLineToArgvW quoting; `_spawnv` used to split a
+forwarded argument containing a space on Windows), waits, restores the caller's environment, and
+returns the host's own exit status.
 
 ## Building and promoting a host
 
 `buildUmsHostTarget` recognizes the manifest target designated as the compiler host and builds it
-through the bootstrap path. The candidate is not made active immediately.
+like any other target -- its `native` sources, `runtime = "none"`, its link response file -- into a
+`.next` candidate, with `compiler_set_toolchain_root` pointing source lookups at the project's own
+checkout. The candidate is not made active immediately.
 
 The host build also produces the **rest of the toolchain** beside it — `lib/runtime/*.bc` and
 `stdlib/*.plib` under the profile directory's parent — because a compiler alone in a build
@@ -134,7 +164,7 @@ Host identity is path/executable identity, not merely matching `--version` text.
 claim the same version while containing different runtime sources or compiler behavior — which is
 precisely why the generation handshake exists alongside the start probe.
 
-Tests should cover the handshake in both directions and against a compiler that predates it, stale-host auto-repair, the `clean` exemption, recursion prevention, forwarded spaces and Unicode arguments, child exit-status
+Tests should cover an untrusted host never being started, the handshake in both directions and against a compiler that predates it, stale-host auto-repair, the `clean` exemption, recursion prevention, forwarded spaces and Unicode arguments, child exit-status
 propagation, stale/missing hosts, a candidate that does not run, an interrupted promotion, Windows
 running-file rules, recovery with the previous host, and a successful build whose next command is
 served by the promoted compiler.

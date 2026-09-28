@@ -61,7 +61,7 @@ There is no source fallback and no opt-out. A missing module is an installation 
 
 Because whole-program bitcode would otherwise make every executable export the entire runtime surface, imported definitions with no remaining IR users are pruned after the merge, repeatedly — deleting one wrapper can make its callees dead.
 
-The bootstrap command is the exception: it rebuilds compiler backend and runtime C sources from the repository, because a compiler generation needs more than the application runtime and must pick up C changes made after its host was built.
+The compiler itself is the exception, and only because its own manifest says so: its `build.ums` target declares `runtime = "none"` and lists the runtime and backend C sources as `native` sources, so a compiler generation picks up C changes made after its host was built. Any project can declare the same.
 
 Setting `PRISMIO_BUILD_TRACE=1` prints one wall-clock line per build stage — the library bitcode merge, program optimization, and the link — which is the supported way to attribute a compile-time question to a stage.
 

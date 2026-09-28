@@ -1,9 +1,9 @@
 ---
 title: Compiler command-line reference
-description: Complete Prismio 0.1 build, run, bootstrap, AST, AIF, target, optimization, and verification command reference.
+description: Complete Prismio 0.1 build, run, AST, AIF, target, optimization, and verification command reference.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-28"
 tags: [compiler, cli, flags, commands]
 related: [start/build-and-run, compiler/aif, compiler/targets]
 ---
@@ -12,9 +12,8 @@ related: [start/build-and-run, compiler/aif, compiler/targets]
 
 ```text
 prismio build <source.psm> [-o output] [options]
-prismio run <source.psm> [options]
+prismio run <source.psm> [options] [-- program-args...]
 prismio check <source.psm> [--diagnostic-format=json] [--overlay <file.psm> <text>] [--module <name>]
-prismio bootstrap [source.psm] [-o output]
 prismio dump-ast <source.psm>
 prismio aif <source.psm> [aif-options]
 prismio runtime-hash
@@ -27,13 +26,19 @@ The same commands with **no source named** act on the project the nearest ancest
 
 ```text
 prismio init [name]
-prismio build|run|test|clean [--release]
+prismio build [--release] [target...]
+prismio run [--release] [target] [-- program-args...]
+prismio test [--release] [test...]
+prismio clean [--release]
 prismio <declared-command> [args...]
 ```
 
+A word that does not end in `.psm` is a target's name, so `prismio build server`
+builds the target `server` rather than looking for a file of that name.
+
 Built-in commands take precedence, so a manifest cannot redefine one. See [the package manager](/package-manager) for the manifest and for declaring commands.
 
-`--help` prints the command summary. `--version` reports the Prismio compiler and linked/pinned LLVM version information used to identify documentation compatibility, plus the compiler and standard-library directories it resolved — the quickest way to confirm which toolchain is in use.
+`--help` prints the command summary and, inside a project, the commands its manifest declares; `--help-all` adds the compiler-development commands and flags. An argument error names the problem and points at `--help` rather than printing the whole page. `--version` reports the Prismio compiler and linked/pinned LLVM version information used to identify documentation compatibility, plus the compiler and standard-library directories it resolved — the quickest way to confirm which toolchain is in use.
 
 ### Which toolchain ran the command
 
@@ -44,7 +49,7 @@ Using local toolchain: /repo/.prismio/build/debug/prismio
 Using global toolchain: /opt/homebrew/opt/prismio/bin/prismio
 ```
 
-You see `global` when the declared host is missing, will not start, or is from an older toolchain generation than the compiler you invoked — in that last case the launcher rebuilds the host first and says so (`P1064`). A project with no `toolchain` block has made no such choice and prints neither line.
+You see `global` when the declared host is missing, was not built on this machine, will not start, or is from an older toolchain generation than the compiler you invoked. A host this machine did not build — one that came with a cloned repository — is never run, for any command (`P1077`); `prismio build` builds one. An older-generation host is rebuilt first, and the launcher says so (`P1064`). A project with no `toolchain` block has made no such choice and prints neither line.
 
 The banner is suppressed whenever the command's stdout is a format, so `--diagnostic-format=json` and `aif --manifest` stay parseable.
 
@@ -64,15 +69,13 @@ If `-o` is omitted, the driver chooses its current default output. Automation sh
 prismio run components/main.psm
 ```
 
-`run` performs a build and launches the resulting program after successful compilation. Compiler or linker failure exits nonzero and does not execute a stale artifact as though it were the requested program.
-
-## `bootstrap`
+`run` performs a build and launches the resulting program after successful compilation. Everything after `--` is passed to the program exactly as typed, and `run` exits with the program's own exit status. Compiler or linker failure exits nonzero and does not execute a stale artifact as though it were the requested program.
 
 ```bash
-prismio bootstrap components/main.psm -o build/prismio-next
+prismio run components/main.psm -- --port 8080
 ```
 
-`bootstrap` is the compiler-development path. It builds the compiler with repository backend/runtime sources rather than linking only the installed application runtime. Prefer repository bootstrap scripts for multi-generation and platform-specific orchestration.
+There is no `bootstrap` command. The Prismio compiler is built from its repository's `build.ums`, which names its C sources like any other project's, and `tools/bootstrap.sh` (`tools/bootstrap.ps1` on Windows) builds one from the committed seed on a machine with no Prismio at all.
 
 ## Inspection commands
 
@@ -88,6 +91,8 @@ prismio bootstrap components/main.psm -o build/prismio-next
 | --- | --- |
 | `-o <path>` | Select output path; `.ll` emits LLVM IR only |
 | `-O0` … `-O3` | Select requested optimization level |
+| `-g` | Emit debug info; the program object is built at `-O0` |
+| `--overflow-checks` | Trap on signed and unsigned integer overflow in your code |
 | `--verify` | Instrument and check allocation/free behavior |
 | `--debug` | Use conservative analysis and extra debugging behavior |
 | `--target wasm32` | Emit a WebAssembly-targeted module (experimental) |
@@ -114,7 +119,7 @@ Unknown commands and malformed flags exit nonzero. The default AIF report is an 
 
 ## Exit behavior
 
-Successful inspection/build operations exit zero. Invalid arguments, missing input, compilation failure, IR verification failure, object/link failure, or a failed run step produce a nonzero result.
+Successful inspection/build operations exit zero. Invalid arguments, missing input, compilation failure, IR verification failure, or object/link failure produce a nonzero result. `run` and a project command exit with the status of the program or step that ran, so a program that returns 3 makes `prismio run` exit 3.
 
 Do not parse color, whitespace, or prose from interactive commands as a stable API. For AIF records use `--manifest`; for other commands assert the exit status and expected artifact, and for negative compiler tests match only the diagnostic fragment needed to identify the rule.
 

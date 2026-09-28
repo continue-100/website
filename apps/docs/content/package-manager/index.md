@@ -3,7 +3,7 @@ title: Package manager
 description: The UMS manifest, project commands, path dependencies and the lockfile in Prismio 0.1, and what a registry would still add.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-03"
+lastUpdated: "2026-09-28"
 tags: [package-manager, registry, dependencies, manifest, lockfile]
 related: [language/modules, guides/modules, roadmap]
 ---
@@ -18,15 +18,46 @@ and writes to `.prismio/build/<profile>/`.
 | Command | Does |
 |---|---|
 | `prismio init [name]` | scaffold a project here, or in a new directory |
-| `prismio build [--release]` | build every executable or compiler target |
-| `prismio run [--release]` | build, then run the executable target |
-| `prismio test [--release]` | build and run every `test(...)` target |
+| `prismio build [--release] [target...]` | build every target except tests, or the ones named |
+| `prismio run [--release] [target] [-- args...]` | build, then run the executable target |
+| `prismio test [--release] [test...]` | build and run the `test(...)` targets, or the ones named |
 | `prismio clean [--release]` | remove this profile's build output |
 | `prismio <name> [args...]` | run a command the manifest declares |
 
 A project command is the same command with **no source named**. `prismio build`
 builds the project; `prismio build src/main.psm` builds that one file and needs no
-manifest at all.
+manifest at all. A word that does not end in `.psm` names a target, so
+`prismio build server` builds the target called `server`.
+
+Everything after `--` belongs to the program `run` starts, exactly as typed, and
+`run` exits with the program's own status:
+
+```bash
+prismio run -- --port 8080 "a file.txt"
+```
+
+## Profiles
+
+A build uses the `debug` profile unless `--release` is given, and each writes
+to its own directory under `.prismio/build/`.
+
+| Profile | Debug info (`-g`) | Overflow checks | Optimised |
+|---|---|---|---|
+| `debug` | yes | yes | no: `-g` builds the program at `-O0` |
+| `release` | no | no | yes |
+
+A `profiles` block changes either setting for its profile:
+
+```ums
+profiles {
+    debug {
+        overflowChecks = false
+    }
+}
+```
+
+Overflow checks apply to your code, not to the standard library, which is
+written against wrapping arithmetic and is built the same way in every profile.
 
 ```bash
 prismio init hello
@@ -73,8 +104,13 @@ running 1 test(s)
 ```
 
 `prismio test` exits non-zero when any test fails, so it works as a CI step.
-`prismio build` does **not** build test targets — the ordinary build is the one
-run constantly, and paying for the test programs every time buys nothing.
+Every test is built and run even after one fails, and a test that does not
+compile is reported as a failed test rather than ending the run.
+`prismio test parser` runs only the tests named. Each test runs with the
+project root as its working directory, so a fixture path in a test is relative
+to `build.ums`. `prismio build` does **not** build test targets — the ordinary
+build is the one run constantly, and paying for the test programs every time buys
+nothing.
 
 ## The manifest
 
@@ -110,30 +146,81 @@ That is single-file mode, not an implicit project. A directory becomes a
 Prismio project by having `build.ums`, just as a Cargo project is identified by
 its manifest.
 
-The Prismio compiler repository uses the additional self-hosting target:
+## C code and native libraries
+
+A target can compile C sources of its own and link them into the executable.
+The `native` block names them and the flags they compile with; the `link` block
+names what the executable links.
 
 ```ums
-toolchain {
-    host = ".prismio/build/debug/prismio"
-}
-
 targets {
-    executable("prismio") {
+    executable("app") {
         entry = "src/main.psm"
+        native {
+            source("c/codec.c", "c/util.c")
+            include("c/include")
+            define("CODEC_FAST=1")
+            flag("-Wall")
+        }
         link {
-            component("prismio.backend")
+            library("z")
+            search("vendor/lib")
+            file("vendor/lib/libextra.a")
         }
     }
 }
 ```
 
-Artifact shape and native linkage are separate axes: this is still an
-`executable`, and `component("prismio.backend")` is what adds the compiler
-backend and the LLVM C API it calls. The optional first `toolchain` block makes
-global Prismio forward commands to that local compiler once it exists, and the
-target whose output path equals `toolchain.host` is the one allowed to replace
-the running compiler. An ordinary application declares no component and links
-only the Prismio runtime.
+Each source is compiled with the toolchain's clang at `-O2` (`-g` too, in a
+profile with debug info) and cached by content: an unchanged source, with its
+headers and flags unchanged, is not compiled again. Only C sources are accepted.
+A Prismio function calls the C one through an `extern fn` declaration.
+
+| Declaration | Meaning |
+|---|---|
+| `source("a.c", ...)` | C files to compile and link, in order |
+| `include("dir")` | a header directory (`-I`) |
+| `define("NAME=1")` | a preprocessor definition (`-D`) |
+| `flag("-Wall")` | any other compiler flag |
+| `responseFile("flags.rsp")` | compiler flags from a file, one per line |
+| `link { library("z") }` | a system library (`-lz`) |
+| `link { search("dir") }` | a library directory (`-L`) |
+| `link { file("x.a") }` | an exact object or library file |
+| `link { framework("Security") }` | a framework (macOS only) |
+| `link { responseFile("link.rsp") }` | linker arguments from a file |
+
+A response file is how a manifest uses flags another tool computed, such as
+`pkg-config` output, without writing one machine's paths into `build.ums`.
+
+Two target properties go with native code. `runtime = "none"` leaves out the
+Prismio runtime the toolchain installs, for a program whose C provides every
+runtime function itself. `exportDynamic = true` makes the executable's own
+symbols visible to code it loads while running.
+
+The Prismio compiler is built exactly this way. Its repository's `build.ums`
+lists the compiler's C runtime and backend as `native` sources, declares
+`runtime = "none"` because it carries the runtime from its own checkout, and
+links LLVM through response files. Nothing about the compiler is built into the
+toolchain you install.
+
+### A project's own compiler
+
+A first `toolchain` block names a compiler the project builds for itself, which
+is how the Prismio repository works on its own compiler:
+
+```ums
+toolchain {
+    host = ".prismio/build/debug/prismio"
+}
+```
+
+Once that compiler exists, the installed `prismio` forwards every command in the
+project to it. It forwards only to a compiler **this machine built**: building
+it records the file's identity beside it, and a file that does not match — one a
+cloned repository brought with it, or one changed since — is never run, not even
+for `prismio --version` or an editor's `check`. The global compiler serves the
+project instead, with warning `P1077`, until `prismio build` builds the
+project's compiler. The path must be under `.prismio/`.
 
 ## Project commands
 
@@ -163,29 +250,35 @@ subject:
 |---|---|
 | a declared target | it is built, then executed |
 | a `.py` file | run under this host's Python |
-| a `.psm` file | compiled into the profile's build directory, then executed |
+| a `.psm` file | compiled into the profile's `tools/` directory, then executed |
 
 Anything else is a manifest error rather than a guess, because the toolchain has
 to know how to start what it is given. A `.psm` tool is not a declared target and
 does not become one: a target is something the project builds every time, a tool
 is something it runs when asked.
 
-**`shell("program", "arg", ...)`** is the escape hatch, and its portability is
-yours. A program written with a path separator resolves against the project root;
-a bare name is left to `PATH`. A `.sh` step is a broken step on Windows, where the
-line is handed to `cmd /S /C` — which is why `run` exists and why the Prismio
-repository's own tools are Python.
+**`shell("program", "arg", ...)`** starts any other program, and its portability
+is yours. A program written with a path separator resolves against the project
+root; a bare name is looked up on `PATH`. Despite the name, no shell is involved,
+so a shell builtin or a script needs its shell named: `shell("sh", "-c", "...")`,
+or `shell("cmd", "/c", "...")` on Windows. That is why `run` exists and why the
+Prismio repository's own tools are Python.
 
-Every argument of every step is quoted for the platform's shell, so an argument
-containing spaces or metacharacters stays one argument. The bare word `args`
-splices in whatever the user typed after the command name, keeping its position
-among the fixed arguments; it is the only identifier a step argument accepts.
+**No step goes through a shell.** Every argument is passed to the program exactly
+as written: `$(...)`, backticks, quotes and backslashes are text, never syntax.
+Every step starts in the project root, whichever directory you ran the command
+from, because the paths in `build.ums` are written relative to it. If a step
+fails, the command stops and exits with that step's exit status. The bare word
+`args` splices in whatever the user typed after the command name, keeping its
+position among the fixed arguments; it is the only identifier a step argument
+accepts.
 
 Built-in commands win. A manifest that names one of `init`, `build`, `run`,
-`test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast` or `runtime-hash` is
-rejected when it loads, so a project cannot quietly redefine what
-`prismio build` means, and a future release adding a verb fails loudly rather
-than silently taking one over.
+`test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast` or `runtime-hash`, or a
+name ending in `.psm`, is rejected when it loads, so a project cannot quietly
+redefine what `prismio build` means, and a future release adding a verb fails
+loudly rather than silently taking one over. A command name starts with a letter
+or a digit.
 
 A `build` step may not name the `toolchain.host` target: the rebuilt compiler is
 promoted by the global parent only after the process exits, so later steps in the
@@ -210,22 +303,22 @@ A dependency with no path reports `UMS2211` and names the third-argument form as
 
 ## The lockfile
 
-Resolution writes `.prismio/prismio.lock` before it reports any failure, so the file describes the attempt rather than only the successes.
+Resolution writes `prismio.lock` beside `build.ums` before it reports any failure, so the file describes the attempt rather than only the successes. A project that declares no dependency gets no lockfile.
 
 ```text
 # prismio lockfile v1
-# generated from /path/to/build.ums
+# generated from build.ums; paths are relative to it
 # scope	name	constraint	source	resolved
-implementation	json	1.2.0	path	/path/to/json
+implementation	json	1.2.0	path	../json
 implementation	http	2.0.0	registry	-
 ```
 
-One row per declared dependency, in manifest order, tab-separated. An unresolved dependency is written with `-` rather than omitted, so the row count matches the manifest and a failed fetch is visible in a diff instead of absent from one. Check it in: it exists to be reviewed.
+One row per declared dependency, in manifest order, tab-separated. Paths are written relative to the manifest with `/` separators, so the file reads the same on every machine. An unresolved dependency is written with `-` rather than omitted, so the row count matches the manifest and a failed fetch is visible in a diff instead of absent from one. Check it in: it exists to be reviewed.
 
 ## Not implemented
 
 There is no registry, so no package identity beyond a name, no version *solving* (a constraint is recorded, not satisfied), no integrity verification, no binary dependencies, no offline cache, and no workspace with multiple projects.
 
-A resolved path dependency is recorded but is **not yet added to the import search**, so importing modules from one is still done by vendoring the source beneath your entry module and using dotted imports. Wiring resolution into module resolution is the next step, not part of 0.1.
+A resolved path dependency is recorded but is **not yet added to the import search**, and a build that declares one says so (`P1081`). Importing modules from one is still done by vendoring the source beneath your entry module and using dotted imports. Wiring resolution into module resolution is the next step, not part of 0.1.
 
 Do not use a third-party manifest format as though it were part of Prismio.

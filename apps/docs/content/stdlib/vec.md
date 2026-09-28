@@ -37,10 +37,32 @@ The type was called `List<T>` before 0.1's collections work. That spelling is no
 | Form | Gives |
 |---|---|
 | `let v: Vec<Int>` | an empty Vec — the same as `let v: Vec<Int> = []` |
+| `Vec<Int>()`, `Vec<Int>.new()` | an empty Vec, where no annotation says what it holds: `let mut names = Vec<String>()` |
 | `let v: Vec<Int> = [1, 2, 3]` | a Vec holding those elements, up to twelve of them |
 | `Vec<Int>.withCapacity(n)` | an empty Vec with room for `n` elements before it reallocates; like `[]`, it needs no import |
+| `Vec<Int>.filled(n, value)` | a Vec of `n` elements, each a copy of `value` — C++'s `std::vector<int>(n, value)`, Rust's `vec![value; n]` |
 
 The element type comes from what the literal is assigned to — an annotation, a struct field, a parameter. `[1, 2]` written as a `Vec<I64>` holds `I64`s.
+
+`filled` is how a table, a distance array or a set of flags starts out, and it replaces the `withCapacity`-and-push loop:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.display
+
+fn main() -> Int {
+    let n = 5
+    let mut dist = Vec<Int>.filled(n, -1)   // "not reached yet"
+    let seen = Vec<Bool>.filled(n, false)
+    let row = Vec<U8>.filled(3, 255)        // the value is typed as the element
+    dist[0] = 0
+    println("${dist[0]} ${dist[4]} ${seen[2]} ${row[1]} ${dist.length}")
+    return 0
+}
+```
+
+This prints `0 -1 false 255 5`. For a scalar element — every integer width, `Float`, `Bool`, `Char` — the whole Vec is one allocation filled in one pass, and needs no import. Any other element (a `String`, a struct) must implement `Copy` and needs `import std.vec`, because each element is its own copy of `value`: changing one changes no other. A count of zero gives an empty Vec; a negative count stops the program with a runtime error, since no Vec has that length.
 
 A literal needs its elements to implement `Copy` (every scalar, `String`, and any struct that writes the impl), because each element is duplicated into the new Vec. Past twelve elements, push them.
 

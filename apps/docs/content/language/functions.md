@@ -3,8 +3,8 @@ title: Functions and parameters
 description: Declare Prismio 0.1 functions, return values, overloads, and borrow, sink, or inout parameters.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
-tags: [functions, parameters, returns, overloads]
+lastUpdated: "2026-09-28"
+tags: [functions, parameters, returns, overloads, cold, inlining]
 related: [language/ownership-and-borrowing, language/ffi, errors/wrong-arity]
 ---
 
@@ -200,6 +200,62 @@ fn main() -> Int {
 ```
 
 Write `measure(value as Int)` to select the `Int` overload deliberately.
+
+## Cold functions
+
+Some code runs rarely: an error report, a table that has to grow, the first
+insertion of a key. Keeping it in its own function is only half the job. When a
+function has a single caller, the optimiser folds it back into that caller
+whatever its size -- and the caller, now large, stops being inlined into the loop
+that calls *it*. The fast path pays for the slow one.
+
+Mark such a function `cold`:
+
+```prismio
+import std.io
+
+cold fn reportOverflow(value: Int) -> Int {
+    println("value out of range")
+    return 0
+}
+
+fn clamp(value: Int) -> Int {
+    if (value > 1000) { return reportOverflow(value) }
+    return value
+}
+
+fn main() -> Int {
+    let mut total = 0
+    for i in 0..<100 {
+        total = total + clamp(i * 3)
+    }
+    println(total)
+    return 0
+}
+```
+
+A cold function is never inlined into its callers, and a branch that calls one
+is laid out as the unlikely path, so the code around it stays small enough to be
+inlined and vectorised where it is used. It is LLVM's `cold` and `noinline`
+together -- Rust's `#[cold]` with `#[inline(never)]`.
+
+`cold` goes after any visibility marker and directly before `fn`, at top level or
+inside an `impl` block:
+
+```prismio
+private cold fn grow(list: Vec<Int>) { ... }
+impl Table {
+    cold fn rehash(self) { ... }
+}
+```
+
+It is contextual, so a variable or function may still be *named* `cold`. It
+changes where code is placed, never what it does: removing every `cold` leaves a
+program with the same behaviour.
+
+Use it for paths that are rare **at run time**, not merely long. The standard
+library marks the insert half of `Map.set`; marking a hot function cold moves its
+callers' fast path the wrong way.
 
 ## Entry point
 

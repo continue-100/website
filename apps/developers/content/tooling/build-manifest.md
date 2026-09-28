@@ -3,7 +3,7 @@ title: build.ums manifest reference
 description: The developer reference for Prismio workspace, target, profile, dependency, toolchain, source, output, and native link declarations.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-28"
 tags: [ums, manifest, reference]
 related: [tooling/ums-overview, tooling/build-graph-and-linking, tooling/compiler-host-and-promotion]
 ---
@@ -14,19 +14,27 @@ stable syntax.
 
 ## Project structure
 
-A manifest can describe workspace membership, packages, build profiles, and named targets. An
-executable target names its Prismio entry source. Targets can also declare native libraries,
-frameworks where supported, search paths, files, and toolchain components needed at link time.
+A manifest describes a project, its build profiles, and named targets. An executable target names
+its Prismio entry source, and may declare C sources it compiles (`native { source include define
+flag responseFile }`), what it links (`link { library search file framework responseFile }`),
+whether it merges the installed runtime (`runtime = "installed" | "none"`), and whether it exports
+its symbols (`exportDynamic = true`). `profiles { debug { ... } release { ... } }` sets
+`debugInfo` and `overflowChecks` per profile.
 
-The compiler repository uses an executable target for `src/main.psm` and links the
-`prismio.backend` component. That component supplies compiler-only backend capabilities; ordinary
-application executables link only the Prismio runtime unless their target adds other inputs.
+**Nothing about a target is built into the toolchain.** The compiler repository's `prismio` target
+is an ordinary executable: the runtime and backend C files are its `native` sources,
+`runtime = "none"` because it carries the checkout's runtime, and LLVM comes from the response files
+`tools/setup_llvm.py` writes. It used to link a `component("prismio.backend")` that every shipped
+compiler knew how to build; that knowledge is gone from the compiler, and `component` is no longer a
+link declaration.
 
 ## Bootstrap host
 
-The stable `toolchain` block can name a project-local host compiler. An installed parent compiler
-uses that information before delegating the full command. Keep this block early and compatible with
-the bootstrap reader.
+The stable `toolchain` block can name a project-local host compiler, under `.prismio/`. An installed
+parent compiler uses that information before delegating the full command, and only to a host this
+machine promoted: promotion writes `<host>.trusted` with the file's identity, and a host that does
+not match it is never started (`P1077`). Keep this block early and compatible with the bootstrap
+reader.
 
 ## Validation
 

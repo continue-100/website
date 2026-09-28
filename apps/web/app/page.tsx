@@ -5,6 +5,7 @@ import Principles from "@/components/landing/Principles";
 import BenchmarkTeaser from "@/components/landing/BenchmarkTeaser";
 import WhyPrismio from "@/components/landing/WhyPrismio";
 import AIReady from "@/components/landing/AIReady";
+import EditorSupport from "@/components/landing/EditorSupport";
 import Sponsors from "@/components/landing/Sponsors";
 import CTA from "@/components/landing/CTA";
 import FooterMain from "@prismio/ui/FooterMain";
@@ -21,6 +22,7 @@ export default function LandingPage() {
                 <Principles />
                 <WhyPrismio />
                 <AIReady />
+                <EditorSupport />
                 <BenchmarkTeaser />
                 <Sponsors />
                 <CTA />

@@ -45,7 +45,7 @@ prismio build add.psm -o add.ll
 Wrote LLVM IR: add.ll
 ```
 
-```text
+```llvm
 define i32 @pick__Int_Int(i32 %0, i32 %1) {
 entry:
   %a.0 = alloca i32, align 4
@@ -83,7 +83,7 @@ Three things in that output are worth knowing before you read any more of it:
 prismio build add.psm --target wasm32-unknown-unknown -o w.ll
 ```
 
-```text
+```llvm
 ; ModuleID = 'self_hosted_module'
 source_filename = "prismio_generated"
 target datalayout = "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-i128:128-n32:64-S128-ni:1:10:20"

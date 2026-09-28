@@ -43,7 +43,7 @@ The compiler provides a small built-in surface that needs no import at all:
 
 - Explicit `drop` and checked `expect`
 - [`panic`, `unreachable`, `assert` and `exit`](/language/error-handling#when-the-program-cannot-go-on), which stop the program with a message and its source location, or with a status of your choosing
-- `Vec<T>`'s core: the empty literal `[]`, `Vec<T>.withCapacity(n)`, indexing, `for x in v`, the methods `push`, `set`, `replace`, `swap`, `insert`, `reserve`, `truncate` and `clear`, and the properties `length`, `capacity`, `first`, `last`, `isEmpty` and `isNotEmpty`
+- `Vec<T>`'s core: the empty literal `[]`, `Vec<T>.withCapacity(n)`, `Vec<T>.filled(n, x)` for a scalar `T`, indexing, `for x in v`, the methods `push`, `set`, `replace`, `swap`, `insert`, `reserve`, `truncate` and `clear`, and the properties `length`, `capacity`, `first`, `last`, `isEmpty` and `isNotEmpty`
 - a Slice's and a DataView's `length`
 - the [`default`](/language/variables#default-values) value of any type that has one
 
@@ -60,6 +60,10 @@ The output overloads participate in normal declaration lookup, overload resoluti
 ## Input, files and time
 
 [Standard input](/stdlib/input) is its own module, `std.input`, so a program that only prints does not carry it. Files — whole, appended to, or [a line at a time](/stdlib/filesystem#reading-a-file-a-line-at-a-time) — and directories are [`std.fs`](/stdlib/filesystem). [`std.time`](/stdlib/time) measures elapsed time on the monotonic clock, reads the wall clock, and sleeps.
+
+## Math
+
+[`std.math`](/stdlib/math) holds Float's square roots, rounding modes, powers, logarithms and trigonometry, integer `pow`, `gcd`, `lcm`, `floorDiv`/`floorMod` and `isqrt`, and every numeric type's limits as `Int.MAX`, `Float.PI`, `Float.INFINITY` and so on. Each Float function compiles to the instruction or C-library call a C compiler would use. `Float` itself is IEEE 754 binary64. Random numbers, `F32` and bit counting are not available yet.
 
 ## Math
 

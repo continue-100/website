@@ -54,6 +54,9 @@ metadata, FFI restrictions, and benchmark interpretation together.
 block. `list_new` starts empty with an unknown/boxed element strategy.
 `list_new_with_capacity` reserves pointer slots.
 `list_new_with_capacity_inline` reserves a byte-strided inline block.
+`list_new_filled_inline(n, bits, elem_size)` is `Vec<T>.filled` for a scalar `T`: an inline block of
+exactly `n` elements, length `n`, written by `memset` for a zero or one-byte pattern and by one
+typed loop per width otherwise. A negative `n` is a runtime error rather than an empty Vec.
 
 `list_set_elem_owner` records whether elements are borrowed, owned, counted, or otherwise
 managed. `list_set_elem_releaser` installs a typed release callback.

@@ -214,7 +214,7 @@ the absent case unavoidable.
 | Method | Returns |
 |---|---|
 | `a.equals(b)` | `Bool` — same as `a == b` |
-| `a.equalsIgnoreCase(b)` | `Bool` — ASCII fold, not a Unicode case fold |
+| `a.equalsIgnoreCase(b)` | `Bool` — equal once both are fully case-folded: `"Straße"` matches `"STRASSE"` |
 | `a.compare(b)` | `Int` — negative, zero, or positive, by byte value |
 
 ## Searching
@@ -268,8 +268,8 @@ Every method here allocates and returns an owned `String`. Bind the result.
 | `s.slice(start, end)` | **end**-exclusive; same as `s[start..<end]` |
 | `s.trim()`, `s.trimStart()`, `s.trimEnd()` | space, tab, newline, carriage return |
 | `s.trimChars(set)` | trim any byte appearing in `set`, from both ends |
-| `s.toUpper()`, `s.toLower()` | ASCII only |
-| `s.capitalize()` | first byte uppercased, rest untouched |
+| `s.toUpper()`, `s.toLower()` | full Unicode case mapping; the result can be longer or shorter |
+| `s.capitalize()` | first character titlecased, the rest untouched |
 | `s.reverse()` | by byte |
 | `s.repeat(n)` | `n` copies |
 | `s.padStart(w, pad)`, `s.padEnd(w, pad)`, `s.padCenter(w, pad)` | pad to width `w` |
@@ -364,7 +364,7 @@ closure at all.
 | `s.parseInt(radix)` | `Option<Int>` — base 2 through 36 |
 | `s.parseI64()` / `s.parseU64()` | `Option<I64>` / `Option<U64>`, with `(radix)` forms |
 | `n.toString()` | `String` — on `Int`, `I64`, `U64`, `Float`, `Bool`, and `Char`; **allocates** |
-| `n.toString(radix)` | `String` — on `Int` and `U64` |
+| `n.toString(radix)` | `String` — on `Int`, `I64` and `U64` |
 | `n.toHex()` / `toOctal()` / `toBinary()` | `String` — on `U64` |
 | `f.toString(decimals)` | `String` — fixed-point, on `Float` |
 
@@ -592,6 +592,36 @@ fn main() -> Int {
 
 **Which to use:** a local `s = s + x` for text built in one function, and a `StringBuilder` for text kept in a struct or grown across calls. Both are linear.
 
+## Case
+
+`toUpper`, `toLower`, `capitalize` and `equalsIgnoreCase` follow Unicode's default,
+locale-independent case operations (The Unicode Standard, section 3.13), from the
+Unicode 18.0.0 data the compiler pins. A mapping can change the length of a string,
+and one rule depends on the text around a letter:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+
+fn main() -> Int {
+    println("straße".toUpper())                 // STRASSE
+    println("ΟΔΥΣΣΕΥΣ".toLower())               // οδυσσευς: a final Σ is ς
+    println("ǆemal".capitalize())               // ǅemal: titlecase, not uppercase
+    println("ﬁne".toUpper())                    // FINE
+    println("Straße".equalsIgnoreCase("STRASSE"))  // true
+    println("café".equalsIgnoreCase("cafe"))       // false: é is not e
+    return 0
+}
+```
+
+`equalsIgnoreCase` is caseless matching, not canonical equivalence: `é` written as
+one scalar and as `e` plus a combining accent are different strings to it.
+[`std.unicode`](/stdlib/unicode)'s `equalsNormalized` answers that question.
+
+A byte that is not UTF-8 is kept as it is, so case mapping never mangles text it
+could not read. Methods on `Char` stay ASCII: a `Char` is a byte.
+
 ## Performance
 
 `std.string` is native Prismio down to three compiler primitives — read a byte,
@@ -606,14 +636,22 @@ and pure Rust programs it is the fastest of the four on every search workload.
 Every producing function allocates its result once and fills it in a single pass,
 so each is linear in the length of its output.
 
+Case mapping takes the cheapest pass that can finish. ASCII text is one vectorised
+pass; text whose letters map to letters of the same UTF-8 width -- most Latin, Greek
+and Cyrillic -- is one pass through a two-stage lookup table; only a mapping that
+changes width (`ı` to `I`) sends the rest of the string through a measuring pass.
+Over 828 KB of mixed Cyrillic, Greek and accented Latin on Apple silicon, `toUpper`
+takes 1.9 ms and `toLower` 1.7 ms, against 3.1 ms and 2.6 ms for Rust's
+`to_uppercase` and `to_lowercase`; `equalsIgnoreCase` compares ASCII sixty-four
+bytes at a time and allocates nothing.
+
 ## Not implemented
 
 A regex module and locale-aware collation.
 
-`Char` is a byte, so `toUpper`, `toLower` and `capitalize` are **ASCII-only**: they
-leave every other character exactly as it was rather than mangling it, but they do
-not case-map it either. Full case mapping needs Unicode tables, and one of its rules
-is that a string can change length — `ß` uppercases to `SS`.
+Language-specific case rules: Turkish and Azeri dotted and dotless `i`, and the
+Lithuanian rules for accented `i`. They depend on the text's language, which a
+`String` does not carry, so the default mappings apply — `"I".toLower()` is `"i"`.
 
 Grapheme clusters, terminal width and NFC/NFD normalization are in
 [`std.unicode`](/stdlib/unicode) rather than here, because they carry 100 KB of

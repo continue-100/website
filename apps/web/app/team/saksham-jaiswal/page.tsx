@@ -50,7 +50,7 @@ const COMPILER_MILESTONES = [
     },
     {
         phase: "Phase 4",
-        title: "LLVM 22 IR Lowering & DWARF",
+        title: "LLVM 23 IR Lowering & DWARF",
         subtitle: "Zero-runtime native codegen",
         detail: "Engineered the backend lowering pipeline directly into LLVM IR. Integrated platform linkers and full DWARF debug symbol emission for native GDB and LLDB stepping.",
         accent: "border-sky-500/20 text-sky-300",
@@ -297,7 +297,7 @@ export default function SakshamAuthorPage() {
                                 <li><strong className="text-white">Predictable Latency:</strong> 0ms stop-the-world pauses. Deterministic memory placement.</li>
                                 <li><strong className="text-white">Zero-Overhead C ABI:</strong> Seamlessly call into existing C libraries without translation shims or runtime overhead.</li>
                                 <li><strong className="text-white">Transparent Inference:</strong> Inference is never a black box. If the compiler makes a layout decision, it can explain why.</li>
-                                <li><strong className="text-white">100% Permissive Open Source:</strong> The compiler, stdlib, and tooling will always remain free under Apache-2.0 / MIT.</li>
+                                <li><strong className="text-white">100% Permissive Open Source:</strong> The compiler, stdlib, and tooling will always remain free under Apache-2.0.</li>
                             </ul>
 
                             <p>

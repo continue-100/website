@@ -8,7 +8,7 @@ export default function FooterMain() {
         <footer className="relative border-t border-zinc-200 dark:border-white/10 mt-32 z-[100]">
             <div className="max-w-7xl mx-auto px-8 py-16 grid grid-cols-2 md:grid-cols-4 gap-12 text-sm">
                 {/* Column — About */}
-                <div className="space-y-4 col-span-2 md:col-span-1">
+                <div className="space-y-4 col-span-2 sm:col-span-1">
                     <Link href="/" className="flex items-center gap-2.5">
                         <div className="w-8 h-8 flex items-center justify-center">
                             <Image src="/icons/prismio.png" alt="Logo" width={32} height={32}/>
