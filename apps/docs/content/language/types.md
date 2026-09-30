@@ -3,12 +3,12 @@ title: Types
 description: Primitive, numeric, aggregate, optional, and inferred types in Prismio 0.1.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-30"
 tags: [types, integers, floats, bool, string]
-related: [language/arrays-and-lists, language/structs, language/optionals, specification/type-system]
+related: [language/arrays-and-lists, language/structs, language/optionals, language/conversions, specification/type-system]
 ---
 
-Prismio is statically typed. Every binding, expression, parameter, field, and return value has a compiler-known type, and a type error is reported before LLVM code generation. User-defined structs are nominal. Enum declarations are named, but 0.1 enum values deliberately interoperate with `Int`, which weakens isolation between enum types.
+Prismio is statically typed. Every binding, expression, parameter, field, and return value has a compiler-known type, and a type error is reported before LLVM code generation. User-defined structs and enums are nominal: a `Color` is not an `Int`, and one enum is not another.
 
 Local types are inferred from initializers when no annotation is present. Inference does not make variables dynamically typed; once inferred, the type remains fixed.
 
@@ -25,7 +25,7 @@ Local types are inferred from initializers when no annotation is present. Infere
 | `Array<T, N>` | Fixed-length array stored in place — in the function's frame, or in a struct as a field; `[T]` when the length comes from an initializer |
 | `Vec<T>` | Owned, growable vector |
 | `Slice<T>` | Copyable, bounds-checked view into a `Vec<T>` |
-| `T?` | Nullable reference-shaped value |
+| `T?` | A `T` or `none`: a value for a scalar, a nullable pointer for a reference |
 
 `Int` and `I32` are two spellings of the same signed 32-bit type, so they mix freely and a diagnostic names either as `Int`. `I32` is there so the signed widths read `I8`, `I16`, `I32`, `I64` beside the unsigned ones. Integer arithmetic otherwise requires matching widths. Use an explicit cast for conversions:
 
@@ -34,6 +34,8 @@ let small: U8 = 200
 let widened: Int = small as Int
 let ratio: Float = widened as Float / 2.0
 ```
+
+`x as T` cannot fail: it truncates or saturates. `x as T?` is the conversion that can, and answers `none` when `x` is not a `T` -- `300 as U8?`, `3.5 as Int?`, `"4x" as Int?`. See [conversions](/language/conversions).
 
 ## Signed and unsigned integers
 
@@ -107,13 +109,13 @@ The compiler may fuse `a * b + c` into one fused multiply-add, as C compilers do
 
 `Ptr` represents an untyped raw pointer. It exists for runtime and foreign-function integration. Dereference operations, typed pointer arithmetic, provenance rules, and a source-level unsafe block are not defined in 0.1; most useful pointer behavior therefore lives behind `extern fn` declarations.
 
-Both `String` and `Ptr` are reference-shaped and may be written as `String?` or `Ptr?`.
+Both `String` and `Ptr` are reference-shaped: `String?` and `Ptr?` are nullable pointers. A scalar -- a number, `Bool`, `Char` or a fieldless enum -- may be optional too, as a present flag beside the value that costs no allocation. See [optionals](/language/optionals).
 
 ## Structs and enums
 
 A `struct` declaration introduces a nominal, move-only aggregate. Field names and types define its stored data, but structurally identical declarations are not interchangeable.
 
-An `enum` declaration introduces a named set of variants. A **fieldless** enum is copyable and lowers to integer-like ordinals: variant expressions type as `Int`, and the checker permits `Enum`/`Int` compatibility.
+An `enum` declaration introduces a named set of variants. A **fieldless** enum is copyable and lowers to integer ordinals, but it is its own type: a variant has the enum's type, `c as Int` names the ordinal, and `n as Color?` is the checked way back.
 
 A variant may instead carry values, and an enum may be generic. An enum with any payload variant compiles to a tagged struct rather than an integer, which makes its values nominal and move-only — including the variants that carry nothing. See [enums](/language/enums) and [Option and Result](/stdlib/option). Explicit discriminants are not supported.
 

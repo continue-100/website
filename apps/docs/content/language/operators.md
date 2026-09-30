@@ -3,7 +3,7 @@ title: Operators and casts
 description: Prismio 0.1 arithmetic, comparison, logical, bitwise, shift, unary, assignment, and cast operators.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-30"
 tags: [operators, precedence, casts, bitwise]
 related: [language/types, specification/evaluation, errors/integer-width-mismatch]
 ---
@@ -103,7 +103,7 @@ From lowest to highest, binary precedence is:
 
 Unlike C, Prismio deliberately binds bitwise operators more tightly than equality, so `flags & mask != 0` groups as `(flags & mask) != 0`. Right shift is arithmetic for signed values and logical for unsigned values.
 
-Unary operators and casts bind more tightly than the binary levels above. Parentheses are recommended whenever a mixed bitwise, comparison, and logical expression would otherwise require the reader to recall the complete table.
+Unary operators and casts bind more tightly than the binary levels above, and a unary operator binds inside a cast: `-x as T` is `(-x) as T`. Parentheses are recommended whenever a mixed bitwise, comparison, and logical expression would otherwise require the reader to recall the complete table.
 
 Operators at the same precedence normally group left-to-right. Do not use associativity to hide numerically significant grouping, especially for subtraction, division, shifts, or floating-point expressions.
 
@@ -123,9 +123,13 @@ The documented conversions are:
 - widening an unsigned integer, `Bool`, or `Char` zero-extends;
 - narrowing an integer keeps the low-order bits;
 - integer-to-float converts numerically but may lose precision;
-- float-to-integer truncates toward zero and saturates: out-of-range values clamp to the destination's `MAX`/`MIN`, and NaN becomes 0.
+- float-to-integer truncates toward zero and saturates: out-of-range values clamp to the destination's `MAX`/`MIN`, and NaN becomes 0;
+- `x as String` is the text `x.toString()` gives, for every number, `Bool`, `Char` and `String`;
+- an enum converts to its ordinal with `as Int`, and nothing converts to `Bool`.
 
-A cast states intent; it does not validate an input range. Check application ranges before narrowing data received from files, networks, or foreign code.
+`as T` states intent; it does not validate a range. When the value may not fit, write `as T?`: it is `none` rather than a truncated or saturated number -- `300 as U8?`, `-1 as U64?`, `3.5 as Int?`, and from text `"42" as Int?`. See [conversions](/language/conversions) for the full rules.
+
+A prefix operator binds inside a cast: `-x as T` is `(-x) as T`, so `-1 as U8` is 255.
 
 ## String operators
 

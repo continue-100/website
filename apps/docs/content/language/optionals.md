@@ -1,52 +1,82 @@
 ---
-title: Optional reference values
-description: Represent absence with T?, none, comparisons, and checked expect in Prismio 0.1.
+title: Optionals
+description: T? is a T or none. A scalar's T? is a value that costs no allocation; a reference's is a nullable pointer. Testing, expect, unwrapOr, containers and printing.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
-tags: [optional, nullable, none, expect]
-related: [language/types, language/structs, errors/optional-needs-unwrap]
+lastUpdated: "2026-09-30"
+tags: [optional, nullable, none, expect, unwrapOr]
+related: [language/types, language/conversions, language/structs, errors/optional-needs-unwrap, stdlib/option]
 ---
 
-Append `?` to a reference-shaped type to represent either a value or `none`. In 0.1, optional types are allowed for structs, strings, vectors, and raw pointers—not scalar numbers, booleans, characters, enums, or arrays.
-
-```prismio
-let message: String? = none
-let values: Vec<Int>? = none
-let address: Ptr? = none
-```
-
-The annotation is important when the initializer is only `none`, because absence alone cannot identify the underlying type.
-
-## Optional struct links
-
-Optional struct references allow finite representation of linked data:
+A lookup that may find nothing, a reading a sensor did not take, a number a user
+may not have typed: each is a value that might be absent. Append `?` to its type
+and the absence is part of the type, so the compiler makes every reader deal with
+it.
 
 <!-- prismio-check: pass -->
 ```prismio
-struct Node {
-    value: Int,
-    next: Node?
-}
+import std.io
 
-fn value_after(node: Node) -> Int {
-    if (node.next == none) { return 0 }
-    let next = expect(node.next)
-    return next.value
+fn half(n: Int) -> Int? {
+    if (n % 2 != 0) { return none }
+    return n / 2
 }
 
 fn main() -> Int {
-    let tail = Node { value: 2, next: none }
-    let head = Node { value: 1, next: tail }
-    return value_after(head)
+    let a = half(8)
+    let b = half(7)
+    println(a)                 // 4
+    println(b)                 // none
+    println(b.unwrapOr(0))     // 0
+    if (a != none) {
+        println(expect(a) + 1) // 5
+    }
+    return 0
 }
 ```
 
-`Node?` permits the final `next` to be absent. Constructing `head` transfers the owned `tail` into the `next` field according to normal struct ownership rules.
+`T?` works for every number type, `Bool`, `Char`, a fieldless enum, `String`,
+`Vec<T>`, a struct, and `Ptr`.
 
-## Testing for absence
+## Two representations, one surface
 
-An optional may be compared with `none` using `==` or `!=`. This does not flow-narrow its type. Call `expect(optional)` to obtain the non-optional value; the runtime checks for `none`. Accessing a member on `T?` without `expect` is a compile-time error.
+- **A scalar's `T?`** (a number, `Bool`, `Char`, a fieldless enum) is a present flag
+  beside the value. It is copied like `T` and **never allocates**: `let b = a`
+  copies, and `Vec<Int?>` stores 8 bytes an element.
+- **A reference's `T?`** (`String`, `Vec<T>`, a struct, `Ptr`) is the pointer, and
+  `none` is null. It owns what it points at, as `T` does.
+
+Both are written, tested and unwrapped the same way.
+
+## Making one
+
+A `T` goes wherever a `T?` is expected, in a `let`, an assignment, a `return`, an
+argument or a struct field. `none` is the absent value. `default` for a `T?` is
+`none`.
+
+```prismio
+let count: Int? = 3
+let missing: Int? = none
+let message: String? = none
+```
+
+The annotation matters when the initializer is only `none`, which says nothing
+about what it would have held.
+
+A [conversion that can fail](/language/conversions) produces one: `300 as U8?` is
+`none`, and `"42" as Int?` is 42. So does every [parse function](/stdlib/strings#parsing-and-formatting).
+
+## Reading one
+
+| Written | Answers |
+|---|---|
+| `o == none`, `o != none` | whether it is absent |
+| `expect(o)` | the value, or a [panic](/language/error-handling#when-the-program-cannot-go-on) naming the line when it is `none` |
+| `o.unwrapOr(fallback)` | the value, or `fallback` (a scalar `T?`) |
+| `a == b` | equal when both are `none`, or both present with equal values (a scalar `T?`) |
+
+Comparing with `none` does not narrow the type: `expect` is still needed after
+the test.
 
 ```prismio
 if (candidate == none) {
@@ -57,7 +87,7 @@ if (candidate == none) {
 }
 ```
 
-The call to `expect` remains required in the `else` arm. The compiler does not currently preserve a path-sensitive proof that `candidate != none`.
+A field of a `T?` struct is not reachable without `expect`:
 
 <!-- prismio-check: fail -->
 ```prismio
@@ -73,19 +103,81 @@ fn read(item: Item?) -> Int {
 fn main() -> Int { return read(none) }
 ```
 
-Member access fails because `item` still has type `Item?`. Use `expect(item).value` after handling the absent case.
+Write `expect(item).value` after handling the absent case. And a `T?` is not a
+`T`: `let n: Int = maybe` is refused. Take the value out with `expect`,
+`unwrapOr`, or a comparison first.
+
+## In containers, and printing
+
+A scalar `T?` goes in a `Vec`, a slice, an array or a `Map` value like any
+scalar, with no allocation per element. The standard library knows about it:
+`contains`, `indexOf`, `sort` (`none` sorts first), `clone` and `pop` work on a
+`Vec<Int?>`, and `println` writes the value or `none`.
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.vec
+
+fn main() -> Int {
+    let mut readings: Vec<Int?> = [3, none, 1]
+    readings.push(2)
+    readings.sort()
+    for r in readings {
+        print(r)
+        print(" ")
+    }
+    println("")                          // none 1 2 3
+    println(readings.contains(none))     // true
+    return 0
+}
+```
+
+`Display`, `Eq`, `Ord` and `Copy` are implemented for every scalar `T?`.
+
+## Linked data
+
+A reference `T?` is how a struct refers to one of its own kind:
+
+<!-- prismio-check: pass -->
+```prismio
+struct Node {
+    value: Int,
+    next: Node?
+}
+
+fn valueAfter(node: Node) -> Int {
+    if (node.next == none) { return 0 }
+    let next = expect(node.next)
+    return next.value
+}
+
+fn main() -> Int {
+    let tail = Node { value: 2, next: none }
+    let head = Node { value: 1, next: tail }
+    return valueAfter(head)
+}
+```
+
+Constructing `head` moves the owned `tail` into its `next` field, under the
+ordinary struct ownership rules.
 
 ## `expect`
 
-`expect(optional)` performs a runtime presence check and produces the underlying non-optional value when present. Passing `none` reaches the runtime failure path; 0.1 does not provide a catchable exception for that failure.
+`expect(o)` checks for `none` at run time and produces the value when it is
+there. On `none` the program stops with `expect() called on a none value` and the
+file and line. There is no catchable exception for it.
 
-Use `expect` only after program logic has established that absence is not expected, or at a deliberate fail-fast boundary. If absence is normal, compare with `none` and select an explicit fallback before unwrapping.
+Use `expect` where the program's logic has already ruled absence out, or at a
+deliberate fail-fast boundary. Where absence is normal, compare with `none` or
+use `unwrapOr`.
 
-Calling `expect` follows borrowing behavior for the owned optional in current compiler tests; it is not documented as consuming the caller merely to inspect a present value. Moving the unwrapped owned result into another owning location still follows normal ownership rules.
+`expect` borrows: inspecting a present value does not consume the optional.
 
 ## Ownership
 
-Wrapping a move-only value in `T?` does not change its ownership. Storing the value still transfers it to the new owned location.
+Wrapping a move-only value in `T?` does not change its ownership. Storing it
+still moves it:
 
 <!-- prismio-check: fail -->
 ```prismio
@@ -101,18 +193,20 @@ fn main() -> Int {
 }
 ```
 
-Creating `optional` moves `item`; the final access to the original binding is invalid.
+Creating `optional` moves `item`; the later read of `item` is refused.
 
-## Unsupported forms
+## `T?` and `Option<T>`
 
-These constructs do not exist in 0.1:
+[`Option<T>`](/stdlib/option) is a library enum with methods such as `map` and
+`andThen`. It works for any `T`, but it is a tagged struct: it allocates, and it
+moves rather than copies. For a scalar, `T?` is the cheaper and shorter form.
 
-- optional scalar types such as `Int?` or `Bool?`;
-- optional chaining such as `value?.field`;
-- nil-coalescing operators such as `??`;
-- postfix force-unwrapping such as `value!`;
-- `if let` or pattern-based optional binding;
-- automatic flow narrowing after comparison; and
-- a generic user-defined `Option<T>`.
+## Not in 0.1
 
-Use an explicit `if`, comparison with `none`, and `expect`. For scalar absence, model the state with a fieldless enum plus a separately maintained value, or choose an application-specific sentinel only when its invariant is clear.
+- optional chaining such as `value?.field`, and `??` for a default: use
+  `unwrapOr` or an `if`;
+- a postfix force-unwrap such as `value!`: use `expect`;
+- `if let`, flow narrowing after a comparison, and `match` on a `T?`;
+- `T??`, and `Channel<Int?>`: a channel carries references;
+- a `Map` whose value is an owned `T?` (`String?`), for the reason a `Map`'s
+  value may not be an owned type yet.

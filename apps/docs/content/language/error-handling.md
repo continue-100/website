@@ -3,7 +3,7 @@ title: Error handling
 description: Signalling failure in Prismio with Result and Option, and stopping the program with panic, assert, unreachable and exit.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [errors, result, option, enums]
 related: [stdlib/option, language/enums, language/optionals, language/generics, language/control-flow]
 ---
@@ -60,7 +60,7 @@ fn main() -> Int {
         eprintln("usage: sign <number>")
         exit(2)
     }
-    let n = optionOr(process.args.at(1).parseInt(), 0)
+    let n = process.args.at(1).parseInt().unwrapOr(0)
     assert(n != 0, "the input must not be zero")
     println(sign(n))
     return 0
@@ -96,11 +96,11 @@ Before these types, a failing function returned `-1`, `0`, or an empty string, a
 
 ## Option is not the same as `T?`
 
-[Optionals](/language/optionals) (`T?`) predate `Option<T>` and remain the right tool for a *reference* that may be absent — an optional struct link, a string that may be missing. They cost nothing: absence is the null pointer.
+[Optionals](/language/optionals) (`T?`) are the language's own absent value, for a reference and a scalar alike. They cost nothing extra: a reference's `none` is the null pointer, and a scalar's `T?` is a present flag beside the value, copied like `T`. Every parse and every [conversion that can fail](/language/conversions) answers one.
 
-`Option<T>` works for **every** type, including scalars. `Int?` is rejected by the language, because an integer has no spare representation to mean "absent"; `Option<Int>` carries a separate tag, so it can.
+`Option<T>` is a library enum with methods -- `map`, `andThen`, `okOr` -- and works for every type. It is a tagged struct, so it allocates and moves.
 
-Use `T?` for reference fields, and `Option<T>` when the type is a scalar or a type parameter.
+Use `T?` by default, and `Option<T>` when you want its methods.
 
 ## Propagation is manual
 

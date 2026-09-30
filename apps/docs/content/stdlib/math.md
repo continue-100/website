@@ -3,7 +3,7 @@ title: Math
 description: The std.math module — square roots, rounding, powers, logarithms and trigonometry on Float, integer powers and divisors, and every numeric type's limits.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-30"
 tags: [standard-library, math, float, integers, ieee-754, trigonometry]
 related: [stdlib, language/types, language/operators, specification/behavior]
 ---
@@ -181,7 +181,7 @@ On `Int` unless noted. Arithmetic wraps on overflow, exactly as `*` does.
 | `isEven`, `isOdd`, `isPowerOfTwo` | tests |
 | `toFloat()` | the same as `as Float` |
 
-`I64` has `abs`, `min`, `max`, `clamp`, `sign`, `pow` and `toFloat`, which behave the same way.
+`I64` has `abs`, `min`, `max`, `clamp`, `sign`, `pow` and `toFloat`, which behave the same way. Every other integer type has `toFloat` too, and `toString` and `toString(radix)` are in [`std.string`](/stdlib/strings#parsing-and-formatting).
 
 `floorMod` is the one to use for wrapping an index, because `%` keeps the sign of the dividend:
 

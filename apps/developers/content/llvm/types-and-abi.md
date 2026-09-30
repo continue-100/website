@@ -3,7 +3,7 @@ title: Types and ABI
 description: Prismio-to-LLVM type keys, storage forms, field layout, target widths, optional encoding, string ABI, and foreign-call coercion.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-30"
 tags: [llvm, types, abi]
 related: [llvm/overview, runtime/collection-representations, compiler/string-representation]
 ---
@@ -155,9 +155,50 @@ Signedness determines the chosen instruction:
 LLVM integer types themselves are signless, so using the correct builder is the only place this
 meaning survives.
 
+### A scalar `T?` in a slot
+
+A scalar's `T?` is `opt:K`, the literal struct `{ i1, K }`, which has no width to store by and
+no bits to widen. In a container it is kept as its **carrier**, one integer twice the payload's
+width: the value in the high half, the present flag in the low one, so a zeroed row reads as
+`none`. `optCarrierKey` (src/ir/types.psm) picks the width -- `i16` for a payload of 8 bits or
+fewer, `i32` for 16, `i64` for 32 -- and `ir_opt_pack`/`ir_opt_unpack` in the backend are the
+only definition of the layout. `scalarToSlot`, `slotToScalar` and the inline-bits helpers pack
+and unpack at the boundary, and the guarded flat loop operations are handed the carrier key
+(`flatScalarKey`), never `opt:K`, so every scalar container path takes a `T?` unchanged.
+
+A 64-bit payload (`Float?`, `I64?`) has no carrier on the runtime's i64 channel, so its row is
+the 16-byte `{ i1, K }` itself, reached by address as a flat struct element is: `scalarToSlot`
+spills it and `slotToScalar` loads it. That is only correct because a list of one is always
+inline (`inlineElemSizeOfList` returns 16 for it).
+
+## Checked conversions
+
+`x as T?` between numbers is `generateCheckedCast` (src/ir/expr.psm), and it is straight-line
+code: a present flag from a few compares, and the value converted regardless of the flag.
+
+- **Narrowing** is a round trip: truncate, extend back by the *target's* signedness, compare with
+  the source. That one test catches both a magnitude too large and a sign the target cannot hold.
+- **Equal or greater width** can only lose a sign: one `icmp sge value, 0` when the signedness
+  changes (except unsigned widening to signed, which always fits).
+- **From a Float**: `llvm.trunc.f64(x) == x` for wholeness and `low <= x < high` for range,
+  with power-of-two bounds a double holds exactly (`2^63` is exclusive, so `I64.MAX` never has to
+  be represented). NaN fails every ordered compare and an infinity fails the range. The value is
+  computed with the *saturating* intrinsic even though the flag has excluded every input that
+  would saturate, because a plain `fptosi` of an out-of-range input is poison, and the value is
+  computed whether or not the flag is set.
+- **Into an enum**: `icmp ult n, count`, with the count sema recorded on the cast node (`i3`).
+
+A written cast (`child2` holds the annotation) is checked; an unwritten one is sema's
+`semaWrapPresent`, a present value placed where a `T?` is expected, and is `generatePresent`.
+`s as T?` and `x as String` never reach codegen: sema rewrites them into `s.parseT()` and
+`toString(x)`, bound to std.string, and `"12" as Int` is read by sema and left as a cast of the
+number literal.
+
 ## Optional and enum encoding
 
-Reference-shaped optionals use a null pointer. Payload enums use a generated aggregate containing
+Reference-shaped optionals use a null pointer. A scalar's `T?` is `{ i1, K }` by value (key
+`opt:K`), which `type_from_key` builds as a literal struct so every `Int?` in a module is one
+uniqued type; its zero is `none`. Payload enums use a generated aggregate containing
 a tag and payload storage. When an enum can reserve one pointer pattern, `ir_enum_reserve_null`,
 `ir_enum_set_null_tag`, and `ir_enum_tag` support null-pointer optimization. The backend uses
 `LLVMBuildICmp` against `LLVMConstNull` to recover the logical tag.

@@ -3,7 +3,7 @@ title: Strings
 description: The String type, its operators, and the std.string method surface -- length, indexing, comparison, concatenation, slicing, iteration, searching, and parsing.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [standard-library, strings, operators, methods, ownership]
 related: [language/operators, language/methods, language/ownership-and-borrowing, language/control-flow]
 ---
@@ -357,44 +357,49 @@ closure at all.
 
 | Method | Returns |
 |---|---|
-| `s.parseInt()` | `Option<Int>` |
+| `s.parseInt()` | `Int?` |
 | `s.parseIntOr(fallback)` | `Int` |
-| `s.parseFloat()` | `Option<Float>` |
-| `s.parseBool()` | `Option<Bool>` — exactly `"true"`/`"false"`, case-insensitively |
-| `s.parseInt(radix)` | `Option<Int>` — base 2 through 36 |
-| `s.parseI64()` / `s.parseU64()` | `Option<I64>` / `Option<U64>`, with `(radix)` forms |
-| `n.toString()` | `String` — on `Int`, `I64`, `U64`, `Float`, `Bool`, and `Char`; **allocates** |
-| `n.toString(radix)` | `String` — on `Int`, `I64` and `U64` |
+| `s.parseFloat()` | `Float?` |
+| `s.parseBool()` | `Bool?` — exactly `"true"`/`"false"`, case-insensitively |
+| `s.parseInt(radix)` | `Int?` — base 2 through 36 |
+| `s.parseI8()`, `parseI16()`, `parseI64()`, `parseIsize()` | `I8?`, `I16?`, `I64?`, `Isize?`, each with a `(radix)` form |
+| `s.parseU8()`, `parseU16()`, `parseU32()`, `parseU64()`, `parseUsize()` | `U8?` … `Usize?`, each with a `(radix)` form |
+| `n.toString()` | `String` — on every number type, `Bool`, `Char` and `String`; **allocates** past twelve bytes |
+| `n.toString(radix)` | `String` — on every integer type |
 | `n.toHex()` / `toOctal()` / `toBinary()` | `String` — on `U64` |
 | `f.toString(decimals)` | `String` — fixed-point, on `Float` |
 
-`parseInt` returns `Option<Int>` rather than a number, which is the distinction a C
-`atoi` cannot make: it returns 0 for `"0"` and 0 for `"banana"`.
+`parseInt` returns `Int?` rather than a number, which is the distinction a C
+`atoi` cannot make: it returns 0 for `"0"` and 0 for `"banana"`. The `?` is a
+[scalar optional](/language/optionals), a flag beside the value, so a parse
+allocates nothing. `s as Int?` is the same call, and `n as String` is
+`n.toString()`: see [conversions](/language/conversions).
 
 <!-- prismio-check: pass -->
 ```prismio
 import std.io
 import std.string
-import std.option
 
 fn main() -> Int {
     let port = "8080".parseIntOr(80)
     println(port)
 
     let maybe = "not a number".parseInt()
-    if (optionIsNone(maybe)) { println("rejected") }
+    if (maybe == none) { println("rejected") }
+    println("300".parseU8())           // none: out of range
+    println("255".parseU8())           // 255
     return 0
 }
 ```
 
-**Every parse checks its range.** `"99999999999".parseInt()` is `None`, not a
+**Every parse checks its range.** `"99999999999".parseInt()` is `none`, not a
 wrapped number — a parse that reported success while producing a value the text
-does not say is the defect `Option` exists to prevent, and overflow is that defect
-by another route. The same holds at the edges: `I64`'s most negative value parses,
+does not say is the defect the optional exists to prevent, and overflow is that
+defect by another route. The same holds at the edges: `I64`'s most negative value parses,
 and one past it does not.
 
 `parseFloat` is `strtod`, so it is correctly rounded, and it is **stricter than C**:
-the whole string must be a number, so `"1.5kg"` and `" 1.5"` are `None`.
+the whole string must be a number, so `"1.5kg"` and `" 1.5"` are `none`.
 
 ### Float text
 

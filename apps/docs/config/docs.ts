@@ -142,6 +142,7 @@ export const docsConfig: DocsAppConfig = {
                     label: "Expressions and flow",
                     items: [
                         { label: "Operators and casts", href: "/language/operators" },
+                        { label: "Conversions", href: "/language/conversions" },
                         { label: "Control flow", href: "/language/control-flow" },
                         { label: "Pattern matching", href: "/language/pattern-matching" },
                     ],

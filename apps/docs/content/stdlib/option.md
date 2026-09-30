@@ -3,7 +3,7 @@ title: Option and Result
 description: The std.option module — Option<T> for absence, Result<T, E> for failure, their methods (unwrapOr, expect, map, andThen), and how they are represented.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [standard-library, option, result, errors, generics]
 related: [language/error-handling, language/enums, language/generics, language/closures]
 ---
@@ -18,17 +18,14 @@ import std.string
 
 fn parsePort(text: String) -> Result<Int, String> {
     let n = text.parseInt()
-    match (n) {
-        Option.Some(v) => {
-            if (v > 0 and v < 65536) { return Result<Int, String>.Ok(v) }
-            return Result<Int, String>.Err("out of range: " + text)
-        }
-        Option.None => { return Result<Int, String>.Err("not a number: " + text) }
-    }
+    if (n == none) { return Result<Int, String>.Err("not a number: " + text) }
+    let v = expect(n)
+    if (v > 0 and v < 65536) { return Result<Int, String>.Ok(v) }
+    return Result<Int, String>.Err("out of range: " + text)
 }
 
 fn main() -> Int {
-    let given = "8080".parseInt()
+    let given = Option.Some(8080)
     println(given.isSome)                            // true
     println(given.map(|p: Int| p + 1).unwrapOr(80))  // 8081
 
@@ -62,6 +59,8 @@ enum Option<T> {
 | `o.okOr(error)` | `Result<T, E>`: `Ok` of the value, or `Err(error)` |
 | `o.map(f)` | `Option<U>`: `Some(f(value))`, or `None` |
 | `o.andThen(f)` | `Option<U>`: `f(value)`, where `f` itself returns an `Option`; or `None` |
+
+`Option<T>` is not what a parse returns: `parseInt` and the other parse methods answer a [scalar optional](/language/optionals), `Int?`, which is a value rather than a tagged struct and allocates nothing. Reach for `Option<T>` when you want `map` and `andThen`, or an absent value of a type with no `T?` form.
 
 The functions these methods grew out of remain: `optionIsSome(o)`, `optionIsNone(o)` and `optionOr(o, fallback)` answer what `isSome`, `isNone` and `unwrapOr` do.
 

@@ -3,7 +3,7 @@ title: "Example: optional linked nodes"
 description: A complete Prismio program constructing and checking an optional struct field.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
+lastUpdated: "2026-09-30"
 tags: [example, optional, none, struct]
 related: [language/optionals, language/structs, errors/optional-needs-unwrap]
 ---
@@ -44,7 +44,7 @@ The comparison with `none` does not itself narrow `node.next`; the explicit `exp
 ## What would fail
 
 - `return node.next.value` fails because `Node?` does not have direct struct-member access.
-- `Int?` cannot replace the optional struct link because scalar optionals are not supported.
+- `Int?` cannot replace the optional struct link: it is a number that may be absent, not a reference to another `Node`.
 - Reading `tail` after it has moved into `head.next` is use after move.
 - Optional chaining and `if let` syntax are not part of 0.1.
 
