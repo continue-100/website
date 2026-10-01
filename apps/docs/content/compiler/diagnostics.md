@@ -34,7 +34,7 @@ The compiler exits nonzero when compilation fails and does not emit a runnable a
 
 When selected recovery succeeds, multiple diagnostics can appear. This does not mean later phases run on a program accepted as valid; it is error recovery for developer feedback.
 
-Every diagnostic carries a code in brackets, such as `error[P4001]` or `warning[P1077]`. Codes are permanent: a code is never reused for a different problem, and prose can improve without changing one. Most semantic errors share `P4001`, so a code names the stage that reported the problem and the message names the rule. The permanent identifiers used in this documentation, such as `use-after-move`, are URL keys for a specific rule. Each [error page](/errors) records the message fragment used by the audited tests, so match on that as well as the code.
+Every diagnostic carries a code in brackets, such as `error[P4001]` or `warning[P1077]`. Codes are not stable in 0.1: one can be renumbered, split, or removed before 1.0, so do not depend on a specific value. Most semantic errors share `P4001`, so a code names the stage that reported the problem and the message names the rule. The permanent identifiers used in this documentation, such as `use-after-move`, are URL keys for a specific rule. Each [error page](/errors) records the message fragment used by the audited tests, so match on that as well as the code.
 
 ## Reading a diagnostic
 

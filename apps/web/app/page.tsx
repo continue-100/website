@@ -1,12 +1,12 @@
 import React from "react";
 import HeaderMain from "@/components/HeaderMain";
 import Hero from "@/components/landing/Hero";
-import Principles from "@/components/landing/Principles";
 import BenchmarkTeaser from "@/components/landing/BenchmarkTeaser";
 import WhyPrismio from "@/components/landing/WhyPrismio";
+import Principles from "@/components/landing/Principles";
 import AIReady from "@/components/landing/AIReady";
 import EditorSupport from "@/components/landing/EditorSupport";
-import Sponsors from "@/components/landing/Sponsors";
+import CommunityNote from "@/components/landing/CommunityNote";
 import FAQ from "@/components/landing/FAQ";
 import CTA from "@/components/landing/CTA";
 import {JsonLd} from "@/components/json-ld";
@@ -21,16 +21,16 @@ export default function LandingPage() {
             <JsonLd data={faqStructuredData} />
             <HeaderMain />
 
-            <main className="relative z-10">
+            <main className="relative z-10 pb-20">
                 <Hero />
-                <Principles />
+                <BenchmarkTeaser />
                 <WhyPrismio />
+                <Principles />
                 <AIReady />
                 <EditorSupport />
-                <BenchmarkTeaser />
-                <Sponsors />
-                <FAQ />
+                <CommunityNote />
                 <CTA />
+                <FAQ />
             </main>
 
             <FooterMain />

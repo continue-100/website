@@ -77,7 +77,7 @@ That is the supported way to attribute a compile-time question to a stage. An or
 
 ## Which stage rejected my program?
 
-The diagnostic code tells you. Codes are permanent and grouped by the stage that owns them — driver and project `P10xx`, lexer `P2001`, parser `P3xxx`, ownership and FFI `P41xx`, AIF `P50xx`, and general semantic errors `P4001`/`P4002`. The [diagnostics page](/compiler/diagnostics) has the full table.
+The diagnostic code tells you. Codes are grouped by the stage that owns them and are not yet stable — driver and project `P10xx`, lexer `P2001`, parser `P3xxx`, ownership and FFI `P41xx`, AIF `P50xx`, and general semantic errors `P4001`/`P4002`. The [diagnostics page](/compiler/diagnostics) has the full table.
 
 A parse error, from the parser, before any name has been looked up:
 

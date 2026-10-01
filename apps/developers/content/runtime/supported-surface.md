@@ -155,7 +155,7 @@ leaks or violations.
 | `std.fs` | Files, paths, `readLines`, `listDirectory`, `appendFile`, `rename`, `removeDirectory`, `metadata` |
 | `std.process` | Arguments, environment variables (`process.env`, `setEnv`, `removeEnv`), `process.pid`, subprocesses |
 | `std.platform` | The target's operating system, architecture, and ABI environment, answered at compile time |
-| `std.map` | `Map<K, V>`: `get`, `set`, `has`, `remove`, `clear`, `m[k]`, `length`, `values()`, `keyAt` / `valueAt` |
+| `std.map` | `Map<K, V>`: `get`, `set`, `has`, `remove`, `clear`, `m[k]`, `length`, `keys()`, `values()`, `keyAt` / `valueAt` |
 | `std.option` | `Option<T>`, `Result<T, E>`, and their `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `okOr` family |
 | `std.vec` | `Vec<T>`'s library methods (`get`, `contains`, `indexOf`, `lastIndexOf`, `countOf`, `min`, `max`, `find`, `indexWhere`, `fold`, `forEach`, `pop`, `removeAt`, `removeFirst`, `swapRemove`, `extend`, `retain`, `dedup`, `fill`, `reverse`, `clone`, `sort`, `sortBy`, `sorted`, `reversed`, `take`, `skip`, `concat`, `startsWith`, `endsWith`, `filter`, `binarySearch`), the same reads and in-place changes over an `Array<T, N>` (the length passed beside it, which the compiler supplies for a call) and over a `Slice<T>`, `toVec`, **the Vec literal** `[a, b, c]`, `Vec<T>.withCapacity(n)`, and `Vec<T>.filled(n, x)` (a scalar `T` needs no import; any other goes through `vecFilled`) |
 | `std.math` | Float `sqrt`, rounding, `pow`, logarithms, trigonometry, IEEE constants; integer `pow`, `gcd`, `floorMod`, `isqrt`; each numeric type's `MAX` / `MIN`, lowered through the `__builtin_f64_*` family |

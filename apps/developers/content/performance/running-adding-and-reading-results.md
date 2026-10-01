@@ -3,9 +3,9 @@ title: Run, extend, and read the benchmark suite
 description: Execute the Prismio benchmark harness, inspect its JSON, add equivalent language arms, and record unsupported capabilities honestly.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-10-01"
 tags: [benchmarks, harness, results]
-related: [performance/benchmark-contract, performance/investigation-method, roadmap]
+related: [performance/benchmark-contract, performance/investigation-method, performance/telling-a-difference-from-noise, roadmap]
 ---
 
 The suite lives under `benchmarks/`. `benchmarks.json` is the catalog; `run.py` builds the three
@@ -37,8 +37,12 @@ cause.
 
 ## Reading JSON
 
-The result file records `schema_version`, `generated_at`, `runs`, `build_commands`, `compile_ns`,
-`benchmarks`, and `artifacts`. Implemented benchmark records add one `languages` object per arm:
+The result file records `schema_version` (now `3`), `generated_at`, `runs`, `build_commands`,
+`compile_ns`, `binary_bytes`, `parity`, `noise_model`, `environment`, `benchmarks`, and `artifacts`.
+`environment` is probed on every run and holds the processor, core count, memory, OS, power state,
+target triple, the toolchain versions (Prismio with the profile it was built in, clang, rustc, LLVM)
+and the source commit with whether the tree was dirty. Paths in `build_commands` and `artifacts` are
+repository-relative. Implemented benchmark records add one `languages` object per arm:
 
 ```json
 {
@@ -47,6 +51,11 @@ The result file records `schema_version`, `generated_at`, `runs`, `build_command
   "elapsed_ns_samples": [1200, 1234, 1300]
 }
 ```
+
+Each implemented, non-elimination record also carries a `verdict` against C++ and against Rust:
+`outcome` (`win`, `parity` or `loss`), the median `ratio`, the `best_ratio`, the `tolerance` it was
+judged against and the `noise` measured. Whether a difference is a difference is decided there, not
+by a percentage in the reader; see [Telling a difference from noise](/performance/telling-a-difference-from-noise).
 
 `elapsed_ns_median` is the algorithm interval reported by the dispatcher. `wall_ns_median` includes
 process launch and harness overhead, although raw wall samples are not currently retained. Compile

@@ -132,8 +132,8 @@ already established.
 
 ## Diagnostic codes
 
-Codes are permanent and grouped by the stage that owns them. Preserve an
-existing code when only improving prose; allocate a new one when tooling must
+Codes are grouped by the stage that owns them. They are not yet stable in 0.1, but
+preserve an existing code when only improving prose; allocate a new one when tooling must
 distinguish a new contract.
 
 | Range | Owner |

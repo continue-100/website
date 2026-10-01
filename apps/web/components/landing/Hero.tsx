@@ -205,11 +205,11 @@ export default function Hero() {
                     <div className="relative group">
                         {/* Ambient subtle glow */}
                         <div
-                            className="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-br from-indigo-500/20 via-transparent to-emerald-500/10 blur-xl opacity-70 transition-opacity duration-500 group-hover:opacity-90"
+                            className="pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-br from-indigo-500/20 via-transparent to-emerald-500/10 blur-xl opacity-45 transition-opacity duration-500 group-hover:opacity-60"
                             aria-hidden="true"
                         />
 
-                        <div className="relative overflow-hidden rounded-2xl bg-[#0b0c10] shadow-[0_24px_80px_-32px_rgba(67,56,202,0.4)] ring-1 ring-white/[0.09]">
+                        <div className="relative overflow-hidden rounded-2xl bg-[#0b0c10] shadow-[0_24px_80px_-32px_rgba(67,56,202,0.28)] ring-1 ring-white/[0.09]">
                             {/* Top edge subtle highlight */}
                             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/30 to-transparent" />
 

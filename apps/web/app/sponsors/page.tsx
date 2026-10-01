@@ -1,92 +1,52 @@
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {
-    Heart,
-    Server,
-    Cpu,
-    ShieldCheck,
-    ArrowRight,
-    CheckCircle2,
-    Mail,
-    Scale,
-    ExternalLink,
-    Terminal,
-} from "lucide-react";
+import {Mail} from "lucide-react";
 import HeaderMain from "@/components/HeaderMain";
 import FooterMain from "@prismio/ui/FooterMain";
+import {siteConfig} from "@/config/site";
 
 export const metadata = {
-    title: "Sponsors & Project Stewardship · Prismio",
-    description: "Sustaining independent systems programming language development through community contributions and infrastructure sponsorship.",
+    title: "Sponsors · Prismio",
+    description: "Support Prismio by bank transfer. What the funding would pay for, how to sponsor, and how sponsors are credited.",
 };
 
-const EXPENSE_AREAS = [
+const CARD = "rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-blur-xl";
+const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400";
+
+const sponsorMail = (subject: string) => `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}`;
+
+const FUNDING = [
     {
-        icon: Server,
-        title: "Dedicated Bare-Metal CI Hardware",
-        tag: "x86_64 & AArch64",
-        detail: "Prismio's test suite compiles native binaries, validates DWARF emission, and runs 78 canonical benchmarks against Clang++ and Rust (rustc). Maintaining dedicated bare-metal instances ensures reproducible, non-virtualized timing data and eliminates noisy-neighbor variance.",
+        title: "CI and benchmark hardware",
+        detail: "A dedicated machine for reproducible benchmark timing, and runners for the three-platform bootstrap and the full benchmark runs.",
     },
     {
-        icon: Cpu,
-        title: "Core Compiler Research Grants",
-        tag: "Uninterrupted Engineering",
-        detail: "Funding dedicated developer time to tackle foundational language engineering: proving Adaptive Inference Framework (AIF) placement theorems, writing native LLVM 23 lowering passes, and designing memory-safe concurrency primitives.",
+        title: "Focused development time",
+        detail: "Hours spent on the hard parts: the memory model (AIF), the LLVM backend, and concurrency.",
     },
     {
-        icon: Terminal,
-        tag: "Global Mirrors",
-        title: "Release Distribution & Registry Mirrors",
-        detail: "Providing fast, geographically distributed binary mirrors for compiler tarballs, bootstrap toolchains, package registries, and developer documentation without relying on commercial ad-supported networks.",
+        title: "Hosting",
+        detail: "Hosting for prebuilt toolchain archives, the documentation, and the website.",
     },
 ];
 
-const SPONSORSHIP_LEVELS = [
+const STEPS = [
     {
-        tier: "Institutional & Infrastructure Partner",
-        forWhom: "Corporations, universities, and hardware vendors who depend on deterministic memory management or want to accelerate systems toolchain research.",
-        perks: [
-            "Prominent citation on website, documentation portal, and compiler release notes",
-            "Direct technical advisory channel with core maintainers for ecosystem feedback",
-            "Co-authored engineering case studies or benchmark analysis reports",
-        ],
-        actionText: "Discuss Institutional Sponsorship",
-        actionHref: "mailto:saksham6975@gmail.com?subject=Prismio%20Institutional%20Sponsorship",
-        external: true,
-        highlight: true,
+        title: "Send an email",
+        detail: "Say who you are and roughly what you would like to give. Individuals, teams, and organizations are all welcome.",
     },
     {
-        tier: "Engineering Supporter",
-        forWhom: "Engineering teams, studios, and startups actively building on or experimenting with Prismio.",
-        perks: [
-            "Company or project logo on the official GitHub repository and website",
-            "Cited in quarterly milestone retrospectives and release changelogs",
-            "Dedicated Discord engineering backer role and technical channel access",
-        ],
-        actionText: "Support as a Team ($100/mo)",
-        actionHref: "https://github.com/sponsors/prismio-lang",
-        external: true,
-        highlight: false,
+        title: "Get the bank details",
+        detail: "You will receive a reply with the account details. They are not published on this page.",
     },
     {
-        tier: "Individual Backer",
-        forWhom: "Individual programmers, researchers, and hobbyists who want to see independent systems languages thrive.",
-        perks: [
-            "Listed on the website backer roster and repository credits",
-            "Supporter badge on Discord community hub",
-            "Direct impact on funding continuous CI compute and toolchain distribution",
-        ],
-        actionText: "Back on GitHub Sponsors ($5–$25/mo)",
-        actionHref: "https://github.com/sponsors/prismio-lang",
-        external: true,
-        highlight: false,
+        title: "Make the transfer",
+        detail: "Say how you would like to be credited, or that you would rather stay anonymous.",
     },
 ];
 
-const STEWARDSHIP_PRINCIPLES = [
+const PRINCIPLES = [
     {
-        title: "100% Permissive Open Source",
+        title: "100% open source",
         copy: "The compiler, standard library, verifier shims, and documentation are published under Apache-2.0. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library module.",
     },
     {
@@ -94,237 +54,155 @@ const STEWARDSHIP_PRINCIPLES = [
         copy: "Financial contributions do not buy unilateral feature approval. Syntax changes, semantic decisions, and memory models are decided on technical merit, in the open on GitHub.",
     },
     {
-        title: "Public Fiscal Accountability",
-        copy: "Sponsorship funds are routed through public fiscal platforms (such as GitHub Sponsors) with transparent ledger reporting. Funds are spent exclusively on server infrastructure, CI runners, and verified maintainer stipends.",
+        title: "Money goes to the project",
+        copy: "Funds are spent on infrastructure, hosting, and development time for Prismio.",
     },
 ];
 
 export default function SponsorsPage() {
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-[#070709] text-white selection:bg-indigo-500/30 selection:text-white">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-[44rem] bg-[radial-gradient(ellipse_at_68%_8%,rgba(67,56,202,0.18),transparent_54%)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[52rem] bg-[radial-gradient(ellipse_at_68%_8%,rgba(67,56,202,0.18),transparent_54%)]" />
 
             <HeaderMain />
 
-            <main className="relative z-10 mx-auto max-w-7xl px-6 pb-28 pt-16 md:pt-24">
-                {/* ── Hero Section ─────────────────────────────────────── */}
-                <section className="grid gap-10 border-b border-white/[0.09] pb-16 lg:grid-cols-12 lg:gap-16">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:py-28">
+                {/* Hero */}
+                <section className="grid items-start gap-12 border-b border-white/[0.08] pb-20 lg:grid-cols-12 lg:gap-16">
                     <div className="lg:col-span-8">
-                        <div className="inline-flex items-center gap-2 rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-1 text-xs font-mono text-indigo-300">
-                            <Heart size={13} className="text-rose-400" />
-                            <span>Project Stewardship & Sponsorship</span>
-                        </div>
-
-                        <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-white md:text-6xl">
-                            Sustaining an independent systems compiler.
+                        <h1 className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-white sm:text-5xl md:text-6xl">
+                            Support <span className="text-sky-300">Prismio.</span>
                         </h1>
-
-                        <p className="mt-7 max-w-3xl text-base leading-7 text-zinc-300 md:text-lg md:leading-8">
-                            Prismio is built in the open without venture backing, proprietary licenses, or corporate control.
-                            We sustain language development through community contributions, bare-metal CI hardware donations,
-                            and transparent sponsorships from developers and organizations.
+                        <p className="mt-8 max-w-2xl text-base leading-8 text-zinc-300 sm:text-lg">
+                            Prismio is built in the open, without venture backing or proprietary licenses.
+                            Development is sustained through community contributions and sponsorship.
                         </p>
 
-                        <div className="mt-8 flex flex-wrap items-center gap-4">
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
                             <a
-                                href="https://github.com/sponsors/prismio-lang"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                                href={sponsorMail("Prismio sponsorship")}
+                                className={`inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 ${FOCUS}`}
                             >
-                                <Heart size={15} className="fill-rose-600 text-rose-600" />
-                                Sponsor via GitHub Sponsors
+                                <Mail size={16} />
+                                Sponsor by bank transfer
                             </a>
                             <a
-                                href="mailto:saksham6975@gmail.com?subject=Prismio%20Institutional%20Sponsorship"
-                                className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-zinc-200 transition-colors hover:border-white/20 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                                href={sponsorMail("Prismio sponsorship question")}
+                                className={`inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 px-5 text-sm font-medium text-zinc-100 transition-colors hover:bg-white/[0.06] ${FOCUS}`}
                             >
-                                <Mail size={15} className="text-zinc-400" />
-                                Inquire About Institutional Backing
+                                Ask a question first
                             </a>
                         </div>
                     </div>
 
-                    <aside className="self-end border-l border-white/[0.1] pl-5 lg:col-span-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
-                            <Scale size={16} className="text-indigo-300" />
-                            Our commitment
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-zinc-400">
-                            Prismio will remain completely free and permissively licensed under Apache-2.0.
-                            Sponsorship sustains dedicated engineering focus and bare-metal verification infrastructure.
+                    <aside className={`${CARD} p-6 lg:col-span-4`}>
+                        <h2 className="text-sm font-semibold text-white">Our commitment</h2>
+                        <p className="mt-3 text-sm leading-7 text-zinc-400">
+                            Prismio stays free and Apache-2.0 licensed. Sponsorship pays for infrastructure and focused
+                            development time.
                         </p>
                     </aside>
                 </section>
 
-                {/* ── Resource Allocation / Where Funds Go ─────────────── */}
-                <section className="py-20" aria-labelledby="allocation-heading">
-                    <div className="grid gap-8 md:grid-cols-12 md:gap-16">
-                        <div className="md:col-span-4">
-                            <h2 id="allocation-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white">
-                                Where resources are deployed.
+                {/* Where funding would go */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="funding-heading">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 id="funding-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                                Where funding would go.
                             </h2>
-                            <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
-                                Language infrastructure requires predictable compute and dedicated developer hours.
-                                Here is exactly how funding is utilized.
+                            <p className="mt-4 text-sm leading-7 text-zinc-400">
+                                No funding is in place yet. This is what it would pay for.
                             </p>
                         </div>
 
-                        <div className="divide-y divide-white/[0.08] md:col-span-8">
-                            {EXPENSE_AREAS.map((item) => {
-                                const IconComponent = item.icon;
-                                return (
-                                    <article key={item.title} className="grid gap-5 py-7 first:pt-0 sm:grid-cols-[2.5rem_1fr]">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-indigo-300">
-                                            <IconComponent size={18} />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-3">
-                                                <h3 className="font-semibold text-zinc-100">{item.title}</h3>
-                                                <span className="font-mono text-[11px] text-zinc-500 rounded bg-white/[0.03] border border-white/[0.06] px-2 py-0.5">
-                                                    {item.tag}
-                                                </span>
-                                            </div>
-                                            <p className="mt-2.5 text-sm leading-relaxed text-zinc-400">{item.detail}</p>
-                                        </div>
-                                    </article>
-                                );
-                            })}
+                        <div className="divide-y divide-white/[0.1] lg:col-span-8">
+                            {FUNDING.map((item) => (
+                                <article key={item.title} className="py-8 first:pt-0 last:pb-0">
+                                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-white">{item.title}</h3>
+                                    <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-300">{item.detail}</p>
+                                </article>
+                            ))}
                         </div>
                     </div>
                 </section>
 
-                {/* ── Sponsorship Tiers ─────────────────────────────────── */}
-                <section className="border-t border-white/[0.09] py-20" aria-labelledby="programs-heading">
-                    <div className="max-w-3xl">
-                        <h2 id="programs-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white md:text-4xl">
-                            Sponsorship programs.
-                        </h2>
-                        <p className="mt-4 text-sm leading-6 text-zinc-400">
-                            Whether you are an individual developer backing open compiler research or an engineering organization building systems on Prismio, there is a structured avenue to participate.
-                        </p>
-                    </div>
+                {/* How to sponsor */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="how-heading">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 id="how-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                                How to sponsor.
+                            </h2>
+                            <p className="mt-4 text-sm leading-7 text-zinc-400">
+                                Sponsorship is by bank transfer. There is no platform in between.
+                            </p>
+                        </div>
 
-                    <div className="mt-12 grid gap-6 md:grid-cols-3">
-                        {SPONSORSHIP_LEVELS.map((level) => (
-                            <div
-                                key={level.tier}
-                                className={`flex flex-col justify-between rounded-2xl bg-[#0b0c10] p-7 ring-1 ${
-                                    level.highlight
-                                        ? "ring-indigo-500/30 bg-gradient-to-b from-[#0f1118] to-[#0b0c10]"
-                                        : "ring-white/[0.08]"
-                                }`}
-                            >
-                                <div>
-                                    <h3 className="text-lg font-semibold text-white">{level.tier}</h3>
-                                    <p className="mt-3 text-xs leading-relaxed text-zinc-400">{level.forWhom}</p>
-
-                                    <div className="mt-6 border-t border-white/[0.07] pt-5">
-                                        <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 block">
-                                            Recognition & Access
-                                        </span>
-                                        <ul className="mt-3 space-y-2.5">
-                                            {level.perks.map((perk) => (
-                                                <li key={perk} className="flex items-start gap-2.5 text-xs text-zinc-300">
-                                                    <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-400" />
-                                                    <span>{perk}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div className="mt-8 border-t border-white/[0.07] pt-5">
-                                    <a
-                                        href={level.actionHref}
-                                        target={level.external ? "_blank" : undefined}
-                                        rel={level.external ? "noopener noreferrer" : undefined}
-                                        className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition-colors ${
-                                            level.highlight
-                                                ? "bg-white text-black hover:bg-zinc-200"
-                                                : "border border-white/10 bg-white/[0.03] text-zinc-200 hover:border-white/20 hover:bg-white/[0.06]"
-                                        }`}
+                        <ol className="space-y-9 lg:col-span-8">
+                            {STEPS.map((step, i) => (
+                                <li key={step.title} className="relative pl-14">
+                                    <span
+                                        aria-hidden
+                                        className="absolute left-0 top-0 flex size-9 items-center justify-center rounded-full border border-indigo-400/40 bg-indigo-500/10 font-mono text-sm font-semibold text-indigo-100"
                                     >
-                                        <span>{level.actionText}</span>
-                                        <ArrowRight size={13} />
-                                    </a>
-                                </div>
-                            </div>
-                        ))}
+                                        {i + 1}
+                                    </span>
+                                    {i < STEPS.length - 1 && (
+                                        <span aria-hidden className="absolute bottom-[-2.25rem] left-[17px] top-11 w-px bg-white/[0.1]" />
+                                    )}
+                                    <h3 className="text-lg font-semibold text-white">{step.title}</h3>
+                                    <p className="mt-1 max-w-2xl text-sm leading-7 text-zinc-400">{step.detail}</p>
+                                </li>
+                            ))}
+                        </ol>
                     </div>
+
+                    <p className="mt-14 max-w-3xl border-t border-white/[0.1] pt-8 text-sm leading-7 text-zinc-300">
+                        Sponsors who want it are credited by name or logo on this page and in the release notes.
+                        Staying anonymous is fine.
+                    </p>
                 </section>
 
-                {/* ── Stewardship Principles ────────────────────────────── */}
-                <section className="border-t border-white/[0.09] py-20" aria-labelledby="principles-heading">
-                    <div className="max-w-3xl">
-                        <h2 id="principles-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white md:text-4xl">
-                            Governance & Stewardship principles.
-                        </h2>
-                        <p className="mt-4 text-sm leading-6 text-zinc-400">
-                            Our sponsorship model is strictly designed to protect the integrity, impartiality, and longevity of the language.
-                        </p>
-                    </div>
-
-                    <div className="mt-12 grid gap-6 md:grid-cols-3">
-                        {STEWARDSHIP_PRINCIPLES.map((principle) => (
-                            <div
-                                key={principle.title}
-                                className="rounded-2xl border border-white/[0.07] bg-[#0b0c10] p-6 ring-1 ring-white/[0.04]"
-                            >
-                                <div className="flex items-center gap-2.5 text-indigo-300 font-semibold text-sm">
-                                    <ShieldCheck size={16} />
-                                    <span>{principle.title}</span>
-                                </div>
-                                <p className="mt-3 text-xs leading-relaxed text-zinc-400">{principle.copy}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* ── Current Backers Register Placeholder ──────────────── */}
-                <section className="border-t border-white/[0.09] py-20" aria-labelledby="roster-heading">
-                    <div className="overflow-hidden rounded-2xl bg-[#0b0c10] ring-1 ring-white/[0.09]">
-                        <div className="border-b border-white/[0.07] px-6 py-6 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h3 id="roster-heading" className="text-xl font-semibold text-white">
-                                    Supporter & Backer Roster
-                                </h3>
-                                <p className="mt-1 text-xs text-zinc-400">
-                                    Individuals and institutions actively sustaining Prismio compiler development.
-                                </p>
-                            </div>
-                            <a
-                                href="https://github.com/sponsors/prismio-lang"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-zinc-200 transition-colors hover:border-white/20 hover:bg-white/[0.08]"
-                            >
-                                <Heart size={13} className="text-rose-400" />
-                                Join the Roster
-                            </a>
+                {/* Principles */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="principles-heading">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 id="principles-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                                What sponsorship does not change.
+                            </h2>
                         </div>
 
-                        <div className="p-8 sm:p-12 text-center">
-                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08] text-zinc-500">
-                                <Heart size={22} className="text-zinc-400" />
-                            </div>
-                            <h4 className="mt-4 text-base font-semibold text-zinc-200">
-                                Become a Founding Supporter
-                            </h4>
-                            <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-zinc-400">
-                                Prismio v0.1 is in active development. Backers joining during this early stage are permanently recorded as founding supporters in our release logs and project credits.
+                        <div className="divide-y divide-white/[0.1] lg:col-span-8">
+                            {PRINCIPLES.map((item) => (
+                                <article key={item.title} className="py-8 first:pt-0 last:pb-0">
+                                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-white">{item.title}</h3>
+                                    <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-300">{item.copy}</p>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Supporters */}
+                <section className="pt-24" aria-labelledby="supporters-heading">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 id="supporters-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                                Supporters.
+                            </h2>
+                        </div>
+                        <div className="lg:col-span-8">
+                            <p className="text-base leading-7 text-zinc-300">
+                                No sponsors yet. The first ones will be listed here.
                             </p>
-                            <div className="mt-6">
-                                <a
-                                    href="https://github.com/sponsors/prismio-lang"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-black transition-colors hover:bg-zinc-200"
-                                >
-                                    Sponsor on GitHub
-                                    <ArrowRight size={13} />
-                                </a>
-                            </div>
+                            <a
+                                href={sponsorMail("Prismio sponsorship")}
+                                className={`mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-300 transition-colors hover:text-indigo-200 ${FOCUS}`}
+                            >
+                                <Mail size={15} />
+                                Be the first
+                            </a>
                         </div>
                     </div>
                 </section>

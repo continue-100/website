@@ -30,7 +30,7 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | `panic`, `unreachable`, `assert`, `exit` | Implemented |
 | A `Never` return type for a function that always fails | Coming Soon |
 | Growing text in a struct field (`StringBuilder`) | Implemented |
-| `Map` removal and methods (`m.get`, `m.remove`, `m[k]`, …) | Implemented (no `keys()`; `keyAt` instead) |
+| `Map` removal and methods (`m.get`, `m.remove`, `m[k]`, …) | Implemented |
 | `Option`/`Result` methods (`unwrapOr`, `expect`, `map`, `andThen`, …) | Implemented |
 | Module qualifiers (`std.string.trim(x)`) | Implemented (calls only, by full import path) |
 | Visibility: `public`, `private`, `internal` | Implemented (`fn` and `extern fn`; `public` is the default) |

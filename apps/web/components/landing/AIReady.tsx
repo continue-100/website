@@ -253,9 +253,9 @@ export default function AIReady() {
                             Tools consume structured compiler output instead of scraping terminal prose.
                         </p>
 
-                        <div className="mt-6 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+                        <div className="mt-6 divide-y divide-white/[0.07]">
                             {TOOLING.map(({icon: Icon, title, copy}) => (
-                                <article key={title} className="grid gap-3 py-5 sm:grid-cols-[2.25rem_1fr]">
+                                <article key={title} className="grid gap-3 py-5 first:pt-0 last:pb-0 sm:grid-cols-[2.25rem_1fr]">
                                     <Icon size={17} className="mt-0.5 text-indigo-300"/>
                                     <div>
                                         <h4 className="text-sm font-semibold text-zinc-200">{title}</h4>

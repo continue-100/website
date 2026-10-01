@@ -124,6 +124,7 @@ A literal is sized once, for exactly its entries, so building it never grows the
 | `m.set(key, value)` | `Bool`: inserts or overwrites, and answers `true` if the key was already present |
 | `m.remove(key)` | `Bool`: `true` if the key was there and is now gone |
 | `m.clear()` | removes every entry |
+| `m.keys()` | `Vec<K>`: a copy of every key, in position order |
 | `m.values()` | `Vec<V>`: every value, in position order |
 | `m.keyAt(i)`, `m.valueAt(i)` | the key and value at position `i`, for `0 <= i < m.length` |
 
@@ -141,16 +142,16 @@ Do not remove entries while walking the map: the entry moved into the gap would 
 
 A removed `String` key is released at once. Removing many entries leaves no slow lookups behind: the table rebuilds itself in place once a quarter of it is removed entries. On the benchmark suite's `mixed_map_removal` workload the map runs in 10.9 ms, against 12.8 ms for C++'s `std::unordered_map` and 16.7 ms for Rust's `HashMap`.
 
-## There is no `keys()`
+## Walking the keys
 
-Walk the map instead, with `for (key, value) in m`, or by position with `keyAt`:
+`m.keys()` returns a `Vec<K>` holding a copy of every key, in position order. The `Vec` owns its copies and releases them with the rest of the program's values; the map keeps its own. To read the keys without copying them, walk the map instead, with `for (key, value) in m`, or by position with `keyAt`:
 
 ```prismio
 for (name, count) in stock { println(name) }
 for i in 0..<stock.length { println(stock.keyAt(i)) }
 ```
 
-Both visit the entries in position order. `keys()` returning a `Vec<K>` of copies is the obvious method, and it is missing on purpose: copies of the map's `String` keys pushed into a returned `Vec` are never released, in the current compiler. A ten-call measurement leaked 990 of 1,173 allocations. A standard-library method that leaks on every call is worse than none, and `keyAt` reads each key where it is without copying it.
+All of these visit the entries in position order.
 
 ## Keys implement `Key + Copy`
 

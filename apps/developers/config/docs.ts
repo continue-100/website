@@ -173,6 +173,7 @@ export const docsConfig: DocsAppConfig = {
                 { label: "AIF differential testing", href: "/testing/aif-differential" },
                 { label: "Benchmark contract", href: "/performance/benchmark-contract" },
                 { label: "Run and extend benchmarks", href: "/performance/running-adding-and-reading-results" },
+                { label: "Telling a difference from noise", href: "/performance/telling-a-difference-from-noise" },
                 { label: "Performance investigations", href: "/performance/investigation-method" },
             ],
         },

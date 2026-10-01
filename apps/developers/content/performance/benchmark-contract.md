@@ -3,9 +3,9 @@ title: Cross-language benchmark contract
 description: The equivalence, checksum, compiler, sampling, and unsupported-workload rules for Prismio's maintained benchmark suite.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-10-01"
 tags: [benchmarks, performance, methodology]
-related: [performance/running-adding-and-reading-results, performance/investigation-method, testing/overview]
+related: [performance/telling-a-difference-from-noise, performance/running-adding-and-reading-results, performance/investigation-method, testing/overview]
 ---
 
 `benchmarks/benchmarks.json` is the maintained catalog: 78 workloads, of which 62 have Prismio,
@@ -63,10 +63,16 @@ include their deliberate in-memory construction. Small deltas require an A/A noi
 they become conclusions.
 
 The raw artifact records schema version, UTC generation time, run count, exact build commands,
-compile duration, every elapsed sample, medians, checksum, and artifact paths. It does not yet
-record CPU model, power state, OS build, compiler version, or git revision automatically; record
-those beside published evidence.
+compile duration and binary size per arm, every elapsed sample, medians, checksum, the host and
+toolchains it ran on (processor, cores, memory, OS, power state, target, compiler versions, source
+commit and whether the tree was dirty), and a verdict per comparison. Peak resident memory is
+recorded per sample.
+
+The C++ and Rust arms are built with whole-program optimisation (`-flto`, and `-C lto=fat
+-C codegen-units=1`) because the Prismio arm always is, so that a constant crossing a file boundary
+reaches the code that uses it in all three.
 
 One benchmark result describes one workload, host, compiler revision, and configuration. It is not
 a universal language ranking. Ratios smaller than the host's interleaved A/A variation are noise,
-not an optimization claim.
+not an optimization claim; the harness applies that judgement itself (see
+[Telling a difference from noise](/performance/telling-a-difference-from-noise)).

@@ -26,7 +26,7 @@ export default function ComingSoon() {
                 {/* ── Main Hero ── */}
                 <main className="flex-1 flex flex-col items-center">
                     <section className="w-full max-w-4xl mx-auto px-6 pt-20 sm:pt-28 pb-16 text-center">
-                        <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.08] max-w-3xl mx-auto mb-10">
+                        <h1 className="text-3xl sm:text-6xl md:text-6xl pt-20 font-bold tracking-tight text-white leading-[1.08] max-w-3xl mx-auto mb-10">
                             The interactive playground for{" "}
                             <span className="relative inline-block whitespace-nowrap">
                                 <span className="relative z-10">Prismio</span>

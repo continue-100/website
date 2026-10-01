@@ -1,20 +1,55 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, CircleSlash2 } from 'lucide-react';
-import { getBenchmarkDataset } from '@/lib/benchmarks';
+import {ArrowRight} from 'lucide-react';
+import {getBenchmarkDataset} from '@/lib/benchmarks';
 
 export default function BenchmarkTeaser() {
     const data = getBenchmarkDataset();
-    const { stats, featured, runs } = data;
+    const {stats, featured, runs} = data;
+    const compared = stats.implemented - stats.eliminated;
+
+    const arms = [
+        {
+            key: 'cpp',
+            label: 'vs C++',
+            detail: 'Clang++ -O3',
+            tone: 'text-sky-300',
+            dot: 'bg-sky-400',
+            geomean: stats.cppGeomean,
+            speedupPct: stats.cppSpeedupPct,
+            wins: stats.winsVsCpp,
+            parity: stats.parityVsCpp,
+            losses: stats.lossesVsCpp,
+        },
+        {
+            key: 'rust',
+            label: 'vs Rust',
+            detail: 'rustc opt-level 3',
+            tone: 'text-orange-300',
+            dot: 'bg-orange-400',
+            geomean: stats.rustGeomean,
+            speedupPct: stats.rustSpeedupPct,
+            wins: stats.winsVsRust,
+            parity: stats.parityVsRust,
+            losses: stats.lossesVsRust,
+        },
+    ];
+
+    const facts = [
+        {label: 'Implemented', value: String(stats.implemented)},
+        {label: 'Documented gaps', value: String(stats.unsupported)},
+        {label: 'Compile time', value: data.toolchain.compileTime.prismio.formatted},
+        {label: 'Binary size', value: data.toolchain.binarySize.prismio.formatted},
+    ];
 
     return (
-        <section className="mx-auto max-w-7xl px-6 py-28 md:py-36">
+        <section aria-labelledby="bench-heading" className="mx-auto max-w-7xl px-6 py-24">
             <div className="grid items-end gap-8 lg:grid-cols-12">
                 <div className="lg:col-span-8">
-                    <h2 className="text-4xl font-semibold tracking-[-0.035em] text-white md:text-5xl">
+                    <h2 id="bench-heading" className="text-4xl font-semibold tracking-[-0.035em] text-white md:text-5xl">
                         Performance claims with receipts.
                     </h2>
-                    <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-400">
+                    <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-300">
                         The maintained suite contains {stats.total} canonical workloads across {data.categories.length} categories.{' '}
                         {stats.implemented} run equivalent Prismio, C++, and Rust implementations with
                         checksum validation and median timing. The other {stats.unsupported} are published as
@@ -32,75 +67,115 @@ export default function BenchmarkTeaser() {
                 </div>
             </div>
 
-            <div className="mt-12 overflow-hidden rounded-2xl bg-[#0b0c10] ring-1 ring-white/[0.09]">
-                <div className="grid grid-cols-3 sm:grid-cols-5 border-b border-white/[0.07] text-center text-sm">
-                    <div className="border-r border-white/[0.07] px-3 py-5">
-                        <span className="font-mono text-lg font-semibold text-white">{stats.total}</span>
-                        <span className="ml-2 text-zinc-500">canonical</span>
-                    </div>
-                    <div className="border-r border-white/[0.07] px-3 py-5">
-                        <span className="font-mono text-lg font-semibold text-emerald-300">{stats.implemented}</span>
-                        <span className="ml-2 text-zinc-500">implemented</span>
-                    </div>
-                    <div className="border-r border-white/[0.07] sm:border-r px-3 py-5">
-                        <span className="font-mono text-lg font-semibold text-amber-200">{stats.unsupported}</span>
-                        <span className="ml-2 text-zinc-500">gaps</span>
-                    </div>
-                    <div className="border-r border-white/[0.07] px-3 py-5 hidden sm:block">
-                        <span className="font-mono text-lg font-semibold text-emerald-300">{data.toolchain.compileTime.prismio.formatted}</span>
-                        <span className="ml-2 text-zinc-500">build speed</span>
-                    </div>
-                    <div className="px-3 py-5 hidden sm:block">
-                        <span className="font-mono text-lg font-semibold text-indigo-300">{data.toolchain.binarySize.prismio.formatted}</span>
-                        <span className="ml-2 text-zinc-500">binary size</span>
-                    </div>
-                </div>
-
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[720px] border-collapse text-left text-sm">
-                        <thead className="border-b border-white/[0.07] text-xs text-zinc-500">
-                            <tr>
-                                <th className="px-6 py-4 font-medium">Workload</th>
-                                <th className="px-4 py-4 font-medium text-white">Prismio</th>
-                                <th className="px-4 py-4 font-medium text-amber-300">C++20</th>
-                                <th className="px-4 py-4 font-medium text-indigo-300">Rust</th>
-                                <th className="px-6 py-4 font-medium">Readout</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {featured.map((result) => (
-                                <tr key={result.name} className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors">
-                                    <td className="px-6 py-5 font-mono text-xs text-zinc-200">{result.name}</td>
-                                    <td className="px-4 py-5 font-mono text-xs font-semibold text-white">{result.prismio}</td>
-                                    <td className="px-4 py-5 font-mono text-xs text-zinc-400">{result.cpp}</td>
-                                    <td className="px-4 py-5 font-mono text-xs text-zinc-400">{result.rust}</td>
-                                    <td className={`px-6 py-5 text-xs ${result.tone === 'win' ? 'text-emerald-300' : 'text-zinc-400'}`}>
-                                        {result.note}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div className="grid gap-6 border-t border-white/[0.07] p-6 sm:grid-cols-2 sm:p-8">
-                    <div className="flex gap-3">
-                        <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-300" />
-                        <p className="text-sm leading-6 text-zinc-400">
-                            Each workload is written to express the same algorithm in all three languages and must produce the same checksum. Known differences are listed in the suite’s README. Fixtures are created outside the timed region.
-                        </p>
-                    </div>
-                    <div className="flex gap-3">
-                        <CircleSlash2 size={17} className="mt-0.5 shrink-0 text-amber-200" />
-                        <p className="text-sm leading-6 text-zinc-400">
-                            Missing standard-library capabilities remain visible in the catalog instead
-                            of being replaced with private benchmark implementations.
-                        </p>
-                    </div>
-                </div>
+            {/* Headline ratios */}
+            <div className="mt-14 grid divide-y divide-white/[0.1] border-y border-white/[0.1] md:grid-cols-2 md:divide-x md:divide-y-0">
+                {arms.map((arm) => {
+                    const faster = arm.speedupPct >= 0;
+                    return (
+                        <div key={arm.key} className="py-9 md:px-10 md:first:pl-0 md:last:pr-0">
+                            <div className={`flex items-center gap-2.5 text-sm font-medium ${arm.tone}`}>
+                                <span aria-hidden className={`size-2 rounded-full ${arm.dot}`} />
+                                {arm.label}
+                                <span className="font-mono text-xs font-normal text-zinc-400">{arm.detail}</span>
+                            </div>
+                            <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                                <span className="font-mono text-6xl font-semibold tracking-tight text-white">
+                                    {arm.geomean.toFixed(2)}×
+                                </span>
+                                <span
+                                    className={`rounded-md px-2.5 py-1 text-sm font-medium ${
+                                        faster ? 'bg-emerald-500/15 text-emerald-300' : 'bg-rose-500/15 text-rose-300'
+                                    }`}
+                                >
+                                    {Math.abs(arm.speedupPct).toFixed(1)}% {faster ? 'faster' : 'slower'}
+                                </span>
+                            </div>
+                            <p className="mt-4 text-sm leading-6 text-zinc-400">
+                                Geometric mean of the time ratio across {compared} workloads. Lower is faster.
+                            </p>
+                            <p className="mt-2 font-mono text-xs text-zinc-300">
+                                {arm.wins} faster · {arm.parity} parity · {arm.losses} slower
+                            </p>
+                        </div>
+                    );
+                })}
             </div>
-            <p className="mt-4 text-xs leading-5 text-zinc-600">
-                Featured medians are from the latest checked-in {runs}-run result set ({data.formattedDate}). Results vary by machine and toolchain.
+
+            {/* The rest of the numbers, as one line of facts */}
+            <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-3 text-sm">
+                {facts.map((fact) => (
+                    <div key={fact.label} className="flex items-baseline gap-2">
+                        <dt className="text-zinc-400">{fact.label}</dt>
+                        <dd className="font-mono font-semibold text-white">{fact.value}</dd>
+                    </div>
+                ))}
+            </dl>
+
+            {/* Featured workloads */}
+            <div className="mt-12 overflow-x-auto rounded-2xl border border-white/[0.1] bg-[#0b0c10]/60">
+                <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+                    <caption className="sr-only">Featured workloads with median time per language</caption>
+                    <thead>
+                        <tr className="border-b border-white/[0.08] text-xs text-zinc-400">
+                            <th scope="col" className="px-6 py-4 font-medium">Workload</th>
+                            <th scope="col" className="px-4 py-4 font-medium text-purple-300">
+                                <span className="inline-flex items-center gap-2">
+                                    <span aria-hidden className="size-1.5 rounded-full bg-purple-400" />
+                                    Prismio
+                                </span>
+                            </th>
+                            <th scope="col" className="px-4 py-4 font-medium text-sky-300">
+                                <span className="inline-flex items-center gap-2">
+                                    <span aria-hidden className="size-1.5 rounded-full bg-sky-400" />
+                                    C++20
+                                </span>
+                            </th>
+                            <th scope="col" className="px-4 py-4 font-medium text-orange-300">
+                                <span className="inline-flex items-center gap-2">
+                                    <span aria-hidden className="size-1.5 rounded-full bg-orange-400" />
+                                    Rust
+                                </span>
+                            </th>
+                            <th scope="col" className="px-6 py-4 font-medium">Readout</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {featured.map((result) => (
+                            <tr key={result.name} className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.02]">
+                                <th scope="row" className="px-6 py-5 text-left font-mono text-xs font-normal text-zinc-200">{result.name}</th>
+                                <td className="px-4 py-5 font-mono text-xs font-semibold text-purple-200">{result.prismio}</td>
+                                <td className="px-4 py-5 font-mono text-xs text-zinc-300">{result.cpp}</td>
+                                <td className="px-4 py-5 font-mono text-xs text-zinc-300">{result.rust}</td>
+                                <td className={`px-6 py-5 text-xs ${result.tone === 'win' ? 'text-emerald-300' : 'text-zinc-300'}`}>
+                                    {result.note}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            <ul className="mt-8 grid gap-4 text-sm leading-6 text-zinc-400 sm:grid-cols-2 sm:gap-10">
+                <li className="flex gap-3">
+                    <span aria-hidden className="mt-3 h-px w-3 shrink-0 bg-zinc-500" />
+                    <span>
+                        Each workload is written to express the same algorithm in all three languages and must produce the
+                        same checksum. Known differences are listed in the suite’s README. Fixtures are created outside the
+                        timed region.
+                    </span>
+                </li>
+                <li className="flex gap-3">
+                    <span aria-hidden className="mt-3 h-px w-3 shrink-0 bg-zinc-500" />
+                    <span>
+                        Missing standard-library capabilities remain visible in the catalog instead of being replaced with
+                        private benchmark implementations.
+                    </span>
+                </li>
+            </ul>
+
+            <p className="mt-6 text-xs leading-5 text-zinc-400">
+                Featured medians are from the latest checked-in {runs}-run result set ({data.formattedDate}). Results vary by
+                machine and toolchain.
             </p>
         </section>
     );
