@@ -173,7 +173,7 @@ An `insert` or `removeAt` index outside the Vec stops the program with a message
 | `v.take(n)` / `v.skip(n)` | the first `n` elements, or everything after them; a count past either end clamps |
 | `v.concat(other)` | a new Vec of this Vec's elements, then `other`'s |
 
-A Vec of Strings releases the copies these methods make, as a Vec of numbers does. The one exception is a program that also pushes an element read as it is (`other.push(names[0])`): that keeps its copies unreleased rather than risk freeing one block twice.
+A Vec of Strings releases the copies these methods make, as a Vec of numbers does. Pushing an element read (`other.push(names[0])`) copies it too, so the two Vecs never share a block.
 
 ## Removing an element another name still reads
 

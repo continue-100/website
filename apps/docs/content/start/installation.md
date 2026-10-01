@@ -43,12 +43,12 @@ If you are using a source archive or an existing checkout, verify that it corres
 ## macOS and Linux
 
 ```bash
-python3 tools/setup_llvm.py
+python3 tools/setup.py
 tools/bootstrap.sh --seed --out build/prismio
 ./build/prismio --version
 ```
 
-`tools/setup_llvm.py` downloads the pinned LLVM into `third_party/llvm` and prepares it. The archive is over a gigabyte, and it is downloaded once: running the script again finds the prepared copy and does nothing. `tools/bootstrap.sh --seed` begins with the committed trusted seed and writes a self-hosted compiler to the requested output path.
+`tools/setup.py` first checks the machine: your Python, the free disk space, and the system C toolchain, which it tests by compiling and linking a small program rather than looking for a file name. It then runs `tools/setup_llvm.py`, which downloads the pinned LLVM into `third_party/llvm` and prepares it. The archive is over a gigabyte, and it is downloaded once: running the script again finds the prepared copy and does nothing. Python is the one prerequisite you install yourself. If the C toolchain is missing, the script says what to install, and `python3 tools/setup.py --install-system-deps` installs it for you after asking (`--yes` skips the question; `--check` only reports). `tools/bootstrap.sh --seed` begins with the committed trusted seed and writes a self-hosted compiler to the requested output path.
 
 The output path may be absolute or repository-relative. Keep generation binaries under `build/` while developing so they remain separate from source.
 
@@ -65,7 +65,7 @@ Assemble the toolchain to fix that.
 ## Windows
 
 ```powershell
-python tools/setup_llvm.py
+python tools/setup.py
 ./tools/bootstrap.ps1 -Seed -Out build/prismio.exe
 ./build/prismio.exe --version
 ```
@@ -132,7 +132,7 @@ Running it from outside the repository is the stronger check: inside a checkout,
 
 ## Upgrade or switch versions
 
-Prismio 0.1 does not have an in-place update command. Check out the desired compiler revision, rerun `tools/setup_llvm.py` (it only downloads when the pinned version has changed), and bootstrap a new output binary. Keep the old binary until the new generation passes `--version`, a self-host, and the regression tests relevant to your project.
+Prismio 0.1 does not have an in-place update command. Check out the desired compiler revision, rerun `tools/setup.py` (it only downloads when the pinned version has changed), and bootstrap a new output binary. Keep the old binary until the new generation passes `--version`, a self-host, and the regression tests relevant to your project.
 
 Documentation versions are designed to remain separately addressable. Always compare the page version with the compiler output before relying on experimental AIF behavior or ABI details.
 
