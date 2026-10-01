@@ -101,6 +101,12 @@ Requires `T: Eq` (from `std.eq`, which covers every scalar and `String`).
 | `v.countOf(x)` | how many elements equal `x` |
 | `v.binarySearch(x)` | the position of `x` in a **sorted** Vec, or `-1`; requires `T: Ord` |
 | `v.isSorted()` | whether the elements are in order; requires `T: Ord` |
+| `v.min()` / `v.max()` | the smallest or largest element as an `Option`, `Option.None` when empty; requires `T: Ord`, `T: Copy` |
+| `v.find(keep)` | the first element `keep` accepts, as an `Option` |
+| `v.indexWhere(keep)` | the position of the first element `keep` accepts, or `-1` |
+| `v.startsWith(other)` / `v.endsWith(other)` | whether the Vec begins or ends with the elements of `other`, in order |
+
+The searches above, `min`, `max`, `find`, `indexWhere`, `any`, `all`, `countWhere`, `forEach` and `fold` also work on an [array](/language/arrays-and-lists#length-ends-and-methods) and on a [slice](/language/arrays-and-lists#slices), and `toVec()` copies either into a Vec; the rest of this page is Vec only. A bare integer literal is the element's width: `ids.contains(2)` on a `Vec<I64>` needs no `as I64`.
 
 ### Change
 
@@ -120,6 +126,11 @@ Everything in this table changes the Vec, so the Vec has to be one the code may 
 | `v.reserve(n)` | makes room for `n` elements in total |
 | `v.extend(other)` | appends a copy of every element of `other` |
 | `v.reverse()` | reverses the order in place |
+| `v.removeFirst()` | removes the first element: `Option.Some(it)`, or `Option.None` when empty |
+| `v.swapRemove(i)` | removes the element at `i` and returns it, by moving the last element into its place: constant time, order not kept |
+| `v.retain(keep)` | keeps the elements `keep` accepts, in order |
+| `v.dedup()` | removes each element equal to the one before it; sort first to remove every repeat |
+| `v.fill(x)` | makes every element a copy of `x` |
 | `v.sort()` / `v.sortBy(f)` | sorts in place — see [Sorting](#sorting) |
 
 `push`, `insert` and `set` **move** the value in: the name you pushed is no longer usable. `pop`, `removeAt`, `get` and `extend` hand out copies, so they need `T: Copy`.
@@ -158,6 +169,11 @@ An `insert` or `removeAt` index outside the Vec stops the program with a message
 |---|---|
 | `v.clone()` | a new Vec with a copy of every element; requires `T: Copy` |
 | `v.filter(keep)` | a new Vec of the elements `keep` accepts; requires `T: Copy` |
+| `v.sorted()` / `v.reversed()` | a new Vec in order, or reversed; the original is unchanged |
+| `v.take(n)` / `v.skip(n)` | the first `n` elements, or everything after them; a count past either end clamps |
+| `v.concat(other)` | a new Vec of this Vec's elements, then `other`'s |
+
+A Vec of Strings leaks the copies these methods make (a known issue, not yet fixed); a Vec of numbers does not.
 
 ## Removing an element another name still reads
 
@@ -307,7 +323,9 @@ With [closures](/language/closures):
 | `v.sortBy(order)` | sorts under a comparator answering negative, zero or positive; no `Ord` needed |
 | `v.filter(keep)` | a new Vec of the elements `keep` accepts; requires `T: Copy` |
 | `v.mapInto(out, f)` | appends `f(x)` for every element to `out` |
-| `v.countWhere(keep)` / `v.anyOf(keep)` / `v.allOf(keep)` | predicate queries |
+| `v.countWhere(keep)` / `v.any(keep)` / `v.all(keep)` | predicate queries |
+| `v.forEach(f)` | calls `f` on every element; `f` may return nothing |
+| `v.fold(initial, f)` | `f(accumulated, element)` over the elements from `initial`, left to right; `initial` is a `Copy` type, and decides the result's |
 
 <!-- prismio-check: pass -->
 ```prismio

@@ -44,7 +44,7 @@ PATH=$PWD/third_party/llvm/bin:$PATH python tools/release_gate.py --rc build/v0.
   LLVM 23 bitcode or agree on its data layout, which fails the packaged-toolchain check,
   `module_artifacts` and `target_cross`. CI puts it there already.
 
-What is left before 0.1.0 can be tagged is tracked in `RELEASE_CHECKLIST.md`, not here. `tools/release.py` produces platform archives and SHA-256 files only after
+What is left before 0.1.0 can be tagged is the steps of `RELEASE.md` that have not yet gone green on all three platforms, plus `docs/KNOWN_ISSUES.md`; there is no separate checklist file. `tools/release.py` produces platform archives and SHA-256 files only after
 the candidate is chosen.
 
 Artifacts must be smoke-tested outside the repository so checkout sources cannot hide missing

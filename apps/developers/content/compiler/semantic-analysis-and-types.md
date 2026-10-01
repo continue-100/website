@@ -231,6 +231,32 @@ assignment for codegen's element-address store. Everything else is refused with 
 works. Assignment also sends a bare integer literal through `semaCheckValue`, so `w = 4294967296`
 into an `I64` adopts the type and range-checks exactly as a `let` does.
 
+### Methods on an array
+
+A Vec carries its length and an array carries it in the type, so a `[T]` parameter cannot read
+`items.length` and the array methods are separate functions that take the length beside the array:
+`min(items: [T], count: Int)` in `std/vec.psm`, next to the Vec's `min(items: Vec<T>)`.
+`semaArrayLower` (`src/sema/array.psm`) supplies the count at a call on an array whose
+`TypeInfo.length` is known. It is called from the method-call path and from the property path in
+`checker.psm`, beside `semaVecLower`, and answers in the same three results (`semaVecNotLowered`,
+`semaVecRewritten`, `semaVecRejected`):
+
+- `a.length` becomes the literal `N`, and needs a named array, because the receiver is dropped and a
+  call in that position would no longer run.
+- `a.first` and `a.last` become `a[0]` and `a[N - 1]`: an `INDEX_EXPR` over the receiver, which stays.
+- `a.contains(x)` and the rest of `semaArrayTakesCount`'s list become `contains(a, N, x)`, a plain
+  call that overload resolution then picks the `[T]` overload for. The in-place ones (`sort`,
+  `reverse`, `swap`, `fill`, `sortBy`) become calls on an `inout` parameter, so the usual
+  `semaCheckMutablePlace` asks for a `let mut` array without this module saying so.
+- An array whose length is not known, which is what a `[T]` parameter is, is rejected with a message
+  that says so and names the long form (`contains(xs, n, x)`); it is not left to report
+  "no overload".
+
+A slice needs none of this: it carries its length, so its overloads are the Vec's with `Slice<T>`.
+`tests/test_249_array_methods.psm` and `tests/test_254_array_and_slice_methods.psm` cover the
+accepted half, `tests/neg_251_array_length_unknown.psm` and `tests/neg_253_array_mutation_needs_mut.psm`
+the refused half.
+
 ## Flow and program validity
 
 ### `for` over a collection

@@ -55,6 +55,40 @@ fn main() -> Int {
 }
 ```
 
+### Length, ends and methods
+
+An array's length is part of its type, so `a.length` is that number — read at compile time, with no call — for any array the compiler can see the length of: a local, a field, a returned value bound with `let`. `a.first` and `a.last` are `a[0]` and `a[N - 1]`. An array also has the reading and in-place methods of a [Vec](/stdlib/vec), which need `import std.vec`:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.vec
+
+fn main() -> Int {
+    let primes = [2, 3, 5, 7]            // an Array<Int, 4>, not a Vec
+    println(primes.length)               // 4
+    println(primes.contains(5))          // true
+    println(primes.indexOf(7))           // 3
+    println(primes.countOf(4))           // 0
+    println(primes.last)                 // 7
+    println(primes.fold(0, |total: Int, p: Int| total + p))   // 17
+
+    let mut order = [5, 3, 4, 1]
+    order.sort()                         // in place; needs `let mut`
+    println(order[0])                    // 1
+    return 0
+}
+```
+
+| | Methods |
+|---|---|
+| Search | `contains`, `indexOf`, `lastIndexOf`, `countOf`, `binarySearch`, `isSorted` |
+| Read | `min`, `max`, `find`, `indexWhere`, `any`, `all`, `countWhere`, `forEach`, `fold` |
+| Change in place | `sort`, `sortBy`, `reverse`, `swap`, `fill`; the array has to be `let mut` and its elements numbers, `Bool`, `Char` or payload-free enums |
+| Copy out | `toVec()`, a new `Vec` — the way to `sorted`, `reversed`, `take` and the other methods that return a Vec: `a.toVec().sorted()` |
+
+An array has no `isEmpty`, because its length is at least one. A method that grows or shrinks (`push`, `insert`, `pop`, `removeAt`) is a Vec's, and asked of an array the error names the array (`` `x` is an `Array<Int, 3>`, a fixed-length array, and `push` is a `Vec` method ``) and says to write `let x: Vec<Int> = [...]` for a list that can grow. A `[T]` parameter takes any length and does not know its own, so `xs.length` and `xs.contains(1)` are errors that say so. Pass the length beside the parameter and call the long form: `contains(xs, n, 1)`, `min(xs, n)`.
+
 ### Replacing an element
 
 An element is replaced by assigning through its index when the element owns nothing: a number, `Bool`, `Char`, `Ptr` or an enum without payloads. The store writes into the array's own storage. An integer literal takes the element's type, as it does in a `let`.
@@ -261,7 +295,7 @@ fn main() -> Int {
 }
 ```
 
-`view.length` returns the view's length, `view[index]` reads through it, and `view[index] = value` writes to the underlying Vec. Overlapping slices are permitted in one task; a write through either is visible through the other.
+A Slice has the same reading methods as a Vec (`contains`, `indexOf`, `min`, `max`, `find`, `fold`, `forEach`, `any`, `countWhere` and the rest of the table in [std.vec](/stdlib/vec)), and `sort`, `sortBy`, `reverse`, `swap` and `fill` write through to the Vec it views; `toVec()` copies it out. `view.length` returns the view's length, `view[index]` reads through it, and `view[index] = value` writes to the underlying Vec. Overlapping slices are permitted in one task; a write through either is visible through the other.
 
 A write through a Slice changes the Vec it views, so it needs what a write into that Vec needs. The view's own binding is `let mut`, or an `inout` parameter, as for a [Vec](/language/variables#immutability-and-reassignment). And the view has to be of something changeable. Two kinds of Slice are read-only:
 
@@ -330,7 +364,7 @@ fn main() -> Int {
 | Returned from a function | by value, declared `-> Array<T, N>` | yes |
 | In a struct field | in place, declared `Array<T, N>` | yes, as a pointer to the Vec |
 | `for x in …` | yes, when the length is known | yes |
-| `.length` | no | yes |
+| `.length` | yes, when the length is known | yes |
 | Index type | `Int` | `Int` |
 
 ## DataView
@@ -344,7 +378,7 @@ These are not in Prismio 0.1. Each is planned, and this page will say so when on
 | Missing | Use today |
 | --- | --- |
 | **A parameter of one fixed length** (`xs: Array<Int, 4>`), compiled once per length | a `[T]` parameter, with the length passed beside it |
-| **`.length` on an array**, and `for x in` over a `[T]` parameter whose length is not known | the `N` you wrote, or a length passed beside the parameter: `for i in 0..<n` |
+| **`.length` on a `[T]` parameter**, and `for x in` over one | a length passed beside the parameter: `for i in 0..<n` |
 | **An array field in a generic struct**, or one whose elements own memory | a struct without type parameters, or a `Vec<T>` field |
 | **Copying an array of arrays**, or of elements that own memory (today a second binding shares them) | copy row by row into an `Array<T, N>` |
 | **Slices of arrays** — `Slice<T>` views a `Vec<T>` only | index the array directly, or build a `Vec<T>` |

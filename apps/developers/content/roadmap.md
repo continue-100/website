@@ -21,7 +21,7 @@ does not assign release dates.
 - AIF storage plans, explanations, manifests, runtime verification, and an independent oracle.
 - A standard library a command-line program can be written with: standard input, files and line
   readers, the environment, clocks, math, `StringBuilder`, and `Map`/`Option`/`Result` methods
-  (`docs/STDLIB_SHIP_PLAN.md` tier 1, done 2026-09-25).
+  (done 2026-09-25).
 - A 78-workload cross-language benchmark catalog with 63 implemented workloads.
 
 ## Foundational memory work

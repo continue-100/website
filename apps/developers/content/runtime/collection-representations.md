@@ -17,7 +17,10 @@ the type kind is `TypeKind.LIST`, its key is `List<...>`, the header is `RtList`
 points are `list_*`. The rename was surface-only so that mangled symbols, AIF type keys and the
 Python oracle did not move — see `COLLECTIONS.md` in the compiler repository. The method surface a
 program uses (`v.push(x)`, `v.insert(i, x)`, `v.length`) is lowered onto the functions below in
-`src/sema/vec.psm`.
+`src/sema/vec.psm`. An array's methods are `std.vec` functions that take its length beside it, supplied
+at the call by `src/sema/array.psm`; a slice's are the Vec's over `Slice<T>`. Neither touches the
+runtime: they read through `items[i]`, and the in-place ones write through `slice_set` or the array's
+element address.
 
 ## Vec
 

@@ -110,12 +110,12 @@ what replaced them is:
 
 | Question | Where |
 | --- | --- |
-| What is left before v0.1.0 is published? | `RELEASE_CHECKLIST.md` at the root. A box is ticked in the commit that does the work, and the message says what the evidence is |
-| What is planned, and why that way? | `docs/*_PLAN.md` — `STDLIB_SHIP_PLAN`, `MEMORY_PLAN`, `CHANNELS_PLAN`, `PERFORMANCE_PLAN` — and `docs/COLLECTIONS.md`, each split into what 0.1 needs and what comes later |
+| What is left before v0.1.0 is published? | `RELEASE.md` at the root (the order, and what must be green first) and `docs/KNOWN_ISSUES.md`. There is no separate checklist file |
+| What is planned, and why that way? | `docs/*_PLAN.md` — `COLLECTION_METHODS_PLAN`, `MEMORY_PLAN`, `CHANNELS_PLAN`, `PERFORMANCE_PLAN` — and `docs/COLLECTIONS.md`, each split into what 0.1 needs and what comes later |
 | What is open, with enough to act on? | `docs/KNOWN_ISSUES.md` |
 | What was measured? | `aif/evidence/`, one `RESULTS-*.md` per piece of work |
 | What changed, and why? | `git log`. Commit messages here carry their own evidence, and are usually better than any document summarising them |
-| What shipped, and how to ship it? | `CHANGELOG.md` and `RELEASE.md` |
+| What shipped, and how to ship it? | The docs site's release pages (`apps/*/content/releases/`), and `RELEASE.md` |
 
 A new plan goes in `docs/`, not at the root. `RELEASE.md` §1 has two requirements the release gate
 does not check for you, and both fail it wholesale: the candidate must be a **packaged** toolchain
