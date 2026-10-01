@@ -132,7 +132,7 @@ export default function Hero() {
                     </h1>
 
                     <p className="mt-8 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
-                        Prismio. Statically typed language that compiles to native
+                        Prismio is a statically typed systems programming language that compiles to native
                         machine code through LLVM. Its Adaptive Inference Framework decides where
                         values live, explains every placement, and can verify those decisions at runtime.
                     </p>

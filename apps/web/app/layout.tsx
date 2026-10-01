@@ -56,8 +56,32 @@ const bricolage = localFont({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL(siteConfig.url),
     title: siteConfig.name,
     description: siteConfig.description,
+    applicationName: siteConfig.name,
+    alternates: {
+        canonical: "./",
+        types: {
+            "application/atom+xml": [{url: siteConfig.releasesFeed, title: "Prismio releases"}],
+        },
+    },
+    openGraph: {
+        type: "website",
+        siteName: siteConfig.name,
+        title: siteConfig.name,
+        description: siteConfig.description,
+        locale: "en_US",
+        images: [{url: "/icons/prismio-banner.png", width: 489, height: 121, alt: "Prismio logo and wordmark"}],
+    },
+    twitter: {
+        card: "summary",
+        site: "@prismio_lang",
+        title: siteConfig.name,
+        description: siteConfig.description,
+        images: ["/icons/prismio.png"],
+    },
+    robots: {index: true, follow: true},
     keywords: [
         "Prismio",
         "Programming",

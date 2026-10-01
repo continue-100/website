@@ -96,7 +96,7 @@ const HeaderMain: React.FC = () => {
                             className="p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/[0.05] transition-all"
                             aria-label="GitHub Repository">
 
-                            <Image src={"/icons/github-mark-white.svg"} alt={"Github Repository"} height={24} width={24}/>
+                            <Image src={"/icons/github-mark-white.svg"} alt={"Prismio on GitHub"} height={24} width={24}/>
                         </Link>
 
                         <Link

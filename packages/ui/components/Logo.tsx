@@ -12,7 +12,7 @@ export default function Logo({ href = "/", label = "Prismio", className }: LogoP
     return (
         <Link href={href} className={`flex items-center gap-2.5 ${className ?? ""}`}>
             <div className="w-8 h-8 flex items-center justify-center">
-                <Image src="/icons/prismio.png" alt="Logo" width={32} height={32}/>
+                <Image src="/icons/prismio.png" alt="Prismio logo" width={32} height={32}/>
             </div>
             <span className="font-semibold text-xl text-zinc-900 dark:text-white">{label}</span>
         </Link>
