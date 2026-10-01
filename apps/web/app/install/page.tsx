@@ -1,638 +1,565 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import {
-    Download,
-    Copy,
-    Check,
-    Terminal,
-    Cpu,
-    Info,
-    ExternalLink,
-    Monitor,
-    Sparkles,
-    GitBranch,
-    FolderCode,
-    CheckCircle2
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, {useEffect, useState} from 'react';
+import {ArrowUpRight, Check, Copy, Download, ExternalLink, Info} from 'lucide-react';
 import HeaderMain from '@/components/HeaderMain';
 import IntelliJPluginCard from '@/components/IntelliJPluginCard';
-import { PRISMIO_VERSION, LLVM_VERSION } from '@prismio/utils';
+import FooterMain from '@prismio/ui/FooterMain';
+import {LLVM_VERSION, PRISMIO_VERSION} from '@prismio/utils';
 
 type OS = 'macOS' | 'Linux' | 'Windows';
-type Arch = 'x64' | 'arm64';
-type InstallMode = 'quickstart' | 'source' | 'binaries';
+type InstallMode = 'source' | 'script' | 'binaries';
 type VerifyTab = 'version' | 'project' | 'aif';
 
-interface ReleaseDetails {
+interface ReleaseAsset {
     filename: string;
     size: string;
     url: string;
-    installCmd?: string;
-    instruction?: string;
+    platform: OS;
 }
 
-interface PlatformReleases {
-    x64?: ReleaseDetails;
-    arm64?: ReleaseDetails;
-}
-
-interface ReleaseData {
+interface Release {
     version: string;
-    releaseDate: string;
-    changelogUrl: string;
-    platforms: {
-        Windows: PlatformReleases;
-        macOS: PlatformReleases;
-        Linux: PlatformReleases;
-    };
+    date: string;
+    assets: ReleaseAsset[];
 }
+
+interface Step {
+    title: string;
+    note: string;
+    commands?: string[];
+}
+
+const REPO = 'https://github.com/prismio-lang/prismio';
+const DOCS = 'https://docs.prismio.org';
+const CARD = 'rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-blur-xl';
+const FOCUS = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400';
+
+const MODES: {id: InstallMode; label: string; status: string; ready: boolean}[] = [
+    {id: 'source', label: 'Build from source', status: 'Available now', ready: true},
+    {id: 'script', label: 'Install script', status: 'With 0.1.0', ready: false},
+    {id: 'binaries', label: 'Prebuilt binaries', status: 'With 0.1.0', ready: false},
+];
+
+function stepsFor(os: OS): Step[] {
+    const win = os === 'Windows';
+    return [
+        {
+            title: 'Get the source',
+            note: 'Clone the repository.',
+            commands: ['git clone https://github.com/prismio-lang/prismio.git', 'cd prismio'],
+        },
+        {
+            title: 'Check your toolchain and fetch LLVM',
+            note: `Reports exactly what is missing, then downloads the pinned LLVM ${LLVM_VERSION} into third_party/llvm. About 2.5 minutes the first time, instant after that.`,
+            commands: [win ? 'python tools/setup.py' : 'python3 tools/setup.py'],
+        },
+        {
+            title: 'Build the first compiler',
+            note: 'Built from the committed LLVM IR seed, so a machine with no Prismio can start.',
+            commands: [win ? 'tools\\bootstrap.ps1 -Seed bootstrap\\prismio-seed.ll -Out build\\gen0' : 'tools/bootstrap.sh --seed --out build/gen0'],
+        },
+        {
+            title: 'Rebuild it with itself',
+            note: 'The compiler compiles its own source. This is the one you will use.',
+            commands: [win ? 'tools\\bootstrap.ps1 -Compiler build\\gen0 -Out build\\gen1' : 'tools/bootstrap.sh --compiler build/gen0 --out build/gen1'],
+        },
+        win
+            ? {
+                  title: 'Package it and add it to your PATH',
+                  note: 'Run tools\\package.py as on macOS and Linux, then add build\\dist\\bin to your PATH.',
+              }
+            : {
+                  title: 'Package it and add it to your PATH',
+                  note: 'Assembles the compiler, runtime, and standard library into build/dist.',
+                  commands: ['python3 tools/package.py --compiler build/gen1 --out build/dist', 'export PATH="$PWD/build/dist/bin:$PATH"'],
+              },
+    ];
+}
+
+/** Real output captured from the compiler (a new hello-world project). Paths are shortened. */
+const VERIFY: Record<VerifyTab, {label: string; lines: {text: string; kind?: 'cmd' | 'ok'}[]}> = {
+    version: {
+        label: 'Version',
+        lines: [
+            {text: 'prismio --version', kind: 'cmd'},
+            {text: `prismio ${PRISMIO_VERSION.replace(/^v/, '')}`},
+            {text: `llvm ${LLVM_VERSION}.1.1`},
+            {text: 'compiler <where the compiler lives>'},
+            {text: 'stdlib <where the standard library lives>'},
+        ],
+    },
+    project: {
+        label: 'First project',
+        lines: [
+            {text: 'prismio init hello && cd hello', kind: 'cmd'},
+            {text: 'created hello'},
+            {text: '  hello/build.ums'},
+            {text: '  hello/src/main.psm'},
+            {text: '  hello/.gitignore'},
+            {text: ''},
+            {text: 'prismio run', kind: 'cmd'},
+            {text: 'Built …/hello/.prismio/build/debug/hello'},
+            {text: 'Hello, Prismio!', kind: 'ok'},
+        ],
+    },
+    aif: {
+        label: 'Memory report',
+        lines: [
+            {text: 'prismio aif src/main.psm', kind: 'cmd'},
+            {text: 'AIF analysis'},
+            {text: '  Result   converged in 7 rounds'},
+            {text: ''},
+            {text: 'Storage plan'},
+            {text: '  Stack                   0'},
+            {text: '  Arena                   2'},
+            {text: '  Scoped heap             0'},
+            {text: '  Unique heap             3'},
+            {text: '  Shared heap             0'},
+            {text: '  Cycle-managed heap      0'},
+            {text: '  Cross-thread heap       0'},
+        ],
+    },
+};
+
+const NEXT = [
+    {title: 'Write your first program', href: `${DOCS}/tutorials/first-program`},
+    {title: 'Hello, Prismio, line by line', href: `${DOCS}/start/hello-world`},
+    {title: 'Build and run programs', href: `${DOCS}/start/build-and-run`},
+];
 
 const formatSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(1))} ${units[i]}`;
 };
 
+function platformOf(name: string): OS | null {
+    const n = name.toLowerCase();
+    if (n.includes('darwin') || n.includes('macos')) return 'macOS';
+    if (n.includes('linux')) return 'Linux';
+    if (n.includes('windows')) return 'Windows';
+    return null;
+}
+
+/** First word bright, flags in sky, the rest quiet: enough to scan a command at a glance. */
+function Command({text}: {text: string}) {
+    return (
+        <>
+            {text.split(' ').map((word, i) => (
+                <React.Fragment key={i}>
+                    {i > 0 && ' '}
+                    <span
+                        className={
+                            i === 0 ? 'font-semibold text-white' : word.startsWith('-') ? 'text-sky-300' : 'text-zinc-300'
+                        }
+                    >
+                        {word}
+                    </span>
+                </React.Fragment>
+            ))}
+        </>
+    );
+}
+
 export default function InstallPage() {
-    const [installMode, setInstallMode] = useState<InstallMode>('quickstart');
-    const [activeOS, setActiveOS] = useState<OS>('macOS');
-    const [copiedText, setCopiedText] = useState<string | null>(null);
+    const [mode, setMode] = useState<InstallMode>('source');
+    const [os, setOs] = useState<OS>('macOS');
+    const [detected, setDetected] = useState<OS | null>(null);
     const [verifyTab, setVerifyTab] = useState<VerifyTab>('version');
+    const [copied, setCopied] = useState<string | null>(null);
+    const [release, setRelease] = useState<Release | null>(null);
 
-    // GitHub Releases API state
-    const [releases, setReleases] = useState<Record<string, ReleaseData>>({});
-    const [loadingReleases, setLoadingReleases] = useState(true);
-
-    const [detectedPlatform, setDetectedPlatform] = useState<{
-        os: OS;
-        arch: Arch;
-        label: string;
-    }>({ os: 'macOS', arch: 'arm64', label: 'macOS (Apple Silicon)' });
-
-    // Copy to clipboard helper
-    const handleCopy = (text: string, id: string) => {
-        navigator.clipboard.writeText(text);
-        setCopiedText(id);
-        setTimeout(() => setCopiedText(null), 2000);
+    const copy = async (text: string, id: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(id);
+            setTimeout(() => setCopied((current) => (current === id ? null : current)), 2000);
+        } catch {
+            // Clipboard unavailable; the text is still selectable.
+        }
     };
 
-    // Client-side platform detection
+    // Which OS the visitor is on. The CPU architecture is not guessed: browsers do not report it reliably.
     useEffect(() => {
-        let os: OS = 'macOS';
-        let arch: Arch = 'arm64';
-        const ua = window.navigator.userAgent.toLowerCase();
-
-        if (ua.includes('windows') || ua.includes('win32')) {
-            os = 'Windows';
-            arch = 'x64';
-        } else if (ua.includes('linux')) {
-            os = 'Linux';
-            arch = ua.includes('aarch64') || ua.includes('arm64') ? 'arm64' : 'x64';
-        } else if (ua.includes('macintosh') || ua.includes('mac os')) {
-            os = 'macOS';
-            arch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) || ua.includes('arm') ? 'arm64' : 'x64';
-        }
-
-        const navAny = window.navigator as any;
-        if (navAny.userAgentData) {
-            const p = navAny.userAgentData.platform;
-            if (p === 'Windows') os = 'Windows';
-            else if (p === 'Linux') os = 'Linux';
-            else if (p === 'macOS') os = 'macOS';
-        }
-
-        const label = `${os} (${os === 'macOS' ? (arch === 'arm64' ? 'Apple Silicon' : 'Intel') : arch.toUpperCase()})`;
-        setDetectedPlatform({ os, arch, label });
-        setActiveOS(os);
+        const nav = window.navigator as Navigator & {userAgentData?: {platform?: string}};
+        const hint = (nav.userAgentData?.platform ?? '').toLowerCase();
+        const ua = nav.userAgent.toLowerCase();
+        const found: OS = hint === 'windows' || ua.includes('windows') ? 'Windows' : hint === 'linux' || ua.includes('linux') ? 'Linux' : 'macOS';
+        setOs(found);
+        setDetected(found);
     }, []);
 
-    // Fetch GitHub releases in the background (graceful fallback if none published)
+    // Published releases, if any (there are none until 0.1.0 is released).
     useEffect(() => {
-        const fetchReleases = async () => {
+        let cancelled = false;
+        (async () => {
             try {
                 const res = await fetch('https://api.github.com/repos/prismio-lang/prismio/releases');
-                if (!res.ok) {
-                    setLoadingReleases(false);
-                    return;
-                }
-                const data = await res.json();
-                const stableData = Array.isArray(data) ? data.filter((r: any) => !r.draft) : [];
-
-                const parsed: Record<string, ReleaseData> = {};
-                stableData.forEach((r: any) => {
-                    const version = r.tag_name;
-                    const releaseDate = new Date(r.published_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    });
-
-                    const platforms: ReleaseData['platforms'] = {
-                        Windows: {},
-                        macOS: {},
-                        Linux: {}
-                    };
-
-                    if (r.assets && r.assets.length > 0) {
-                        r.assets.forEach((asset: any) => {
-                            const name = asset.name.toLowerCase();
-                            const url = asset.browser_download_url;
-                            const size = formatSize(asset.size);
-
-                            if (name.includes('darwin') || name.includes('macos')) {
-                                if (name.includes('arm64') || name.includes('aarch64')) {
-                                    platforms.macOS.arm64 = { filename: asset.name, size, url };
-                                } else {
-                                    platforms.macOS.x64 = { filename: asset.name, size, url };
-                                }
-                            } else if (name.includes('linux')) {
-                                if (name.includes('arm64') || name.includes('aarch64')) {
-                                    platforms.Linux.arm64 = { filename: asset.name, size, url };
-                                } else {
-                                    platforms.Linux.x64 = { filename: asset.name, size, url };
-                                }
-                            } else if (name.includes('windows')) {
-                                platforms.Windows.x64 = { filename: asset.name, size, url };
-                            }
-                        });
+                if (!res.ok) return;
+                const data = (await res.json()) as {
+                    tag_name: string;
+                    draft: boolean;
+                    published_at: string;
+                    assets: {name: string; size: number; browser_download_url: string}[];
+                }[];
+                const latest = Array.isArray(data) ? data.find((r) => !r.draft) : undefined;
+                if (!latest || cancelled) return;
+                const assets: ReleaseAsset[] = [];
+                for (const asset of latest.assets ?? []) {
+                    const platform = platformOf(asset.name);
+                    if (platform) {
+                        assets.push({filename: asset.name, size: formatSize(asset.size), url: asset.browser_download_url, platform});
                     }
-
-                    parsed[version] = {
-                        version,
-                        releaseDate,
-                        changelogUrl: r.html_url,
-                        platforms
-                    };
+                }
+                setRelease({
+                    version: latest.tag_name,
+                    date: new Date(latest.published_at).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}),
+                    assets,
                 });
-
-                setReleases(parsed);
-                setLoadingReleases(false);
             } catch {
-                setLoadingReleases(false);
+                // Offline or rate limited: the page works without it.
             }
+        })();
+        return () => {
+            cancelled = true;
         };
-
-        fetchReleases();
     }, []);
 
-    const releaseVersions = Object.keys(releases);
-    const activeRelease = releaseVersions[0] ? releases[releaseVersions[0]] : undefined;
+    const steps = stepsFor(os);
+    const allCommands = steps.flatMap((step) => step.commands ?? []).join('\n');
+    const prompt = os === 'Windows' ? '>' : '$';
+    const verify = VERIFY[verifyTab];
 
     return (
-        <div className="relative min-h-screen bg-[#070709] text-[#e4e4e7] overflow-x-hidden selection:bg-indigo-500/30 selection:text-white">
-            {/* Background Atmosphere */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/15 via-[#070709]/50 to-[#070709] z-0" />
-            <div className="pointer-events-none absolute top-0 left-0 right-0 h-[600px] bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] z-0" />
+        <div className="relative min-h-screen overflow-x-hidden bg-[#070709] text-[#e4e4e7] selection:bg-indigo-500/30 selection:text-white">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[52rem] bg-[radial-gradient(ellipse_at_50%_0%,rgba(67,56,202,0.18),transparent_55%)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[800px] bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
 
             <HeaderMain />
 
-            <main className="relative z-10 max-w-5xl mx-auto px-6 pt-16 pb-32">
-                {/* ── 1. Hero ────────────────────────────────────────────── */}
-                <section className="flex flex-col items-center text-center pt-8 pb-12">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3.5 py-1 text-xs font-mono text-indigo-300 mb-6">
-                        <Terminal size={13} />
-                        <span>Prismio {PRISMIO_VERSION} · LLVM {LLVM_VERSION}</span>
-                    </div>
-
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
-                        Install Prismio
+            <main className="relative z-10 mx-auto max-w-4xl py-20 md:py-28">
+                {/* Hero */}
+                <section className="text-center">
+                    <h1 className="text-5xl font-semibold tracking-[-0.045em] text-white sm:text-6xl">
+                        Install <span className="text-sky-300">Prismio</span>
                     </h1>
-                    <p className="mt-4 text-base text-zinc-400 max-w-xl">
-                        A compiled, statically typed language where the compiler decides how memory is managed.
-                        Build it from source today or install using our quickstart script.
+                    <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-zinc-300 sm:text-lg">
+                        {PRISMIO_VERSION} is a pre-release. Build it from source today; the installers arrive with the release.
                     </p>
 
-                    {/* Detected Platform Tag */}
-                    <div className="mt-6 flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-1.5 text-xs text-zinc-400">
-                        <Monitor size={13} className="text-zinc-500" />
-                        <span>Detected platform:</span>
-                        <strong className="text-zinc-200 font-mono">{detectedPlatform.label}</strong>
-                    </div>
+                    {/* At a glance */}
+                    <dl className="mx-auto mt-10 grid max-w-3xl divide-y divide-white/[0.08] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c0e]/70 text-left sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                        <div className="px-5 py-4">
+                            <dt className="text-xs text-zinc-400">Version</dt>
+                            <dd className="mt-1 font-mono text-sm text-white">
+                                {PRISMIO_VERSION} <span className="text-zinc-400">· LLVM {LLVM_VERSION}</span>
+                            </dd>
+                        </div>
+                        <div className="px-5 py-4">
+                            <dt className="text-xs text-zinc-400">Platforms</dt>
+                            <dd className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-sm">
+                                {(['macOS', 'Linux', 'Windows'] as OS[]).map((name) => (
+                                    <span key={name} className={`inline-flex items-center gap-1.5 ${detected === name ? 'text-white' : 'text-zinc-400'}`}>
+                                        {detected === name && <span aria-hidden className="size-1.5 rounded-full bg-[#47d7b5]" />}
+                                        {name}
+                                    </span>
+                                ))}
+                            </dd>
+                        </div>
+                        <div className="px-5 py-4">
+                            <dt className="text-xs text-zinc-400">You need</dt>
+                            <dd className="mt-1 font-mono text-sm text-white">Python 3.8+ and a C toolchain</dd>
+                        </div>
+                    </dl>
 
-                    {/* Mode Selector Tabs */}
-                    <div className="mt-10 flex flex-wrap justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#0c0d11] p-1.5 shadow-xl">
-                        <button
-                            type="button"
-                            onClick={() => setInstallMode('quickstart')}
-                            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-semibold transition-all ${
-                                installMode === 'quickstart'
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
-                            }`}
-                        >
-                            <Terminal size={14} />
-                            <span>Quickstart Script</span>
-                            <span className="rounded-md bg-white/20 px-1.5 py-0.2 text-[10px] uppercase font-mono">Recommended</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => setInstallMode('source')}
-                            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-semibold transition-all ${
-                                installMode === 'source'
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
-                            }`}
-                        >
-                            <GitBranch size={14} />
-                            <span>Build from Source</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => setInstallMode('binaries')}
-                            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-semibold transition-all ${
-                                installMode === 'binaries'
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
-                            }`}
-                        >
-                            <Download size={14} />
-                            <span>Pre-built Binaries</span>
-                        </button>
+                    {/* Method selector */}
+                    <div role="tablist" aria-label="Installation method" className="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+                        {MODES.map(({id, label, status, ready}) => {
+                            const active = mode === id;
+                            return (
+                                <button
+                                    key={id}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={active}
+                                    onClick={() => setMode(id)}
+                                    className={`rounded-2xl border px-5 py-4 text-left transition-colors ${FOCUS} ${
+                                        active
+                                            ? 'border-indigo-400/50 bg-indigo-500/15'
+                                            : 'border-white/[0.08] bg-[#0c0c0e]/70 hover:border-white/20 hover:bg-white/[0.04]'
+                                    }`}
+                                >
+                                    <span className="block text-sm font-semibold text-white">{label}</span>
+                                    <span className={`mt-1.5 flex items-center gap-2 font-mono text-xs ${ready ? 'text-emerald-300' : 'text-zinc-400'}`}>
+                                        <span aria-hidden className={`size-1.5 rounded-full ${ready ? 'bg-emerald-400' : 'bg-zinc-500'}`} />
+                                        {status}
+                                    </span>
+                                </button>
+                            );
+                        })}
                     </div>
                 </section>
 
-                {/* ── 2. Installation Content Panes ──────────────────────── */}
-                <section className="mt-4">
-                    {/* Tab 1: Quickstart Script */}
-                    {installMode === 'quickstart' && (
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 sm:p-8 space-y-6">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                {/* Method panes */}
+                <section className="mt-12" role="tabpanel">
+                    {mode === 'source' && (
+                        <div>
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white">One-Liner Toolchain Installer</h3>
-                                    <p className="mt-1 text-xs text-zinc-400">
-                                        Auto-detects architecture (x86_64, arm64) and configures the <code className="text-zinc-300">~/.prismio</code> toolchain path.
+                                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Build from source</h2>
+                                    <p className="mt-2 max-w-lg text-sm leading-7 text-zinc-400">
+                                        Five steps, and everything lands in the folder you clone into.
                                     </p>
                                 </div>
-
-                                <div className="flex items-center rounded-lg border border-white/[0.08] bg-black/40 p-1">
-                                    {(['macOS', 'Linux', 'Windows'] as OS[]).map((os) => (
-                                        <button
-                                            key={os}
-                                            type="button"
-                                            onClick={() => setActiveOS(os)}
-                                            className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                                                activeOS === os
-                                                    ? 'bg-indigo-600/30 text-indigo-300 font-semibold border border-indigo-500/30'
-                                                    : 'text-zinc-500 hover:text-zinc-300'
-                                            }`}
-                                        >
-                                            {os}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {activeOS !== 'Windows' ? (
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between gap-4 rounded-xl bg-[#06070a] px-4 py-3.5 ring-1 ring-white/[0.08]">
-                                        <code className="min-w-0 overflow-x-auto whitespace-nowrap font-mono text-xs sm:text-sm text-zinc-200">
-                                            <span className="mr-2 text-indigo-400 select-none font-bold">$</span>
-                                            <span className="font-semibold text-white">curl</span>
-                                            {' '}<span className="text-indigo-300">-fsSL</span>
-                                            {' '}<span className="text-[#47d7b5]">https://prismio.org/install.sh</span>
-                                            {' '}<span className="text-zinc-500">|</span>
-                                            {' '}<span className="font-semibold text-white">sh</span>
-                                        </code>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleCopy('curl -fsSL https://prismio.org/install.sh | sh', 'quickstart-sh')}
-                                            className="inline-flex cursor-pointer shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                        >
-                                            {copiedText === 'quickstart-sh' ? (
-                                                <>
-                                                    <Check size={14} className="text-emerald-400" />
-                                                    <span className="text-emerald-400">Copied</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Copy size={14} />
-                                                    <span>Copy</span>
-                                                </>
-                                            )}
-                                        </button>
+                                <div className="flex shrink-0 items-center gap-3">
+                                    <div role="group" aria-label="Operating system" className="flex rounded-lg border border-white/[0.08] bg-black/40 p-1">
+                                        {(['macOS', 'Linux', 'Windows'] as OS[]).map((name) => (
+                                            <button
+                                                key={name}
+                                                type="button"
+                                                aria-pressed={os === name}
+                                                onClick={() => setOs(name)}
+                                                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${FOCUS} ${
+                                                    os === name ? 'bg-indigo-500/25 font-semibold text-indigo-100' : 'text-zinc-400 hover:text-zinc-200'
+                                                }`}
+                                            >
+                                                {name}
+                                            </button>
+                                        ))}
                                     </div>
-
-                                    <div className="grid gap-3 pt-2 sm:grid-cols-3 text-xs text-zinc-400">
-                                        <div className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-400" />
-                                            <span>Downloads matching platform archive into <code className="text-zinc-300 font-mono">~/.prismio</code></span>
-                                        </div>
-                                        <div className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-400" />
-                                            <span>Configures environment in <code className="text-zinc-300 font-mono">.zshrc</code> / <code className="text-zinc-300 font-mono">.bashrc</code></span>
-                                        </div>
-                                        <div className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-emerald-400" />
-                                            <span>Includes compiler, runtime, stdlib, and UMS</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between gap-4 rounded-xl bg-[#06070a] px-4 py-3.5 ring-1 ring-white/[0.08]">
-                                        <code className="min-w-0 overflow-x-auto whitespace-nowrap font-mono text-xs sm:text-sm text-zinc-200">
-                                            <span className="mr-2 text-indigo-400 select-none font-bold">&gt;</span>
-                                            <span className="font-semibold text-white">winget</span>
-                                            {' '}<span className="text-indigo-300">install</span>
-                                            {' '}<span className="text-[#47d7b5]">prismio-lang.prismio</span>
-                                        </code>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleCopy('winget install prismio-lang.prismio', 'quickstart-winget')}
-                                            className="inline-flex cursor-pointer shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                        >
-                                            {copiedText === 'quickstart-winget' ? (
-                                                <>
-                                                    <Check size={14} className="text-emerald-400" />
-                                                    <span className="text-emerald-400">Copied</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Copy size={14} />
-                                                    <span>Copy</span>
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-
-                                    <p className="text-xs text-zinc-400 leading-relaxed">
-                                        Installs the official Windows package via Windows Package Manager (WinGet). Or download the portable zip directly from the Pre-built Binaries tab.
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Tab 2: Build from Source */}
-                    {installMode === 'source' && (
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 sm:p-8 space-y-6">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-400 border border-emerald-500/20 mb-2">
-                                        Self-Hosted Bootstrap
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-white">Build from Source (macOS, Linux, Windows)</h3>
-                                    <p className="mt-1 text-xs text-zinc-400">
-                                        Prismio compiles itself from a committed LLVM IR seed (<code className="text-zinc-300 font-mono">bootstrap/prismio-seed.ll</code>) to a byte-identical fixpoint.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="rounded-xl border border-white/[0.06] bg-black/40 p-4 text-xs text-zinc-300 space-y-2">
-                                <span className="font-semibold text-white block">System Requirements:</span>
-                                <ul className="list-disc list-inside space-y-1 text-zinc-400">
-                                    <li>A C toolchain (Xcode Command Line Tools on macOS, <code className="text-zinc-300 font-mono">build-essential</code> on Linux, or Visual Studio C++ on Windows).</li>
-                                    <li>Python 3.8 or later.</li>
-                                    <li>Pinned LLVM {LLVM_VERSION} is automatically downloaded and isolated by <code className="text-zinc-300 font-mono">setup_llvm.py</code> into <code className="text-zinc-300 font-mono">third_party/llvm</code>.</li>
-                                </ul>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between text-xs text-zinc-400">
-                                    <span className="font-mono text-zinc-300">Terminal Commands (POSIX)</span>
                                     <button
                                         type="button"
-                                        onClick={() => handleCopy(`git clone https://github.com/prismio-lang/prismio.git\ncd prismio\npython3 tools/setup_llvm.py\ntools/bootstrap.sh --seed --out build/gen0\ntools/bootstrap.sh --compiler build/gen0 --out build/gen1\npython3 tools/package.py --compiler build/gen1 --out build/dist\nexport PATH="$PWD/build/dist/bin:$PATH"`, 'source-posix')}
-                                        className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors"
+                                        onClick={() => copy(allCommands, 'all')}
+                                        className={`inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-zinc-200 transition-colors hover:bg-white/[0.08] hover:text-white ${FOCUS}`}
                                     >
-                                        {copiedText === 'source-posix' ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                                        <span>{copiedText === 'source-posix' ? 'Copied script' : 'Copy all steps'}</span>
+                                        {copied === 'all' ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                                        {copied === 'all' ? 'Copied' : 'Copy all'}
                                     </button>
                                 </div>
-
-                                <div className="rounded-xl bg-[#06070a] p-4 font-mono text-xs text-zinc-300 overflow-x-auto ring-1 ring-white/[0.08] space-y-2 leading-relaxed">
-                                    <div className="text-zinc-500"># 1. Clone the repository</div>
-                                    <div>git clone https://github.com/prismio-lang/prismio.git</div>
-                                    <div>cd prismio</div>
-                                    <div className="text-zinc-500 pt-1"># 2. Provision pinned LLVM {LLVM_VERSION} (isolated, system clean)</div>
-                                    <div>python3 tools/setup_llvm.py</div>
-                                    <div className="text-zinc-500 pt-1"># 3. Bootstrap first generation from committed seed</div>
-                                    <div>tools/bootstrap.sh --seed --out build/gen0</div>
-                                    <div className="text-zinc-500 pt-1"># 4. Compile second generation with self-hosted compiler</div>
-                                    <div>tools/bootstrap.sh --compiler build/gen0 --out build/gen1</div>
-                                    <div className="text-zinc-500 pt-1"># 5. Package distribution toolchain and export PATH</div>
-                                    <div>python3 tools/package.py --compiler build/gen1 --out build/dist</div>
-                                    <div>export PATH=&quot;$PWD/build/dist/bin:$PATH&quot;</div>
-                                </div>
-
-                                <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 text-xs text-zinc-400">
-                                    <strong className="text-zinc-200">On Windows:</strong> Use PowerShell equivalents:{' '}
-                                    <code className="text-indigo-300 font-mono">tools\bootstrap.ps1 -Seed bootstrap\prismio-seed.ll -Out build\gen0</code>,{' '}
-                                    then <code className="text-indigo-300 font-mono">-Compiler build\gen0 -Out build\gen1</code>.
-                                </div>
                             </div>
+
+                            {os === 'Windows' && (
+                                <p className="mt-5 flex gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm leading-6 text-zinc-300">
+                                    <Info size={16} className="mt-0.5 shrink-0 text-sky-300" />
+                                    Windows is the least exercised platform. CI builds and tests it, but most development happens on macOS and Linux.
+                                </p>
+                            )}
+
+                            <ol className="mt-10 space-y-8">
+                                {steps.map((step, i) => (
+                                    <li key={step.title} className="relative pl-14">
+                                        <span
+                                            aria-hidden
+                                            className="absolute left-0 top-0 flex size-9 items-center justify-center rounded-full border border-indigo-400/40 bg-indigo-500/10 font-mono text-sm font-semibold text-indigo-100"
+                                        >
+                                            {i + 1}
+                                        </span>
+                                        {i < steps.length - 1 && <span aria-hidden className="absolute bottom-[-2rem] left-[17px] top-11 w-px bg-white/[0.1]" />}
+
+                                        <h3 className="text-lg font-semibold text-white">{step.title}</h3>
+                                        <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">{step.note}</p>
+
+                                        {step.commands && (
+                                            <div className="group relative mt-4 overflow-hidden rounded-xl bg-[#06070a] ring-1 ring-white/[0.08]">
+                                                <pre className="overflow-x-auto py-3.5 pl-4 pr-14 font-mono text-sm leading-relaxed">
+                                                    {step.commands.map((command, j) => (
+                                                        <div key={j}>
+                                                            <span className="mr-3 select-none text-indigo-400">{prompt}</span>
+                                                            <Command text={command} />
+                                                        </div>
+                                                    ))}
+                                                </pre>
+                                                <button
+                                                    type="button"
+                                                    aria-label={`Copy step ${i + 1}`}
+                                                    onClick={() => copy(step.commands!.join('\n'), `step-${i}`)}
+                                                    className={`absolute right-2.5 top-2.5 inline-flex size-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/[0.08] hover:text-white sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 ${FOCUS}`}
+                                                >
+                                                    {copied === `step-${i}` ? <Check size={15} className="text-emerald-400" /> : <Copy size={15} />}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </li>
+                                ))}
+                            </ol>
+                            <span aria-live="polite" className="sr-only">{copied ? 'Copied to clipboard' : ''}</span>
                         </div>
                     )}
 
-                    {/* Tab 3: Pre-built Binaries */}
-                    {installMode === 'binaries' && (
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 sm:p-8 space-y-6">
+                    {mode === 'script' && (
+                        <div className="space-y-6">
+                            <NotYetNotice />
                             <div>
-                                <h3 className="text-lg font-semibold text-white">Standalone Binary Distributions</h3>
-                                <p className="mt-1 text-xs text-zinc-400">
-                                    Pre-compiled tarballs and installers published on GitHub Releases.
+                                <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Install script</h2>
+                                <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
+                                    On release, one command downloads the archive for your platform into{' '}
+                                    <code className="font-mono text-zinc-200">~/.prismio</code> and adds it to your PATH in{' '}
+                                    <code className="font-mono text-zinc-200">.zshrc</code> or{' '}
+                                    <code className="font-mono text-zinc-200">.bashrc</code>.
                                 </p>
                             </div>
-
-                            {activeRelease && (
-                                <div className="grid gap-4 sm:grid-cols-3">
-                                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-2">
-                                        <div className="text-xs font-mono text-zinc-400">macOS (Apple Silicon & Intel)</div>
-                                        <div className="text-sm font-semibold text-white">prismio-macos-arm64.tar.gz</div>
-                                        <a
-                                            href="https://github.com/prismio-lang/prismio/releases"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 pt-2"
-                                        >
-                                            <Download size={13} />
-                                            <span>Download archive</span>
-                                        </a>
-                                    </div>
-
-                                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-2">
-                                        <div className="text-xs font-mono text-zinc-400">Linux (x86_64 & AArch64)</div>
-                                        <div className="text-sm font-semibold text-white">prismio-linux-x64.tar.gz</div>
-                                        <a
-                                            href="https://github.com/prismio-lang/prismio/releases"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 pt-2"
-                                        >
-                                            <Download size={13} />
-                                            <span>Download archive</span>
-                                        </a>
-                                    </div>
-
-                                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-2">
-                                        <div className="text-xs font-mono text-zinc-400">Windows (x64)</div>
-                                        <div className="text-sm font-semibold text-white">prismio-windows-x64.zip</div>
-                                        <a
-                                            href="https://github.com/prismio-lang/prismio/releases"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 pt-2"
-                                        >
-                                            <Download size={13} />
-                                            <span>Download zip</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="rounded-xl border border-white/[0.08] bg-[#06070a] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
-                                        <Info size={14} className="text-indigo-400" />
-                                        <span>Release Status: v0.1.0 Pre-release</span>
-                                    </div>
-                                    <p className="text-xs text-zinc-400">
-                                        Release builds are actively tested against multi-platform CI gates.
-                                    </p>
-                                </div>
-
-                                <a
-                                    href="https://github.com/prismio-lang/prismio/releases"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-white/[0.06] border border-white/10 px-4 py-2 text-xs font-medium text-white hover:bg-white/[0.1] transition-colors"
-                                >
-                                    <span>Browse GitHub Releases</span>
-                                    <ExternalLink size={12} />
-                                </a>
+                            <div className="flex flex-col gap-2">
+                                <Preview label="macOS and Linux" prompt="$" command="curl -fsSL https://prismio.org/install.sh | sh" />
+                                <Preview label="Windows (planned)" prompt=">" command="winget install prismio-lang.prismio" />
                             </div>
+                        </div>
+                    )}
+
+                    {mode === 'binaries' && (
+                        <div className="space-y-6">
+                            {release && release.assets.length > 0 ? (
+                                <>
+                                    <div>
+                                        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Prebuilt binaries</h2>
+                                        <p className="mt-2 text-sm text-zinc-400">
+                                            {release.version}, published {release.date}.
+                                        </p>
+                                    </div>
+                                    <ul className={`${CARD} divide-y divide-white/[0.08] overflow-hidden`}>
+                                        {release.assets.map((asset) => (
+                                            <li key={asset.url}>
+                                                <a
+                                                    href={asset.url}
+                                                    className={`flex items-center justify-between gap-4 px-6 py-4 transition-colors hover:bg-white/[0.03] focus-visible:ring-inset ${FOCUS}`}
+                                                >
+                                                    <span>
+                                                        <span className="block text-sm font-semibold text-white">{asset.filename}</span>
+                                                        <span className="mt-0.5 block font-mono text-xs text-zinc-400">
+                                                            {asset.platform} · {asset.size}
+                                                        </span>
+                                                    </span>
+                                                    <Download size={16} className="shrink-0 text-zinc-300" />
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            ) : (
+                                <>
+                                    <NotYetNotice />
+                                    <div>
+                                        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Prebuilt binaries</h2>
+                                        <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
+                                            Archives for macOS, Linux, and Windows will be published on GitHub Releases with {PRISMIO_VERSION}.
+                                            No release exists yet.
+                                        </p>
+                                    </div>
+                                </>
+                            )}
+                            <a
+                                href={`${REPO}/releases`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.1] ${FOCUS}`}
+                            >
+                                GitHub Releases
+                                <ExternalLink size={13} />
+                            </a>
                         </div>
                     )}
                 </section>
 
-                {/* ── 3. Verification & First Program ────────────────────── */}
-                <section className="mt-20">
-                    <div className="text-center mb-8">
-                        <h2 className="text-2xl font-bold text-white">
-                            Verify Your Installation
-                        </h2>
-                        <p className="text-xs sm:text-sm text-zinc-400 mt-2 max-w-md mx-auto">
-                            Ensure the toolchain works in your environment and try your first program.
-                        </p>
-                    </div>
+                {/* Check it works */}
+                <section className="mt-28" aria-labelledby="verify-heading">
+                    <h2 id="verify-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white">
+                        Check it works.
+                    </h2>
+                    <p className="mt-2 max-w-lg text-sm leading-7 text-zinc-400">
+                        Three commands to run once the toolchain is on your PATH. This is what the compiler prints.
+                    </p>
 
-                    <div className="bg-[#0b0c10] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
-                        {/* Terminal Header */}
-                        <div className="bg-[#121216] px-4 py-3 border-b border-white/[0.06] flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-                                <span className="ml-3 text-[11px] font-mono text-zinc-500 select-none">
-                                    verify-toolchain.sh
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-1 rounded-lg border border-white/[0.04] bg-[#08080a] p-0.5">
+                    <div className="mt-8 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#06070a]">
+                        <div role="group" aria-label="Verification step" className="flex gap-1 border-b border-white/[0.06] bg-[#0c0d11] p-2">
+                            {(Object.keys(VERIFY) as VerifyTab[]).map((key) => (
                                 <button
+                                    key={key}
                                     type="button"
-                                    onClick={() => setVerifyTab('version')}
-                                    className={`rounded px-2.5 py-1 text-[10px] font-mono transition-colors ${
-                                        verifyTab === 'version' ? 'bg-indigo-600/30 text-indigo-300 font-semibold' : 'text-zinc-500 hover:text-zinc-300'
+                                    aria-pressed={verifyTab === key}
+                                    onClick={() => setVerifyTab(key)}
+                                    className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors ${FOCUS} ${
+                                        verifyTab === key ? 'bg-indigo-500/25 font-semibold text-indigo-100' : 'text-zinc-400 hover:text-zinc-200'
                                     }`}
                                 >
-                                    1. Version
+                                    {VERIFY[key].label}
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setVerifyTab('project')}
-                                    className={`rounded px-2.5 py-1 text-[10px] font-mono transition-colors ${
-                                        verifyTab === 'project' ? 'bg-indigo-600/30 text-indigo-300 font-semibold' : 'text-zinc-500 hover:text-zinc-300'
-                                    }`}
-                                >
-                                    2. Start Project
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setVerifyTab('aif')}
-                                    className={`rounded px-2.5 py-1 text-[10px] font-mono transition-colors ${
-                                        verifyTab === 'aif' ? 'bg-indigo-600/30 text-indigo-300 font-semibold' : 'text-zinc-500 hover:text-zinc-300'
-                                    }`}
-                                >
-                                    3. AIF Inspect
-                                </button>
-                            </div>
+                            ))}
                         </div>
-
-                        {/* Terminal Body */}
-                        <div className="p-6 font-mono text-xs sm:text-sm text-zinc-300 bg-[#06070a] min-h-[170px] select-text overflow-x-auto whitespace-pre leading-relaxed">
-                            {verifyTab === 'version' && (
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-indigo-400 font-bold">$</span>
-                                        <span className="text-white">prismio --version</span>
+                        <pre className="min-h-[15rem] overflow-x-auto p-6 font-mono text-sm leading-relaxed">
+                            {verify.lines.map((line, i) =>
+                                line.kind === 'cmd' ? (
+                                    <div key={i} className="mt-4 first:mt-0">
+                                        <span className="mr-3 select-none text-indigo-400">$</span>
+                                        <Command text={line.text} />
                                     </div>
-                                    <div className="text-zinc-400 mt-2">
-                                        prismio {PRISMIO_VERSION} (llvm {LLVM_VERSION}.1.1, host {detectedPlatform.arch === 'arm64' ? 'aarch64' : 'x86_64'}-apple-darwin)
+                                ) : (
+                                    <div key={i} className={line.kind === 'ok' ? 'font-semibold text-[#47d7b5]' : 'text-zinc-400'}>
+                                        {line.text || ' '}
                                     </div>
-                                    <div className="text-emerald-400 mt-2">
-                                        ✓ Toolchain successfully configured in environment variables.
-                                    </div>
-                                </div>
+                                ),
                             )}
-
-                            {verifyTab === 'project' && (
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-indigo-400 font-bold">$</span>
-                                        <span className="text-white">prismio init hello &amp;&amp; cd hello</span>
-                                    </div>
-                                    <div className="text-zinc-400 mt-1">Created hello/build.ums and src/main.psm</div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-indigo-400 font-bold">$</span>
-                                        <span className="text-white">prismio run</span>
-                                    </div>
-                                    <div className="text-zinc-400 mt-1">Built hello in 14.2ms</div>
-                                    <div className="text-emerald-300 mt-1">Hello, Prismio!</div>
-                                </div>
-                            )}
-
-                            {verifyTab === 'aif' && (
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-indigo-400 font-bold">$</span>
-                                        <span className="text-white">prismio aif src/main.psm</span>
-                                    </div>
-                                    <div className="text-zinc-300 mt-2 font-medium">Storage plan</div>
-                                    <div className="text-zinc-400 mt-1">
-                                        {'  '}Stack                   3{'\n'}
-                                        {'  '}Arena                   2{'\n'}
-                                        {'  '}Scoped heap             1{'\n'}
-                                        {'  '}Unique heap             119{'\n'}
-                                        {'  '}Shared heap             0{'\n'}
-                                        {'  '}Cycle-managed heap      0
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                        </pre>
                     </div>
                 </section>
 
-                {/* ── 4. IDE & Editor Support ────────────────────────────── */}
-                <section className="mt-20">
-                    <div className="mb-8 border-b border-white/[0.06] pb-4">
-                        <div className="font-mono text-xs text-zinc-500 uppercase tracking-wider mb-1">
-                            Tooling
-                        </div>
-                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                            IDE &amp; Editor Support
-                        </h2>
-                    </div>
+                {/* Next */}
+                <section className="mt-28" aria-labelledby="next-heading">
+                    <h2 id="next-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white">
+                        Then write something.
+                    </h2>
+                    <ul className="mt-8 divide-y divide-white/[0.08] border-y border-white/[0.08]">
+                        {NEXT.map((item) => (
+                            <li key={item.href}>
+                                <a
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`group flex items-center justify-between gap-4 py-5 transition-colors ${FOCUS}`}
+                                >
+                                    <span className="text-base font-medium text-zinc-200 transition-colors group-hover:text-white">{item.title}</span>
+                                    <ArrowUpRight size={16} className="shrink-0 text-zinc-400 transition-colors group-hover:text-indigo-300" />
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
 
+                {/* Editors */}
+                <section className="mt-28" aria-labelledby="editors-heading">
+                    <h2 id="editors-heading" className="mb-8 text-3xl font-semibold tracking-[-0.03em] text-white">
+                        Editor support
+                    </h2>
                     <IntelliJPluginCard />
                 </section>
             </main>
+
+            <FooterMain />
+        </div>
+    );
+}
+
+function NotYetNotice() {
+    return (
+        <div className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm leading-6 text-amber-100">
+            <Info size={16} className="mt-1 shrink-0 text-amber-300" />
+            <p>
+                <span className="font-semibold">Not available yet.</span> This installs from a GitHub Release, and {PRISMIO_VERSION} has not
+                been released. Until then, build from source.
+            </p>
+        </div>
+    );
+}
+
+/** A command that works once the release exists: shown, not copyable, so nobody pastes something that fails today. */
+function Preview({label, prompt, command}: {label: string; prompt: string; command: string}) {
+    return (
+        <div className="rounded-xl border border-dashed border-white/15 p-4">
+            <p className="text-xs text-zinc-400">{label}</p>
+            <code className="mt-3 block overflow-x-auto whitespace-nowrap font-mono text-sm">
+                <span className="mr-3 select-none text-indigo-400">{prompt}</span>
+                <Command text={command} />
+            </code>
         </div>
     );
 }

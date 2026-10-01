@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
 export default function FooterMain() {
     return (
@@ -44,8 +45,7 @@ export default function FooterMain() {
                     <h5 className="font-semibold text-zinc-900 text-xs tracking-tight uppercase">Community</h5>
                     <FooterLink href="https://prismio.org/community" external>Community Overview</FooterLink>
                     <FooterLink href="https://prismio.org/sponsors" external>Sponsors</FooterLink>
-                    <FooterLink href="https://discord.gg/RUXJjnJF" external>Discord Community</FooterLink>
-                    <FooterLink href="https://github.com/prismio-lang/prismio/discussions" external>Discussions</FooterLink>
+                    <FooterLink href={DISCORD_INVITE_LINK} external>Discord Community</FooterLink>
                 </div>
             </div>
 

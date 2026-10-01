@@ -7,40 +7,40 @@ const CONTRIBUTION_TRACKS = [
     {
         area: 'compiler/aif & ast',
         title: 'AIF inference and storage plans',
-        copy: 'Enhance static escape bounds, cycle detection, and memory placement proofs within the self-hosted compiler.',
+        copy: 'Improve escape analysis, cycle detection, and memory placement within the self-hosted compiler.',
     },
     {
         area: 'stdlib/std.*',
         title: 'Standard library modules',
-        copy: 'Implement foundational data structures, platform abstractions, native process APIs, and networking primitives.',
+        copy: 'Implement foundational data structures, platform abstractions, and native process APIs.',
     },
     {
         area: 'benchmarks & tests',
         title: 'Workload parity & verification shims',
-        copy: 'Add canonical workload implementations, maintain differential parity against C++ and Rust, and expand fuzz testing.',
+        copy: 'Add canonical workload implementations, keep the Prismio, C++ and Rust versions equivalent, and expand test coverage.',
     },
     {
-        area: 'rfcs & specifications',
+        area: 'specifications & docs',
         title: 'Language design and documentation',
-        copy: 'Document language semantics, refine AIF formalization, author guides, and participate in RFC design reviews.',
+        copy: 'Document language semantics, refine AIF formalization, author guides, and write the specification.',
     },
 ];
 
 const RESOURCE_NEEDS = [
     {
         title: 'Continuous Integration',
-        tag: 'x86_64 & AArch64',
-        copy: 'Dedicated bare-metal runner instances for full benchmark regression runs, sanitizer suites, and nightly matrix builds.',
+        tag: 'Linux, macOS, Windows',
+        copy: 'Runners for full benchmark regression runs, sanitizer suites, and the three-platform bootstrap.',
     },
     {
         title: 'Maintainer Grants',
         tag: 'Core compiler',
-        copy: 'Enables focused development time on hard compiler milestones, AIF memory proofs, and LLVM backend parity.',
+        copy: 'Enables focused development time on hard compiler milestones, AIF work, and the LLVM backend.',
     },
     {
         title: 'Distribution & Hosting',
-        tag: 'Public mirrors',
-        copy: 'Fast global package mirrors, prebuilt toolchain archives, and documentation infrastructure.',
+        tag: 'Hosting',
+        copy: 'Hosting for prebuilt toolchain archives, the documentation, and the website.',
     },
 ];
 
@@ -54,9 +54,9 @@ export default function Sponsors() {
                         Open development, sustained by contributors and sponsors.
                     </h2>
                     <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-400">
-                        Prismio is developed openly as an independent systems language project.
-                        It has no proprietary layers or venture constraints. Development is sustained through
-                        technical contributions, rigorous peer review, and transparent infrastructure sponsorship.
+                        Prismio is developed openly as an independent systems language project,
+                        with no proprietary layers. Development is sustained through
+                        technical contributions and infrastructure sponsorship.
                     </p>
                 </div>
                 <div className="lg:col-span-4 lg:text-right">
@@ -83,12 +83,12 @@ export default function Sponsors() {
                         <span className="mt-1 font-mono text-sm font-semibold text-emerald-300">Apache-2.0</span>
                     </div>
                     <div className="border-r border-white/[0.07] px-4 py-5">
-                        <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">Stewardship</span>
-                        <span className="mt-1 font-mono text-sm font-semibold text-indigo-300">GitHub Sponsors</span>
+                        <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">Development</span>
+                        <span className="mt-1 font-mono text-sm font-semibold text-indigo-300">In the open on GitHub</span>
                     </div>
                     <div className="px-4 py-5">
-                        <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">Infrastructure</span>
-                        <span className="mt-1 font-mono text-sm font-semibold text-zinc-200">Bare-metal CI & Mirrors</span>
+                        <span className="block font-mono text-xs uppercase tracking-widest text-zinc-500">CI</span>
+                        <span className="mt-1 font-mono text-sm font-semibold text-zinc-200">Linux, macOS, Windows</span>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@ export default function Sponsors() {
                             <span className="font-mono text-xs text-zinc-500">github.com/prismio-lang</span>
                         </div>
                         <p className="mt-3 text-sm leading-6 text-zinc-400">
-                            The compiler, standard library, runtime verification shims, and documentation are organized into focused areas where contributors can audit code, submit RFCs, and implement features:
+                            The compiler, standard library, runtime verification shims, and documentation are organized into focused areas where contributors can audit code, propose changes, and implement features:
                         </p>
 
                         <div className="mt-6 divide-y divide-white/[0.07] border-y border-white/[0.07]">
@@ -167,15 +167,6 @@ export default function Sponsors() {
 
                         <div className="mt-8 border-t border-white/[0.07] pt-6">
                             <div className="flex flex-col gap-2.5">
-                                <a
-                                    href="https://github.com/sponsors/prismio-lang"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 text-xs font-semibold text-zinc-200 transition-colors hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-                                >
-                                    <Heart size={14} className="text-rose-400" />
-                                    Support via GitHub Sponsors
-                                </a>
                                 <Link
                                     href="/sponsors"
                                     className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/[0.06] px-4 text-xs font-medium text-zinc-300 transition-colors hover:border-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
@@ -192,8 +183,8 @@ export default function Sponsors() {
                 <div className="border-t border-white/[0.07] bg-[#07080b] px-6 py-5 sm:px-8">
                     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                         <div className="text-xs text-zinc-400">
-                            <span className="font-medium text-zinc-200">Recognized in release logs: </span>
-                            Sponsors and code contributors are cited in release notes, repository documentation, and toolchain credits.
+                            <span className="font-medium text-zinc-200">Credited in the release notes: </span>
+                            Code contributors are named in the release notes.
                         </div>
                         <div className="flex items-center gap-5 text-xs font-semibold">
                             <Link

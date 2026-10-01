@@ -29,7 +29,7 @@ Prismio ${PRISMIO_VERSION} is in active development and is not production-ready.
 
 - [Source code](${siteConfig.github}): Compiler, standard library and benchmarks
 - [Releases](${siteConfig.github}/releases): Release notes and downloads
-- [Community](${siteConfig.url}/community): Discord, discussions and contribution guide
+- [Community](${siteConfig.url}/community): Discord, issues and contribution guide
 - [Team](${siteConfig.url}/team): Creator and maintainers
 
 ## Optional

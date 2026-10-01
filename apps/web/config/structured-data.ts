@@ -30,7 +30,6 @@ export const prismioStructuredData = {
       "sameAs": [
         siteConfig.github,
         siteConfig.githubOrg,
-        siteConfig.x,
         siteConfig.discord
       ]
     },

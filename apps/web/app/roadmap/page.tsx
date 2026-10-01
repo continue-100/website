@@ -1,212 +1,291 @@
 import React from "react";
 import Link from "next/link";
-import {
-    ArrowRight,
-    Check,
-    CircleDot,
-    GitBranch,
-    ShieldCheck,
-} from "lucide-react";
+import {ArrowRight, ArrowUpRight, Check} from "lucide-react";
 import HeaderMain from "@/components/HeaderMain";
 import FooterMain from "@prismio/ui/FooterMain";
+import {PRISMIO_VERSION} from "@prismio/utils";
+import {getBenchmarkDataset} from "@/lib/benchmarks";
 
-const SHIPPED = [
+export const metadata = {
+    title: "Roadmap · Prismio Systems Language",
+    description: "What Prismio can do today, what is experimental, and what is not there yet. No dates, no promises.",
+};
+
+const CARD = "rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-blur-xl";
+
+/** When this page was last checked against the feature table in the docs. */
+const CHECKED = "30 Sep 2026";
+
+const WORKS_TODAY = [
     {
-        title: "A self-hosted compiler",
-        detail: "The lexer, parser, AST, import resolver, semantic analysis, and LLVM IR generator are written in Prismio.",
+        title: "A self-hosted compiler for Windows, macOS, and Linux",
+        detail: "The lexer, parser, semantic analysis, and LLVM backend are written in Prismio. It builds native executables, cross-compiles with `--target`, and writes debug information with `-g`.",
     },
     {
-        title: "Native code through LLVM 23",
-        detail: "Prismio lowers to LLVM IR, then links a native executable through the platform toolchain.",
+        title: "A practical language core",
+        detail: "Structs, enums, `Option` and `Result`, pattern matching, traits, generics, closures, and `impl` blocks.",
     },
     {
-        title: "Explainable allocation inference",
-        detail: "AIF assigns storage tiers, exposes a source-oriented plan, and can explain a numbered decision or verify it at runtime.",
+        title: "Collections and text",
+        detail: "`Vec`, `Map`, slices, fixed-size arrays, strings, and a `StringBuilder`.",
     },
     {
-        title: "A usable systems-language core",
-        detail: "Types, generics, traits, closures, pattern matching, native tasks, typed channels, UMS projects, C ABI interop, JSON diagnostics, and DWARF are in the shipped surface.",
+        title: "A standard library",
+        detail: "Twenty importable modules, including files, input, time, math, terminal colours, and process access.",
+    },
+    {
+        title: "Channels between threads",
+        detail: "Typed channels with blocking send and receive. Plain data is copied across, not boxed.",
+    },
+    {
+        title: "Projects and C interop",
+        detail: "A `build.ums` manifest with build profiles, a lockfile, path dependencies, and native C sources. Functions in C libraries are called directly.",
     },
 ];
 
-const NEXT = [
+const EXPERIMENTAL = [
     {
-        id: "MEM-001",
-        title: "Measure allocation and lifetime behavior end-to-end",
-        detail: "Extend the verifier and benchmark pipeline with stable allocation-site IDs, byte and lifetime metrics, peak-live data, and unified JSON. This is observability work; it makes no speedup promise.",
-        signal: "Foundational",
+        title: "Ownership checks and memory placement",
+        detail: "The compiler enforces moves and borrows and decides where each allocation lives, and it can explain why. The rules and their cost model can still change.",
     },
     {
-        id: "MEM-002",
-        title: "Make region and cycle state safe under native tasks",
-        detail: "Move ambient allocator and cycle-collection state toward a design that is safe to use from concurrent native threads, then establish stress coverage before chasing throughput.",
-        signal: "Correctness first",
+        title: "Tasks",
+        detail: "`spawn`, `join`, and `Task<R>` run work on native threads.",
     },
     {
-        id: "MEM-003",
-        title: "Price layout choices in their container context",
-        detail: "A layout split that looks cheaper per object can lose badly when it breaks flat storage. The next model needs to account for construction, locality, vectorization, and release work together.",
-        signal: "Measured regression guard",
-    },
-    {
-        id: "MEM-004",
-        title: "Preserve ownership decisions in a memory-aware IR",
-        detail: "Moves, borrows, drops, regions, reuse, and representation choices are currently known to AIF but are not first-class operations between semantic analysis and LLVM lowering.",
-        signal: "Architectural",
-    },
-    {
-        id: "MEM-005",
-        title: "Carry ownership and region facts across calls",
-        detail: "Function summaries can make escape, return provenance, and memory effects visible across boundaries instead of forcing conservative decisions at each call site.",
-        signal: "Precision",
+        title: "Data layout views",
+        detail: "You can ask for an array-of-structs or struct-of-arrays view of your data.",
     },
 ];
 
-const GAPS = [
+const NOT_YET = [
     {
-        title: "Library surface",
-        detail: "Linked/deque containers, ordered maps and sets, priority queues, regex, JSON, and generic serialization are not implemented in the standard surface.",
+        area: "Standard library",
+        items: [
+            "Networking (sockets)",
+            "JSON parsing and writing",
+            "Regular expressions",
+            "More collections: deque, linked list, sets, sorted map, priority queue",
+            "Random numbers",
+            "Calendar dates, time zones, and timers",
+            "Memory-mapped files",
+        ],
     },
     {
-        title: "Concurrency surface",
-        detail: "User-facing atomics, locks, work-stealing pools, and async I/O are not implemented. Prismio currently uses native OS threads and blocking typed channels.",
+        area: "Language",
+        items: [
+            "`async` and `await`",
+            "Atomics, locks, and other synchronization types",
+            "`select` over channels, and non-blocking send and receive",
+            "Exceptions and the `?` operator",
+            "Macros and compile-time code generation",
+            "User-written lifetimes",
+            "Aliased imports, and `if` and `match` as expressions",
+        ],
     },
     {
-        title: "Platform surface",
-        detail: "Sockets, memory-mapped files, explicit SIMD types, and user-provided collection allocators are also outside the current supported catalog.",
+        area: "Tooling",
+        items: [
+            "A formatter and a linter",
+            "A language server for editors",
+            "A package registry with version solving",
+            "Importing modules from a dependency by path",
+            "C++ sources and library targets in the manifest",
+        ],
+    },
+    {
+        area: "Performance and platforms",
+        items: [
+            "Explicit SIMD vector types",
+            "Custom allocators for containers",
+            "A work-stealing thread pool",
+            "Android and iOS toolchains",
+        ],
     },
 ];
+
+function renderCode(text: string) {
+    return text.split("`").map((part, i) =>
+        i % 2 === 1 ? (
+            <code key={i} className="font-mono text-[0.9em] text-indigo-300">
+                {part}
+            </code>
+        ) : (
+            part
+        ),
+    );
+}
 
 export default function RoadmapPage() {
+    const {stats} = getBenchmarkDataset();
+
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-[#070709] text-white selection:bg-indigo-500/30 selection:text-white">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-[44rem] bg-[radial-gradient(ellipse_at_68%_8%,rgba(67,56,202,0.18),transparent_54%)]"/>
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[52rem] bg-[radial-gradient(ellipse_at_68%_8%,rgba(67,56,202,0.18),transparent_54%)]"/>
 
             <HeaderMain/>
 
-            <main className="relative z-10 mx-auto max-w-7xl px-6 pb-28 pt-16 md:pt-24">
-                <section className="grid gap-10 border-b border-white/[0.09] pb-16 lg:grid-cols-12 lg:gap-16">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:py-28">
+                {/* Hero */}
+                <section className="grid items-start gap-12 border-b border-white/[0.08] pb-20 lg:grid-cols-12 lg:gap-16">
                     <div className="lg:col-span-8">
-                        <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-white md:text-6xl">
-                            A roadmap that separates what works from what must be proved next.
+                        <h1 className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-white sm:text-5xl md:text-6xl">
+                            What works today, and <br/><span className="text-sky-300">what doesn&apos;t yet.</span>
                         </h1>
-                        <p className="mt-7 max-w-3xl text-base leading-7 text-zinc-300 md:text-lg md:leading-8">
-                            Prismio is in active development. This is not a release calendar: it is the
-                            engineering direction behind the compiler, with the current implementation
-                            kept distinct from measured problems, proposed work, and unsupported surface area.
+                        <p className="mt-8 max-w-2xl text-base leading-8 text-zinc-300 sm:text-lg">
+                            Prismio is in active development. This isn&apos;t a release calendar. It lists what the
+                            compiler does today, what is experimental, and what is not there yet, with no dates.
                         </p>
                     </div>
 
-                    <aside className="self-end border-l border-white/[0.1] pl-5 lg:col-span-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
-                            <CircleDot size={15} className="text-indigo-300"/>
-                            Current state
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-zinc-400">
-                            The compiler self-hosts, emits native binaries, and has an AIF-1 conformance level.
-                            Dates and version numbers are intentionally omitted until they can be kept as commitments.
-                        </p>
+                    <aside className={`${CARD} p-6 lg:col-span-4`}>
+                        <dl className="divide-y divide-white/[0.06] text-sm">
+                            <div className="flex items-center justify-between gap-4 py-3">
+                                <dt className="text-zinc-400">Checked</dt>
+                                <dd className="font-mono text-zinc-200">{CHECKED}</dd>
+                            </div>
+                            <div className="flex items-center justify-between gap-4 py-3">
+                                <dt className="text-zinc-400">Version</dt>
+                                <dd className="font-mono text-indigo-300">{PRISMIO_VERSION}</dd>
+                            </div>
+                            <div className="flex items-center justify-between gap-4 py-3">
+                                <dt className="text-zinc-400">Dates promised</dt>
+                                <dd className="font-mono text-zinc-200">None</dd>
+                            </div>
+                        </dl>
+                        <a
+                            href="https://docs.prismio.org/roadmap"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                        >
+                            Full feature-by-feature table
+                            <ArrowUpRight size={14}/>
+                        </a>
                     </aside>
                 </section>
 
-                <section className="py-20" aria-labelledby="shipped-heading">
-                    <div className="grid gap-8 md:grid-cols-12 md:gap-16">
-                        <div className="md:col-span-4">
-                            <h2 id="shipped-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white">
-                                Established in the current compiler.
+                {/* Works today */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="works-heading">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+                        <div className="lg:col-span-4">
+                            <h2 id="works-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                                Works today.
                             </h2>
-                            <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
-                                These are present capabilities, not roadmap aspirations.
+                            <p className="mt-4 text-sm leading-7 text-zinc-400">
+                                These are in {PRISMIO_VERSION} and you can use them now.
                             </p>
                         </div>
-                        <div className="divide-y divide-white/[0.08] md:col-span-8">
-                            {SHIPPED.map((item) => (
-                                <article key={item.title} className="grid gap-4 py-6 first:pt-0 sm:grid-cols-[1.15rem_1fr]">
-                                    <Check size={16} className="mt-1 text-emerald-300"/>
+
+                        <ul className={`${CARD} divide-y divide-white/[0.08] lg:col-span-8`}>
+                            {WORKS_TODAY.map((item) => (
+                                <li key={item.title} className="flex gap-4 px-7 py-5">
+                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
+                                        <Check size={14}/>
+                                    </span>
                                     <div>
-                                        <h3 className="font-medium text-zinc-100">{item.title}</h3>
-                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">{item.detail}</p>
+                                        <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                                        <p className="mt-1 text-sm leading-6 text-zinc-400">{renderCode(item.detail)}</p>
                                     </div>
-                                </article>
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                     </div>
                 </section>
 
-                <section className="border-t border-white/[0.09] py-20" aria-labelledby="next-heading">
+                {/* Experimental */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="experimental-heading">
                     <div className="max-w-3xl">
-                        <h2 id="next-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white md:text-4xl">
-                            The next work starts with evidence, not feature theater.
+                        <h2 id="experimental-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                            Experimental.
                         </h2>
-                        <p className="mt-5 text-base leading-7 text-zinc-400">
-                            The active memory optimization tracker identifies these as high-leverage directions.
-                            Each is an engineering hypothesis with its own measurement requirement, not a promised performance number.
+                        <p className="mt-4 text-base leading-7 text-zinc-400">
+                            These work, but they are new. Expect changes and rough edges.
                         </p>
                     </div>
 
-                    <div className="mt-12 border-t border-white/[0.08]">
-                        {NEXT.map((item) => (
-                            <article key={item.id} className="grid gap-5 border-b border-white/[0.08] py-8 md:grid-cols-12 md:gap-10">
-                                <div className="font-mono text-xs text-indigo-300 md:col-span-2">{item.id}</div>
-                                <div className="md:col-span-6">
-                                    <h3 className="text-lg font-medium tracking-[-0.015em] text-zinc-100">{item.title}</h3>
-                                    <p className="mt-3 text-sm leading-6 text-zinc-400">{item.detail}</p>
-                                </div>
-                                <div className="self-start text-sm text-zinc-500 md:col-span-4 md:text-right">{item.signal}</div>
-                            </article>
+                    <div className="mt-12 grid gap-6 md:grid-cols-3">
+                        {EXPERIMENTAL.map((item) => (
+                            <div key={item.title} className={`${CARD} p-7`}>
+                                <span className="inline-block rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 font-mono text-xs text-amber-300">
+                                    Experimental
+                                </span>
+                                <h3 className="mt-4 text-lg font-semibold text-white">{item.title}</h3>
+                                <p className="mt-2 text-sm leading-7 text-zinc-400">{renderCode(item.detail)}</p>
+                            </div>
                         ))}
                     </div>
                 </section>
 
-                <section className="grid gap-10 border-t border-white/[0.09] py-20 lg:grid-cols-12 lg:gap-16" aria-labelledby="gaps-heading">
-                    <div className="lg:col-span-4">
-                        <h2 id="gaps-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white">
-                            Missing is not the same as scheduled.
+                {/* Not yet */}
+                <section className="border-b border-white/[0.08] py-24" aria-labelledby="notyet-heading">
+                    <div className="max-w-3xl">
+                        <h2 id="notyet-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
+                            Not yet.
                         </h2>
-                        <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
-                            The benchmark suite marks 16 workloads unsupported rather than supplying stand-ins.
-                            Their missing capabilities are visible here without pretending every one has a release date.
+                        <p className="mt-4 text-base leading-7 text-zinc-400">
+                            Missing is not the same as scheduled. These are not in {PRISMIO_VERSION}, and listing them
+                            here is not a promise of when, or in what order, they will arrive.
                         </p>
+                    </div>
+
+                    <div className="mt-12 grid gap-6 md:grid-cols-2">
+                        {NOT_YET.map((group) => (
+                            <div key={group.area} className={`${CARD} p-8`}>
+                                <h3 className="text-lg font-semibold text-white">{group.area}</h3>
+                                <ul className="mt-5 space-y-3">
+                                    {group.items.map((item) => (
+                                        <li key={item} className="flex gap-3 text-sm leading-6 text-zinc-300">
+                                            <span aria-hidden className="mt-2.5 h-px w-3 shrink-0 bg-zinc-500"/>
+                                            <span>{renderCode(item)}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+
+                    <p className="mt-8 text-sm leading-7 text-zinc-400">
+                        The benchmark suite shows the same gaps from the other side: {stats.unsupported} workloads
+                        are marked unsupported instead of being faked.{" "}
                         <Link
                             href="/benchmarks"
-                            className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                            className="inline-flex items-center gap-1 font-medium text-indigo-400 transition-colors hover:text-indigo-300"
                         >
-                            Read the benchmark coverage
-                            <ArrowRight size={15}/>
+                            See the benchmark coverage
+                            <ArrowRight size={14}/>
                         </Link>
-                    </div>
-                    <div className="divide-y divide-white/[0.08] lg:col-span-8">
-                        {GAPS.map((item) => (
-                            <article key={item.title} className="py-6 first:pt-0">
-                                <h3 className="font-medium text-zinc-200">{item.title}</h3>
-                                <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">{item.detail}</p>
-                            </article>
-                        ))}
-                    </div>
+                    </p>
                 </section>
 
-                <section className="border-t border-white/[0.09] py-16">
-                    <div className="grid gap-8 rounded-2xl bg-[#0b0c10] p-7 ring-1 ring-white/[0.08] md:grid-cols-[1fr_auto] md:items-center md:p-10">
-                        <div>
-                            <div className="flex items-center gap-2 text-zinc-200">
-                                <GitBranch size={17} className="text-indigo-300"/>
-                                <h2 className="text-xl font-semibold tracking-[-0.02em]">Follow the work where it happens.</h2>
-                            </div>
-                            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
-                                Architecture notes, source changes, benchmark evidence, issues, and discussions are open.
-                                Contributions are most useful when they include a reproducible case or a clear design question.
-                            </p>
+                {/* Blocked */}
+                <section className="pt-24" aria-labelledby="blocked-heading">
+                    <div className={`${CARD} grid gap-6 border-rose-500/20 p-8 md:grid-cols-12 md:gap-10 md:p-10`}>
+                        <div className="md:col-span-4">
+                            <span className="inline-block rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-0.5 font-mono text-xs text-rose-300">
+                                Blocked
+                            </span>
+                            <h2 id="blocked-heading" className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-white">
+                                WebAssembly
+                            </h2>
                         </div>
-                        <a
-                            href="https://github.com/prismio-lang/prismio/discussions"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-                        >
-                            <ShieldCheck size={16}/>
-                            Join the discussion
-                        </a>
+                        <p className="text-sm leading-7 text-zinc-400 md:col-span-8">
+                            Prismio can emit WebAssembly code, but there is no C library for the WebAssembly target to
+                            build the runtime against, so a working build can&apos;t be produced from this repository
+                            yet. It is blocked, not in progress. Cross-compiling to other targets works.
+                        </p>
                     </div>
+
+                    <p className="mt-10 text-sm text-zinc-400">
+                        Want to help with any of this?{" "}
+                        <Link
+                            href="/community"
+                            className="inline-flex items-center gap-1 font-medium text-indigo-400 transition-colors hover:text-indigo-300"
+                        >
+                            Start at the community page
+                            <ArrowRight size={14}/>
+                        </Link>
+                    </p>
                 </section>
             </main>
 

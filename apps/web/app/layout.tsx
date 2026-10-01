@@ -76,7 +76,6 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary",
-        site: "@prismio_lang",
         title: siteConfig.name,
         description: siteConfig.description,
         images: ["/icons/prismio.png"],
@@ -115,7 +114,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" className="dark" style={{colorScheme: "dark"}} suppressHydrationWarning>
         <body className={`${geistSans.variable} ${geistMono.variable} ${kalam.variable} ${instrumentSerif.variable} ${fraunces.variable} ${syne.variable} ${bricolage.variable} font-sans antialiased bg-[#070709] text-zinc-100 scrollbar-none`}>
         <JsonLd data={prismioStructuredData} />
                 {children}

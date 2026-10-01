@@ -30,7 +30,7 @@ export default function WhyPrismio() {
                             Memory decisions you can inspect, diff, and verify.
                         </h2>
                         <p className="mt-6 max-w-xl text-base leading-7 text-zinc-300">
-                            The Adaptive Inference Framework analyzes escape behavior, ownership,
+                            The Adaptive Inference Framework (experimental in 0.1) analyzes escape behavior, ownership,
                             thread transfer, and layout before code generation. It chooses the
                             cheapest safe placement it can prove—and produces evidence for the decision.
                         </p>
@@ -41,12 +41,12 @@ export default function WhyPrismio() {
 
                         <div className="mt-10 grid grid-cols-2 gap-8 text-sm">
                             <div>
-                                <div className="font-mono text-2xl font-semibold text-white">T0–T4</div>
-                                <div className="mt-1 leading-5 text-zinc-500">A graded storage model, not one universal allocation strategy.</div>
+                                <div className="font-mono text-2xl font-semibold text-white">T0–T4b</div>
+                                <div className="mt-1 leading-5 text-zinc-500">Graded storage tiers, not one allocation strategy. What each tier means can still change.</div>
                             </div>
                             <div>
-                                <div className="font-mono text-2xl font-semibold text-white">AIF-1</div>
-                                <div className="mt-1 leading-5 text-zinc-500">The compiler’s current declared conformance level.</div>
+                                <div className="font-mono text-2xl font-semibold text-white">1.2 Draft</div>
+                                <div className="mt-1 leading-5 text-zinc-500">The current AIF policy. It is not a stable contract between compilers.</div>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ export default function WhyPrismio() {
 
                             <div className="flex items-center gap-2 border-t border-white/[0.07] bg-emerald-500/[0.04] px-5 py-4 text-xs text-emerald-300 sm:px-7">
                                 <CheckCircle2 size={15}/>
-                                <span>Use <code>--manifest</code> to create a stable, diffable record for CI.</span>
+                                <span>Use <code>--manifest</code> to create a diffable record for CI.</span>
                             </div>
                         </div>
                     </div>

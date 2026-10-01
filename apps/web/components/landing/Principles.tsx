@@ -10,13 +10,13 @@ const LANGUAGE_FEATURES = [
     },
     {
         title: 'Ownership-aware native concurrency',
-        copy: 'spawn and join run work on native OS threads. Typed blocking Channel<T> values move messages between workers, while chan_share makes endpoint sharing explicit.',
+        copy: 'Experimental spawn and join run work on native OS threads. Typed blocking Channel<T> values move messages between workers, while chan_share makes endpoint sharing explicit.',
         detail: 'No async runtime, futures, or work-stealing executor is implied.',
         icon: GitBranch,
     },
     {
         title: 'Layout control for real hot loops',
-        copy: 'Flat values can live inline inside Vec<T>. Slice<T> provides bounded views, while soa and aos perform explicit structure-of-arrays conversion through checked DataView<T> access.',
+        copy: 'Flat values can live inline inside Vec<T>, and Slice<T> provides bounded views. Experimental soa and aos conversions give explicit structure-of-arrays access through checked DataView<T>.',
         detail: 'The compiler specializes the element type before choosing its container representation.',
         icon: Rows3,
     },

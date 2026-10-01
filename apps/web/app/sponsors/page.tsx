@@ -50,7 +50,6 @@ const SPONSORSHIP_LEVELS = [
             "Prominent citation on website, documentation portal, and compiler release notes",
             "Direct technical advisory channel with core maintainers for ecosystem feedback",
             "Co-authored engineering case studies or benchmark analysis reports",
-            "Priority review on RFC proposals aligned with mutual systems goals",
         ],
         actionText: "Discuss Institutional Sponsorship",
         actionHref: "mailto:saksham6975@gmail.com?subject=Prismio%20Institutional%20Sponsorship",
@@ -91,8 +90,8 @@ const STEWARDSHIP_PRINCIPLES = [
         copy: "The compiler, standard library, verifier shims, and documentation are published under Apache-2.0. There will never be an enterprise tier, proprietary compiler flag, or closed source standard library module.",
     },
     {
-        title: "Technical RFC Governance",
-        copy: "Financial contributions do not buy unilateral feature approval. All syntax changes, semantic decisions, and memory models must go through transparent, peer-reviewed RFC processes based purely on technical merit.",
+        title: "Decisions on technical merit",
+        copy: "Financial contributions do not buy unilateral feature approval. Syntax changes, semantic decisions, and memory models are decided on technical merit, in the open on GitHub.",
     },
     {
         title: "Public Fiscal Accountability",

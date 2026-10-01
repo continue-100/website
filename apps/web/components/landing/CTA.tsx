@@ -5,10 +5,10 @@ import {ArrowRight, BookOpen, Terminal} from 'lucide-react';
 
 const AVAILABLE = [
     'Self-hosted native compiler',
-    'AIF storage plans and runtime verification',
+    'Experimental AIF storage plans and runtime verification',
     'Generics, traits, closures, enums, and pattern matching',
-    'Vectors (Vec<T>), maps, slices, data views, files, and processes',
-    'Native tasks and typed blocking channels',
+    'Vectors (Vec<T>), maps, slices, files, and processes',
+    'Typed blocking channels, and experimental native tasks',
     'UMS projects, native linking, JSON diagnostics, and DWARF',
 ];
 

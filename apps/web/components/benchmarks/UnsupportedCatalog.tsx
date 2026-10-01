@@ -81,7 +81,7 @@ export default function UnsupportedCatalog({ unsupported, categories }: Unsuppor
                 </div>
 
                 <div className="flex items-center gap-2 text-xs text-zinc-400">
-                    <CircleSlash2 size={15} className="text-amber-300" />
+                    <CircleSlash2 size={15} className="text-zinc-400" />
                     <span>
                         <strong className="text-white font-mono">{unsupported.length}</strong> cataloged gaps across{' '}
                         {categories.filter((c) => c.unsupported > 0).length} domains
@@ -95,16 +95,18 @@ export default function UnsupportedCatalog({ unsupported, categories }: Unsuppor
                     <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
                         type="text"
+                        aria-label="Search unsupported workloads"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search missing features, containers, runtimes..."
-                        className="w-full rounded-xl border border-white/10 bg-[#0b0c10] py-2 pl-9 pr-8 text-xs text-white placeholder-zinc-500 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                        className="w-full rounded-xl border border-white/10 bg-[#0b0c10] py-2 pl-9 pr-8 text-xs text-white placeholder-zinc-400 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
                     />
                     {search && (
                         <button
                             type="button"
+                            aria-label="Clear search"
                             onClick={() => setSearch('')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
                         >
                             <X size={13} />
                         </button>
@@ -114,7 +116,7 @@ export default function UnsupportedCatalog({ unsupported, categories }: Unsuppor
 
             {/* Categorized Cards Grid */}
             {activeCategoryKeys.length === 0 ? (
-                <div className="rounded-2xl border border-white/[0.08] bg-[#0b0c10] p-12 text-center text-xs text-zinc-500">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0b0c10] p-12 text-center text-xs text-zinc-400">
                     No unsupported capabilities match &quot;{search}&quot;.
                 </div>
             ) : (
@@ -132,10 +134,10 @@ export default function UnsupportedCatalog({ unsupported, categories }: Unsuppor
                                 {/* Category Header */}
                                 <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-5 py-3.5">
                                     <div className="flex items-center gap-2.5 text-sm font-semibold text-white">
-                                        <Icon size={16} className="text-amber-400" />
+                                        <Icon size={16} className="text-zinc-300" />
                                         <span>{title}</span>
                                     </div>
-                                    <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-mono text-amber-300">
+                                    <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs font-mono text-zinc-300">
                                         {items.length} {items.length === 1 ? 'gap' : 'gaps'}
                                     </span>
                                 </div>
@@ -148,11 +150,11 @@ export default function UnsupportedCatalog({ unsupported, categories }: Unsuppor
                                                 <span className="font-mono text-xs font-medium text-zinc-200">
                                                     {item.name}
                                                 </span>
-                                                <span className="rounded border border-white/[0.08] bg-white/[0.02] px-1.5 py-0.5 text-[10px] text-zinc-500">
+                                                <span className="rounded border border-white/[0.08] bg-white/[0.02] px-1.5 py-0.5 text-xs text-zinc-400">
                                                     {item.profile}
                                                 </span>
                                             </div>
-                                            <p className="text-[11px] leading-relaxed text-zinc-400">
+                                            <p className="text-xs leading-relaxed text-zinc-400">
                                                 {item.missing_feature || 'Pending implementation.'}
                                             </p>
                                         </div>

@@ -1,66 +1,62 @@
-import { NextResponse } from 'next/server';
+import {NextResponse} from 'next/server';
 
 export const revalidate = 3600; // Cache on server/CDN for 1 hour
 
+const PLUGIN_ID = 34672;
+
 export interface JetBrainsPluginInfo {
+    id: number;
     name: string;
-    downloads: number;
-    version: string;
-    rating: number;
-    pricingModel: string;
+    /** Whether JetBrains has approved the plugin, so it can be found and installed from the Marketplace. */
+    approved: boolean;
+    /** Latest published version, or null while nothing has been published. */
+    version: string | null;
+    downloads: number | null;
     marketplaceUrl: string;
     githubUrl: string;
 }
 
-const FALLBACK_DATA: JetBrainsPluginInfo = {
-    name: 'Prismio Language Support',
-    downloads: 5,
-    version: '0.1.0',
-    rating: 5,
-    pricingModel: 'FREE',
-    marketplaceUrl: 'https://plugins.jetbrains.com/plugin/34672-prismio',
+// What is returned when the Marketplace cannot be reached. It claims nothing: no version, no downloads.
+const UNKNOWN: JetBrainsPluginInfo = {
+    id: PLUGIN_ID,
+    name: 'Prismio',
+    approved: false,
+    version: null,
+    downloads: null,
+    marketplaceUrl: `https://plugins.jetbrains.com/plugin/${PLUGIN_ID}-prismio`,
     githubUrl: 'https://github.com/prismio-lang/intellij-plugin',
 };
 
 export async function GET() {
     try {
+        const options = {next: {revalidate: 3600}, headers: {Accept: 'application/json'}};
         const [pluginRes, updatesRes] = await Promise.all([
-            fetch('https://plugins.jetbrains.com/api/plugins/34672', {
-                next: { revalidate: 3600 },
-                headers: { Accept: 'application/json' },
-            }),
-            fetch('https://plugins.jetbrains.com/api/plugins/34672/updates', {
-                next: { revalidate: 3600 },
-                headers: { Accept: 'application/json' },
-            }),
+            fetch(`https://plugins.jetbrains.com/api/plugins/${PLUGIN_ID}`, options),
+            fetch(`https://plugins.jetbrains.com/api/plugins/${PLUGIN_ID}/updates`, options),
         ]);
 
-        if (!pluginRes.ok) {
-            return NextResponse.json(FALLBACK_DATA);
-        }
+        if (!pluginRes.ok) return NextResponse.json(UNKNOWN);
+        const plugin = await pluginRes.json();
 
-        const pluginData = await pluginRes.json();
-        let version = '1.0.0';
-
+        let version: string | null = null;
         if (updatesRes.ok) {
-            const updatesData = await updatesRes.json();
-            if (Array.isArray(updatesData) && updatesData.length > 0 && updatesData[0]?.version) {
-                version = updatesData[0].version;
-            }
+            const updates = await updatesRes.json();
+            if (Array.isArray(updates) && typeof updates[0]?.version === 'string') version = updates[0].version;
         }
 
         const result: JetBrainsPluginInfo = {
-            name: pluginData.name || FALLBACK_DATA.name,
-            downloads: typeof pluginData.downloads === 'number' ? pluginData.downloads : FALLBACK_DATA.downloads,
+            id: PLUGIN_ID,
+            name: typeof plugin.name === 'string' ? plugin.name : UNKNOWN.name,
+            // Approved and with at least one published version: only then is it installable.
+            approved: Boolean(plugin.approve) && version !== null,
             version,
-            rating: typeof pluginData.rating === 'number' ? pluginData.rating : FALLBACK_DATA.rating,
-            pricingModel: pluginData.pricingModel || 'FREE',
-            marketplaceUrl: FALLBACK_DATA.marketplaceUrl,
-            githubUrl: pluginData.urls?.sourceCodeUrl || FALLBACK_DATA.githubUrl,
+            downloads: typeof plugin.downloads === 'number' ? plugin.downloads : null,
+            marketplaceUrl: UNKNOWN.marketplaceUrl,
+            githubUrl: plugin.urls?.sourceCodeUrl || UNKNOWN.githubUrl,
         };
 
         return NextResponse.json(result);
     } catch {
-        return NextResponse.json(FALLBACK_DATA);
+        return NextResponse.json(UNKNOWN);
     }
 }

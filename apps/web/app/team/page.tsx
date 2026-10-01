@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import {ArrowRight, ArrowUpRight, Code2, FileUser, Heart, Mail, MessageSquare, Sparkles} from "lucide-react";
+import {ArrowRight, ArrowUpRight, FileUser, Heart, Mail, Sparkles} from "lucide-react";
 import HeaderMain from "@/components/HeaderMain";
+import DiscordIcon from "@/components/icons/DiscordIcon";
+import GithubIcon from "@/components/icons/GithubIcon";
 import FooterMain from "@prismio/ui/FooterMain";
 import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
@@ -71,8 +73,8 @@ export default function TeamPage() {
                             </h1>
 
                             <p className="mt-8 max-w-2xl text-base leading-8 text-zinc-300 sm:text-lg">
-                                Prismio is developed by its creator, and contributions come in through GitHub,
-                                Discord, and RFCs. This page says who that is, what exists in 0.1, and where
+                                Prismio is developed by its creator, and contributions come in through GitHub
+                                and Discord. This page says who that is, what exists in 0.1, and where
                                 help is most useful.
                             </p>
                         </div>
@@ -84,7 +86,7 @@ export default function TeamPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5865F2] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#4752c4]"
                             >
-                                <MessageSquare size={16} />
+                                <DiscordIcon size={16} />
                                 Join Discord
                             </a>
 
@@ -94,7 +96,7 @@ export default function TeamPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/[0.06]"
                             >
-                                <Code2 size={16} />
+                                <GithubIcon size={16} />
                                 GitHub
                                 <ArrowUpRight size={13} className="opacity-60" />
                             </a>
@@ -141,7 +143,7 @@ export default function TeamPage() {
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
                                     >
-                                        <Code2 size={14} className="text-indigo-400" />
+                                        <GithubIcon size={14} />
                                         GitHub
                                         <ArrowUpRight size={12} className="opacity-60" />
                                     </a>
@@ -231,7 +233,7 @@ export default function TeamPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 rounded-xl bg-[#5865F2] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#4752c4]"
                             >
-                                <MessageSquare size={16} />
+                                <DiscordIcon size={16} />
                                 Join the Discord
                             </a>
 

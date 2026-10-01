@@ -3,148 +3,86 @@
 import React, { useState } from 'react';
 import { Cpu, Layers, Gauge, Terminal, Check, Copy, CheckCircle2, ShieldAlert } from 'lucide-react';
 import BenchmarkRunCommands from './BenchmarkRunCommands';
+import type {BenchmarkEnvironment, ParsedBuildCommand} from '@/lib/benchmarks';
+import {PRISMIO_VERSION} from '@prismio/utils';
+
+type Arm = 'prismio' | 'cpp' | 'rust';
+type CommandTab = 'all' | Arm;
+type TokenKind = 'tool' | 'sub' | 'flag' | 'source' | 'outflag' | 'output';
+type Token = {text: string; kind: TokenKind};
 
 interface BenchmarkMethodologyProps {
     eliminationNs?: number;
     runs?: number;
+    buildCommands: Record<Arm, ParsedBuildCommand | null>;
+    environment?: BenchmarkEnvironment;
 }
 
-const BUILD_COMMANDS = {
-    all: `# 1. Prismio Native Release Build (LLVM 23 backend)
-prismio build benchmarks/prismio/suite.psm -o benchmarks/build/prismio-suite
-
-# 2. Clang++ C++20 Build (-O3 release, POSIX threads)
-clang++ -O3 -std=c++20 -pthread \\
-  benchmarks/cpp/{suite,algorithms,compute,data_structures,memory,io,adversarial}.cpp \\
-  -o benchmarks/build/cpp-suite
-
-# 3. Rustc Release Build (opt-level=3, edition 2021)
-rustc -C opt-level=3 --edition=2021 benchmarks/rust/suite.rs \\
-  -o benchmarks/build/rust-suite`,
-    prismio: `# Prismio Native Release Build
-# Compiles with LLVM 23 Native Backend & Whole-Program Optimization
-prismio build benchmarks/prismio/suite.psm -o benchmarks/build/prismio-suite`,
-    cpp: `# Clang++ C++20 Production Build
-# -O3 optimization, C++20 standard, native target architecture
-clang++ -O3 -std=c++20 -pthread \\
-  benchmarks/cpp/{suite,algorithms,compute,data_structures,memory,io,adversarial}.cpp \\
-  -o benchmarks/build/cpp-suite`,
-    rust: `# Rustc Release Build
-# -C opt-level=3 maximum optimization, edition 2021
-rustc -C opt-level=3 --edition=2021 benchmarks/rust/suite.rs \\
-  -o benchmarks/build/rust-suite`,
+const ARM_LABEL: Record<Arm, string> = {
+    prismio: 'Prismio',
+    cpp: 'Clang++ (C++20)',
+    rust: 'Rustc',
 };
 
-type CommandTab = 'all' | 'prismio' | 'cpp' | 'rust';
+const ARM_STYLE: Record<Arm, {tool: string; output: string}> = {
+    prismio: {tool: 'text-purple-300 font-semibold', output: 'text-purple-200'},
+    cpp: {tool: 'text-sky-300 font-semibold', output: 'text-sky-200'},
+    rust: {tool: 'text-orange-300 font-semibold', output: 'text-orange-200'},
+};
 
-function CodePrismio() {
-    return (
-        <div className="space-y-1">
-            <div className="text-zinc-500 italic select-none"># Prismio Native Release Build</div>
-            <div className="text-zinc-500 italic select-none"># Compiles with LLVM 23 Native Backend &amp; Whole-Program Optimization</div>
-            <div className="pt-1">
-                <span className="text-emerald-400 font-semibold">prismio</span>{' '}
-                <span className="text-sky-300">build</span>{' '}
-                <span className="text-zinc-200">benchmarks/prismio/suite.psm</span>{' '}
-                <span className="text-cyan-400 font-medium">-o</span>{' '}
-                <span className="text-emerald-300">benchmarks/build/prismio-suite</span>
-            </div>
-        </div>
-    );
+const KIND_STYLE: Record<Exclude<TokenKind, 'tool' | 'output'>, string> = {
+    sub: 'text-sky-300',
+    flag: 'text-cyan-400 font-medium',
+    source: 'text-zinc-200',
+    outflag: 'text-cyan-400 font-medium',
+};
+
+/** Lay a parsed command out as lines of typed tokens (same shape for rendering and for copy). */
+function layoutCommand(cmd: ParsedBuildCommand): Token[][] {
+    const head: Token[] = [{text: cmd.tool, kind: 'tool'}];
+    if (cmd.sub) head.push({text: cmd.sub, kind: 'sub'});
+    cmd.flags.forEach((f) => head.push({text: f, kind: 'flag'}));
+
+    const sources: Token[] = cmd.sources.map((text) => ({text, kind: 'source' as const}));
+    const out: Token[] = cmd.output
+        ? [{text: '-o', kind: 'outflag'}, {text: cmd.output, kind: 'output'}]
+        : [];
+
+    // A single source file stays on the first line; several get their own line.
+    if (sources.length <= 1) return [[...head, ...sources, ...out]];
+    return [head, sources, out].filter((line) => line.length > 0);
 }
 
-function CodeCpp() {
-    return (
-        <div className="space-y-1">
-            <div className="text-zinc-500 italic select-none"># Clang++ C++20 Production Build</div>
-            <div className="text-zinc-500 italic select-none"># -O3 optimization, C++20 standard, native target architecture</div>
-            <div className="pt-1">
-                <span className="text-amber-400 font-semibold">clang++</span>{' '}
-                <span className="text-cyan-400 font-medium">-O3</span>{' '}
-                <span className="text-cyan-400 font-medium">-std=c++20</span>{' '}
-                <span className="text-cyan-400 font-medium">-pthread</span>{' '}
-                <span className="text-zinc-500">\</span>
-            </div>
-            <div className="pl-4">
-                <span className="text-zinc-200">benchmarks/cpp/&#123;suite,algorithms,compute,data_structures,memory,io,adversarial&#125;.cpp</span>{' '}
-                <span className="text-zinc-500">\</span>
-            </div>
-            <div className="pl-4">
-                <span className="text-cyan-400 font-medium">-o</span>{' '}
-                <span className="text-amber-300">benchmarks/build/cpp-suite</span>
-            </div>
-        </div>
-    );
+function commandText(cmd: ParsedBuildCommand): string {
+    return layoutCommand(cmd)
+        .map((line) => line.map((t) => t.text).join(' '))
+        .join(' \\\n  ');
 }
 
-function CodeRust() {
+function CommandView({arm, cmd, comment}: {arm: Arm; cmd: ParsedBuildCommand; comment: string}) {
+    const lines = layoutCommand(cmd);
+    const style = (token: Token) =>
+        token.kind === 'tool'
+            ? ARM_STYLE[arm].tool
+            : token.kind === 'output'
+              ? ARM_STYLE[arm].output
+              : KIND_STYLE[token.kind];
+
     return (
         <div className="space-y-1">
-            <div className="text-zinc-500 italic select-none"># Rustc Release Build</div>
-            <div className="text-zinc-500 italic select-none"># -C opt-level=3 maximum optimization, edition 2021</div>
-            <div className="pt-1">
-                <span className="text-indigo-400 font-semibold">rustc</span>{' '}
-                <span className="text-cyan-400 font-medium">-C</span>{' '}
-                <span className="text-teal-300">opt-level=3</span>{' '}
-                <span className="text-cyan-400 font-medium">--edition=2021</span>{' '}
-                <span className="text-zinc-200">benchmarks/rust/suite.rs</span>{' '}
-                <span className="text-zinc-500">\</span>
-            </div>
-            <div className="pl-4">
-                <span className="text-cyan-400 font-medium">-o</span>{' '}
-                <span className="text-indigo-300">benchmarks/build/rust-suite</span>
-            </div>
-        </div>
-    );
-}
-
-function CodeAll() {
-    return (
-        <div className="space-y-5">
-            <div className="space-y-1">
-                <div className="text-zinc-500 italic select-none"># 1. Prismio Native Release Build (LLVM 23 backend)</div>
-                <div className="pt-0.5">
-                    <span className="text-emerald-400 font-semibold">prismio</span>{' '}
-                    <span className="text-sky-300">build</span>{' '}
-                    <span className="text-zinc-200">benchmarks/prismio/suite.psm</span>{' '}
-                    <span className="text-cyan-400 font-medium">-o</span>{' '}
-                    <span className="text-emerald-300">benchmarks/build/prismio-suite</span>
-                </div>
-            </div>
-
-            <div className="space-y-1">
-                <div className="text-zinc-500 italic select-none"># 2. Clang++ C++20 Build (-O3 release, POSIX threads)</div>
-                <div className="pt-0.5">
-                    <span className="text-amber-400 font-semibold">clang++</span>{' '}
-                    <span className="text-cyan-400 font-medium">-O3</span>{' '}
-                    <span className="text-cyan-400 font-medium">-std=c++20</span>{' '}
-                    <span className="text-cyan-400 font-medium">-pthread</span>{' '}
-                    <span className="text-zinc-500">\</span>
-                </div>
-                <div className="pl-4">
-                    <span className="text-zinc-200">benchmarks/cpp/&#123;suite,algorithms,compute,data_structures,memory,io,adversarial&#125;.cpp</span>{' '}
-                    <span className="text-zinc-500">\</span>
-                </div>
-                <div className="pl-4">
-                    <span className="text-cyan-400 font-medium">-o</span>{' '}
-                    <span className="text-amber-300">benchmarks/build/cpp-suite</span>
-                </div>
-            </div>
-
-            <div className="space-y-1">
-                <div className="text-zinc-500 italic select-none"># 3. Rustc Release Build (opt-level=3, edition 2021)</div>
-                <div className="pt-0.5">
-                    <span className="text-indigo-400 font-semibold">rustc</span>{' '}
-                    <span className="text-cyan-400 font-medium">-C</span>{' '}
-                    <span className="text-teal-300">opt-level=3</span>{' '}
-                    <span className="text-cyan-400 font-medium">--edition=2021</span>{' '}
-                    <span className="text-zinc-200">benchmarks/rust/suite.rs</span>{' '}
-                    <span className="text-zinc-500">\</span>
-                </div>
-                <div className="pl-4">
-                    <span className="text-cyan-400 font-medium">-o</span>{' '}
-                    <span className="text-indigo-300">benchmarks/build/rust-suite</span>
-                </div>
+            <div className="text-zinc-400 italic select-none">{comment}</div>
+            <div className="pt-1 space-y-1">
+                {lines.map((line, i) => (
+                    <div key={i} className={i === 0 ? '' : 'pl-4'}>
+                        {line.map((token, j) => (
+                            <React.Fragment key={j}>
+                                {j > 0 && ' '}
+                                <span className={style(token)}>{token.text}</span>
+                            </React.Fragment>
+                        ))}
+                        {i < lines.length - 1 && <span className="text-zinc-400"> \</span>}
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -153,13 +91,27 @@ function CodeAll() {
 export default function BenchmarkMethodology({
     eliminationNs = 10000,
     runs = 5,
+    buildCommands,
+    environment = {},
 }: BenchmarkMethodologyProps) {
+    const arms = (['prismio', 'cpp', 'rust'] as Arm[]).filter((arm) => buildCommands[arm]);
+
+    const copyText = (tab: CommandTab): string => {
+        const picked = tab === 'all' ? arms : arms.filter((arm) => arm === tab);
+        return picked
+            .map((arm, i) => {
+                const label = tab === 'all' ? `# ${i + 1}. ${ARM_LABEL[arm]}` : `# ${ARM_LABEL[arm]}`;
+                return `${label}\n${commandText(buildCommands[arm] as ParsedBuildCommand)}`;
+            })
+            .join('\n\n');
+    };
+
     const [activeTab, setActiveTab] = useState<CommandTab>('all');
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(BUILD_COMMANDS[activeTab]);
+            await navigator.clipboard.writeText(copyText(activeTab));
             setCopied(true);
             setTimeout(() => setCopied(false), 1800);
         } catch {
@@ -171,9 +123,6 @@ export default function BenchmarkMethodology({
         <section aria-labelledby="methodology-heading" className="border-t border-white/[0.08] pt-16 space-y-10">
             {/* Header */}
             <div className="max-w-3xl space-y-3">
-                <div className="font-mono text-xs uppercase tracking-wider text-emerald-400">
-                    Test Environment &amp; Configurations
-                </div>
                 <h2 id="methodology-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white md:text-4xl">
                     Test Environment &amp; Benchmark Methodology
                 </h2>
@@ -189,29 +138,29 @@ export default function BenchmarkMethodology({
                     {/* Panel 1: Host Environment */}
                     <div className="p-6 space-y-4">
                         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                            <Cpu size={14} className="text-emerald-400" />
+                            <Cpu size={14} className="text-zinc-300" />
                             Host Hardware &amp; OS
                         </div>
                         <dl className="space-y-3 text-xs">
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Processor</dt>
-                                <dd className="font-mono text-zinc-200">Apple M5 (10 cores)</dd>
+                                <dt className="text-zinc-400">Processor</dt>
+                                <dd className="font-mono text-zinc-200">{environment.processor ?? 'Apple M5 (10 cores)'}</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Memory</dt>
-                                <dd className="font-mono text-zinc-200">16 GB Unified Memory</dd>
+                                <dt className="text-zinc-400">Memory</dt>
+                                <dd className="font-mono text-zinc-200">{environment.memory ?? '16 GB Unified Memory'}</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Operating System</dt>
-                                <dd className="font-mono text-zinc-200">macOS 27.0 (Darwin 26A428)</dd>
+                                <dt className="text-zinc-400">Operating System</dt>
+                                <dd className="font-mono text-zinc-200">{environment.os ?? 'macOS 27.0 (Darwin 26A428)'}</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Target Triple</dt>
-                                <dd className="font-mono text-zinc-200">arm64-apple-darwin</dd>
+                                <dt className="text-zinc-400">Target Triple</dt>
+                                <dd className="font-mono text-zinc-200">{environment.target ?? 'arm64-apple-darwin'}</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Power State</dt>
-                                <dd className="font-mono text-zinc-200">AC Power (No throttling)</dd>
+                                <dt className="text-zinc-400">Power State</dt>
+                                <dd className="font-mono text-zinc-200">{environment.power ?? 'AC Power (No throttling)'}</dd>
                             </div>
                         </dl>
                     </div>
@@ -219,64 +168,76 @@ export default function BenchmarkMethodology({
                     {/* Panel 2: Toolchains & Compilers */}
                     <div className="p-6 space-y-4">
                         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                            <Layers size={14} className="text-indigo-400" />
+                            <Layers size={14} className="text-zinc-300" />
                             Toolchains &amp; Compilers
                         </div>
                         <dl className="space-y-3 text-xs">
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Prismio</dt>
-                                <dd className="font-mono text-emerald-400 font-medium">
-                                    0.1.0 <span className="text-zinc-500 font-normal">(LLVM 23.1.1)</span>
+                                <dt className="text-zinc-400">Prismio</dt>
+                                <dd className="font-mono text-purple-300 font-medium">
+                                    {environment.prismio ?? PRISMIO_VERSION.replace(/^v/, '')} <span className="text-zinc-400 font-normal">(LLVM {environment.llvm ?? '23.1.1'})</span>
                                 </dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Clang++</dt>
-                                <dd className="font-mono text-amber-400 font-medium">
-                                    23.1.1 <span className="text-zinc-500 font-normal">(C++20)</span>
+                                <dt className="text-zinc-400">Clang++</dt>
+                                <dd className="font-mono text-sky-300 font-medium">
+                                    {environment.clang ?? '23.1.1'} <span className="text-zinc-400 font-normal">(C++20)</span>
                                 </dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Rustc</dt>
-                                <dd className="font-mono text-indigo-400 font-medium">
-                                    1.97.1 <span className="text-zinc-500 font-normal">(Edition 2021)</span>
+                                <dt className="text-zinc-400">Rustc</dt>
+                                <dd className="font-mono text-orange-300 font-medium">
+                                    {environment.rustc ?? '1.97.1'} <span className="text-zinc-400 font-normal">(Edition 2021)</span>
                                 </dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Timing Harness</dt>
-                                <dd className="font-mono text-zinc-200">benchmarks/run.py (v1)</dd>
+                                <dt className="text-zinc-400">Timing Harness</dt>
+                                <dd className="font-mono text-zinc-200">{environment.harness ?? 'benchmarks/run.py (v1)'}</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">LLVM Backend</dt>
-                                <dd className="font-mono text-zinc-200">Homebrew LLVM 23</dd>
+                                <dt className="text-zinc-400">LLVM Backend</dt>
+                                <dd className="font-mono text-zinc-200">{environment.llvm ? `LLVM ${environment.llvm}` : 'Homebrew LLVM 23'}</dd>
                             </div>
+                            {environment.prismioProfile && (
+                                <div className="flex items-baseline justify-between gap-4">
+                                    <dt className="text-zinc-400">Prismio compiler</dt>
+                                    <dd className="font-mono text-zinc-200">{environment.prismioProfile} build</dd>
+                                </div>
+                            )}
+                            {environment.source && (
+                                <div className="flex items-baseline justify-between gap-4">
+                                    <dt className="text-zinc-400">Source</dt>
+                                    <dd className="font-mono text-zinc-200">{environment.source}</dd>
+                                </div>
+                            )}
                         </dl>
                     </div>
 
                     {/* Panel 3: Measurement Harness */}
                     <div className="p-6 space-y-4">
                         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                            <Gauge size={14} className="text-amber-400" />
+                            <Gauge size={14} className="text-zinc-300" />
                             Measurement Parameters
                         </div>
                         <dl className="space-y-3 text-xs">
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Sampling</dt>
+                                <dt className="text-zinc-400">Sampling</dt>
                                 <dd className="font-mono text-zinc-200">{runs} independent runs / arm</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Reported Metric</dt>
+                                <dt className="text-zinc-400">Reported Metric</dt>
                                 <dd className="font-mono text-zinc-200">Median elapsed nanoseconds</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Memory Metric</dt>
+                                <dt className="text-zinc-400">Memory Metric</dt>
                                 <dd className="font-mono text-zinc-200">Peak RSS (task_info)</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">Correctness</dt>
+                                <dt className="text-zinc-400">Correctness</dt>
                                 <dd className="font-mono text-zinc-200">64-bit checksum verification</dd>
                             </div>
                             <div className="flex items-baseline justify-between gap-4">
-                                <dt className="text-zinc-500">DCE Filter</dt>
+                                <dt className="text-zinc-400">DCE Filter</dt>
                                 <dd className="font-mono text-zinc-200">≤ {(eliminationNs / 1000).toFixed(0)} µs (excluded)</dd>
                             </div>
                         </dl>
@@ -288,7 +249,7 @@ export default function BenchmarkMethodology({
             <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#090a0e]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] bg-black/40 px-4 py-2.5">
                     <div className="flex items-center gap-2">
-                        <Terminal size={14} className="text-emerald-400" />
+                        <Terminal size={14} className="text-zinc-300" />
                         <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
                             Compiler Build Commands &amp; Flags
                         </span>
@@ -298,6 +259,7 @@ export default function BenchmarkMethodology({
                         <div className="flex rounded-lg border border-white/10 bg-white/[0.03] p-0.5 text-xs">
                             <button
                                 type="button"
+                                aria-pressed={activeTab === 'all'}
                                 onClick={() => setActiveTab('all')}
                                 className={`rounded-md px-2.5 py-1 text-xs transition-colors ${
                                     activeTab === 'all'
@@ -309,10 +271,11 @@ export default function BenchmarkMethodology({
                             </button>
                             <button
                                 type="button"
+                                aria-pressed={activeTab === 'prismio'}
                                 onClick={() => setActiveTab('prismio')}
                                 className={`rounded-md px-2.5 py-1 text-xs transition-colors ${
                                     activeTab === 'prismio'
-                                        ? 'bg-emerald-500/20 text-emerald-400 font-medium'
+                                        ? 'bg-purple-500/20 text-purple-300 font-medium'
                                         : 'text-zinc-400 hover:text-zinc-200'
                                 }`}
                             >
@@ -320,10 +283,11 @@ export default function BenchmarkMethodology({
                             </button>
                             <button
                                 type="button"
+                                aria-pressed={activeTab === 'cpp'}
                                 onClick={() => setActiveTab('cpp')}
                                 className={`rounded-md px-2.5 py-1 text-xs transition-colors ${
                                     activeTab === 'cpp'
-                                        ? 'bg-amber-500/20 text-amber-400 font-medium'
+                                        ? 'bg-sky-500/20 text-sky-300 font-medium'
                                         : 'text-zinc-400 hover:text-zinc-200'
                                 }`}
                             >
@@ -331,10 +295,11 @@ export default function BenchmarkMethodology({
                             </button>
                             <button
                                 type="button"
+                                aria-pressed={activeTab === 'rust'}
                                 onClick={() => setActiveTab('rust')}
                                 className={`rounded-md px-2.5 py-1 text-xs transition-colors ${
                                     activeTab === 'rust'
-                                        ? 'bg-indigo-500/20 text-indigo-400 font-medium'
+                                        ? 'bg-orange-500/20 text-orange-300 font-medium'
                                         : 'text-zinc-400 hover:text-zinc-200'
                                 }`}
                             >
@@ -348,6 +313,7 @@ export default function BenchmarkMethodology({
                             className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
                             aria-label="Copy build command"
                         >
+                            <span aria-live="polite" className="sr-only">{copied ? 'Copied to clipboard' : ''}</span>
                             {copied ? (
                                 <>
                                     <Check size={12} className="text-emerald-400" />
@@ -364,16 +330,24 @@ export default function BenchmarkMethodology({
                 </div>
 
                 <div className="bg-black/60 p-5 font-mono text-xs leading-relaxed overflow-x-auto select-text">
-                    {activeTab === 'prismio' && <CodePrismio />}
-                    {activeTab === 'cpp' && <CodeCpp />}
-                    {activeTab === 'rust' && <CodeRust />}
-                    {activeTab === 'all' && <CodeAll />}
+                    <div className="space-y-5">
+                        {arms
+                            .filter((arm) => activeTab === 'all' || activeTab === arm)
+                            .map((arm, i) => (
+                                <CommandView
+                                    key={arm}
+                                    arm={arm}
+                                    cmd={buildCommands[arm] as ParsedBuildCommand}
+                                    comment={activeTab === 'all' ? `# ${i + 1}. ${ARM_LABEL[arm]}` : `# ${ARM_LABEL[arm]}`}
+                                />
+                            ))}
+                    </div>
                 </div>
             </div>
             {/* Run & Reproduce Locally Section */}
             <div className="rounded-xl border border-white/[0.08] bg-[#090a0e] p-6 space-y-4">
                 <div className="flex items-center gap-2 text-zinc-200">
-                    <Terminal size={15} className="text-emerald-400" />
+                    <Terminal size={15} className="text-zinc-300" />
                     <h3 className="text-sm font-semibold text-white">
                         Run &amp; Reproduce Locally
                     </h3>

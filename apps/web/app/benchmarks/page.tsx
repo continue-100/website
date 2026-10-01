@@ -1,18 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import {
-    ArrowRight,
-    ArrowUpRight,
-    CircleSlash2,
-    FileText,
-    Gauge,
-    Cpu,
-    CheckCircle2,
-    Zap,
-    Scale,
-    Layers,
-    Terminal,
-} from 'lucide-react';
+import {ArrowRight, ArrowUpRight, FileText, Gauge} from 'lucide-react';
 import HeaderMain from '@/components/HeaderMain';
 import FooterMain from '@prismio/ui/FooterMain';
 import BenchmarkMatrix from '@/components/benchmarks/BenchmarkMatrix';
@@ -33,6 +21,10 @@ export default function BenchmarksPage() {
     const rustWinPct = (stats.winsVsRust / comparisonCount) * 100;
     const rustParityPct = (stats.parityVsRust / comparisonCount) * 100;
     const rustLossPct = (stats.lossesVsRust / comparisonCount) * 100;
+
+    const eliminatedCount = data.eliminations.filter((item) => item.prismioNs <= data.eliminationNs).length;
+    const eliminationTotal = data.eliminations.length;
+    const eliminatedPct = eliminationTotal > 0 ? (eliminatedCount / eliminationTotal) * 100 : 0;
 
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-[#070709] text-white selection:bg-indigo-500/30 selection:text-white">
@@ -78,7 +70,7 @@ export default function BenchmarksPage() {
                             </div>
                             <div className="flex justify-between gap-6 text-zinc-400">
                                 <dt>Documented gaps</dt>
-                                <dd className="text-amber-300 font-mono">{stats.unsupported}</dd>
+                                <dd className="text-zinc-200 font-mono">{stats.unsupported}</dd>
                             </div>
                             <div className="flex justify-between gap-6 text-zinc-400">
                                 <dt>Compilation speed</dt>
@@ -92,148 +84,115 @@ export default function BenchmarksPage() {
                     </aside>
                 </section>
 
-                {/* Executive KPI Cards */}
-                <section aria-label="Executive KPI Overview">
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {/* Overall vs C++ */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-4">
-                            <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span className="font-medium text-zinc-300">Overall vs C++</span>
-                                <span className="text-amber-400 font-mono">Clang++ -O3</span>
-                            </div>
-                            <div className="flex items-baseline gap-3">
-                                <span className="font-mono text-3xl font-bold text-white">
-                                    {stats.cppGeomean.toFixed(2)}×
-                                </span>
-                                <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${
-                                    stats.cppSpeedupPct >= 0
-                                        ? 'bg-emerald-500/15 text-emerald-400'
-                                        : 'bg-rose-500/15 text-rose-400'
-                                }`}>
-                                    {stats.cppSpeedupPct >= 0
-                                        ? `${stats.cppSpeedupPct.toFixed(1)}% faster`
-                                        : `${Math.abs(stats.cppSpeedupPct).toFixed(1)}% slower`}
-                                </span>
-                            </div>
-                            <p className="text-xs leading-5 text-zinc-400">
-                                Geometric mean across all {comparisonCount} comparison workloads.
-                            </p>
-                            {/* Distribution Bar */}
-                            <div className="space-y-1.5 pt-1">
-                                <div className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
-                                    <div style={{ width: `${cppWinPct}%` }} className="bg-emerald-400" title={`Faster: ${stats.winsVsCpp}`} />
-                                    <div style={{ width: `${cppParityPct}%` }} className="bg-zinc-600" title={`Parity: ${stats.parityVsCpp}`} />
-                                    <div style={{ width: `${cppLossPct}%` }} className="bg-rose-400" title={`Slower: ${stats.lossesVsCpp}`} />
+                {/* Headline results */}
+                <section aria-label="Overall results">
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {[
+                            {
+                                key: 'cpp',
+                                title: 'Overall vs C++',
+                                arm: 'Clang++ -O3',
+                                armTone: 'text-sky-300',
+                                geomean: stats.cppGeomean,
+                                speedupPct: stats.cppSpeedupPct,
+                                wins: stats.winsVsCpp,
+                                parity: stats.parityVsCpp,
+                                losses: stats.lossesVsCpp,
+                                winPct: cppWinPct,
+                                parityPct: cppParityPct,
+                                lossPct: cppLossPct,
+                            },
+                            {
+                                key: 'rust',
+                                title: 'Overall vs Rust',
+                                arm: 'rustc opt-level 3',
+                                armTone: 'text-orange-300',
+                                geomean: stats.rustGeomean,
+                                speedupPct: stats.rustSpeedupPct,
+                                wins: stats.winsVsRust,
+                                parity: stats.parityVsRust,
+                                losses: stats.lossesVsRust,
+                                winPct: rustWinPct,
+                                parityPct: rustParityPct,
+                                lossPct: rustLossPct,
+                            },
+                        ].map((card) => (
+                            <div key={card.key} className="rounded-2xl border border-white/10 bg-[#0b0c10] p-7 space-y-5">
+                                <div className="flex items-center justify-between text-sm">
+                                    <h2 className="font-medium text-zinc-200">{card.title}</h2>
+                                    <span className={`font-mono text-xs ${card.armTone}`}>{card.arm}</span>
                                 </div>
-                                <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
-                                    <span>{stats.winsVsCpp} faster</span>
-                                    <span>{stats.parityVsCpp} parity</span>
-                                    <span>{stats.lossesVsCpp} slower</span>
+                                <div className="flex flex-wrap items-baseline gap-3">
+                                    <span className="font-mono text-4xl font-bold text-white">
+                                        {card.geomean.toFixed(2)}×
+                                    </span>
+                                    <span className={`rounded-md px-2 py-0.5 text-sm font-medium ${
+                                        card.speedupPct >= 0
+                                            ? 'bg-emerald-500/15 text-emerald-400'
+                                            : 'bg-rose-500/15 text-rose-400'
+                                    }`}>
+                                        {card.speedupPct >= 0
+                                            ? `${card.speedupPct.toFixed(1)}% faster`
+                                            : `${Math.abs(card.speedupPct).toFixed(1)}% slower`}
+                                    </span>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Overall vs Rust */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-4">
-                            <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span className="font-medium text-zinc-300">Overall vs Rust</span>
-                                <span className="text-indigo-400 font-mono">rustc opt-3</span>
-                            </div>
-                            <div className="flex items-baseline gap-3">
-                                <span className="font-mono text-3xl font-bold text-white">
-                                    {stats.rustGeomean.toFixed(2)}×
-                                </span>
-                                <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${
-                                    stats.rustSpeedupPct >= 0
-                                        ? 'bg-emerald-500/15 text-emerald-400'
-                                        : 'bg-rose-500/15 text-rose-400'
-                                }`}>
-                                    {stats.rustSpeedupPct >= 0
-                                        ? `${stats.rustSpeedupPct.toFixed(1)}% faster`
-                                        : `${Math.abs(stats.rustSpeedupPct).toFixed(1)}% slower`}
-                                </span>
-                            </div>
-                            <p className="text-xs leading-5 text-zinc-400">
-                                Geometric mean across all {comparisonCount} comparison workloads.
-                            </p>
-                            {/* Distribution Bar */}
-                            <div className="space-y-1.5 pt-1">
-                                <div className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
-                                    <div style={{ width: `${rustWinPct}%` }} className="bg-emerald-400" title={`Faster: ${stats.winsVsRust}`} />
-                                    <div style={{ width: `${rustParityPct}%` }} className="bg-zinc-600" title={`Parity: ${stats.parityVsRust}`} />
-                                    <div style={{ width: `${rustLossPct}%` }} className="bg-rose-400" title={`Slower: ${stats.lossesVsRust}`} />
-                                </div>
-                                <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
-                                    <span>{stats.winsVsRust} faster</span>
-                                    <span>{stats.parityVsRust} parity</span>
-                                    <span>{stats.lossesVsRust} slower</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Workload Coverage */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-4">
-                            <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span className="font-medium text-zinc-300">Catalog Coverage</span>
-                                <span className="text-emerald-400 font-mono">
-                                    {((stats.implemented / stats.total) * 100).toFixed(0)}%
-                                </span>
-                            </div>
-                            <div className="flex items-baseline gap-3">
-                                <span className="font-mono text-3xl font-bold text-white">
-                                    {stats.implemented}
-                                </span>
-                                <span className="text-xs text-zinc-500 font-mono">
-                                    of {stats.total} workloads
-                                </span>
-                            </div>
-                            <p className="text-xs leading-5 text-zinc-400">
-                                {stats.unsupported} missing capabilities published as documented gaps.
-                            </p>
-                            <div className="space-y-1.5 pt-1">
-                                <div className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                                <p className="text-sm leading-6 text-zinc-400">
+                                    Geometric mean of the time ratio across {comparisonCount} comparison workloads.
+                                    Lower is faster; 1.00× is parity.
+                                </p>
+                                {/* Distribution bar: outcomes only */}
+                                <div className="space-y-2 pt-1">
                                     <div
-                                        style={{ width: `${(stats.implemented / stats.total) * 100}%` }}
-                                        className="bg-emerald-400"
-                                    />
-                                    <div
-                                        style={{ width: `${(stats.unsupported / stats.total) * 100}%` }}
-                                        className="bg-amber-400"
-                                    />
-                                </div>
-                                <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
-                                    <span className="text-emerald-400">{stats.implemented} implemented</span>
-                                    <span className="text-amber-400">{stats.unsupported} pending</span>
+                                        role="img"
+                                        aria-label={`${card.wins} faster, ${card.parity} at parity, ${card.losses} slower`}
+                                        className="flex h-2 w-full overflow-hidden rounded-full bg-white/[0.06]"
+                                    >
+                                        <div style={{ width: `${card.winPct}%` }} className="bg-emerald-400" />
+                                        <div style={{ width: `${card.parityPct}%` }} className="bg-zinc-500" />
+                                        <div style={{ width: `${card.lossPct}%` }} className="bg-rose-400" />
+                                    </div>
+                                    <div className="flex justify-between font-mono text-xs text-zinc-400">
+                                        <span>{card.wins} faster</span>
+                                        <span>{card.parity} parity</span>
+                                        <span>{card.losses} slower</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ))}
 
-                        {/* Dead Code Elimination */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-4">
-                            <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span className="font-medium text-zinc-300">Dead Code Pruning</span>
-                                <span className="text-indigo-300 font-mono">LLVM Backend</span>
+                        {/* Dead code elimination */}
+                        <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-7 space-y-5">
+                            <div className="flex items-center justify-between text-sm">
+                                <h2 className="font-medium text-zinc-200">Dead Code Pruning</h2>
+                                <span className="font-mono text-xs text-purple-300">LLVM Backend</span>
                             </div>
-                            <div className="flex items-baseline gap-3">
-                                <span className="font-mono text-3xl font-bold text-emerald-400">
-                                    0 ns
+                            <div className="flex flex-wrap items-baseline gap-3">
+                                <span className="font-mono text-4xl font-bold text-emerald-400">
+                                    {eliminatedCount}/{eliminationTotal}
                                 </span>
-                                <span className="rounded-md bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-400">
-                                    100% eliminated
+                                <span className="rounded-md bg-emerald-500/15 px-2 py-0.5 text-sm font-medium text-emerald-400">
+                                    {eliminatedPct.toFixed(0)}% eliminated
                                 </span>
                             </div>
-                            <p className="text-xs leading-5 text-zinc-400">
-                                Complete compile-time dead branch elimination across adversarial suites.
+                            <p className="text-sm leading-6 text-zinc-400">
+                                {eliminatedCount === eliminationTotal ? 'Complete compile-time' : 'Compile-time'} dead branch
+                                elimination across adversarial suites. A probe counts as eliminated when it
+                                runs in {(data.eliminationNs / 1000).toFixed(0)} µs or less.
                             </p>
-                            <div className="pt-2 text-[11px] text-zinc-500">
+                            <p className="text-xs text-zinc-400">
                                 Verified via binary symbol extraction and differential runtime sampling.
-                            </div>
+                            </p>
                         </div>
                     </div>
                 </section>
 
                 {/* Toolchain Compilation Speed & Binary Footprint */}
-                <ToolchainMetrics toolchain={data.toolchain} />
+                <ToolchainMetrics
+                    toolchain={data.toolchain}
+                    totalWorkloads={stats.total}
+                    cachedBuilds={data.cachedBuilds}
+                    prismioProfile={data.environment.prismioProfile}
+                />
 
                 {/* Category Coverage Summary */}
                 <section aria-labelledby="coverage-heading" className="space-y-8">
@@ -248,7 +207,7 @@ export default function BenchmarksPage() {
                             </p>
                         </div>
                         <div className="lg:col-span-8">
-                            <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-6 border-y border-white/[0.08] text-xs text-zinc-500">
+                            <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-6 border-y border-white/[0.08] text-xs text-zinc-400">
                                 <div className="py-3">Category</div>
                                 <div className="py-3 text-right">Implemented</div>
                                 <div className="py-3 text-right">Pending</div>
@@ -262,7 +221,7 @@ export default function BenchmarksPage() {
                                 >
                                     <div className="text-zinc-200 font-medium">{item.label}</div>
                                     <div className="text-right font-mono text-emerald-400">{item.implemented}</div>
-                                    <div className="text-right font-mono text-zinc-500">{item.unsupported || '—'}</div>
+                                    <div className="text-right font-mono text-zinc-400">{item.unsupported || '—'}</div>
                                     <div className={`text-right font-mono text-xs ${
                                         item.vsCppGeomean <= 1 ? 'text-emerald-400' : 'text-zinc-300'
                                     }`}>
@@ -298,7 +257,12 @@ export default function BenchmarksPage() {
                 <UnsupportedCatalog unsupported={unsupported} categories={categories} />
 
                 {/* Benchmark Methodology */}
-                <BenchmarkMethodology eliminationNs={data.eliminationNs} runs={data.runs} />
+                <BenchmarkMethodology
+                    eliminationNs={data.eliminationNs}
+                    runs={data.runs}
+                    buildCommands={data.buildCommands}
+                    environment={data.environment}
+                />
 
                 {/* Reproduction Call to Action */}
                 <section className="border-t border-white/[0.09] pt-16">

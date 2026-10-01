@@ -150,8 +150,8 @@ const UMS_LINES: UmsLine[] = [
 const TOOLING = [
     {
         icon: FileJson2,
-        title: 'Stable diagnostics',
-        copy: 'prismio check runs the real frontend without generating code. Versioned JSON Lines diagnostics carry stable P#### codes, severity, files, and UTF-8 source spans.',
+        title: 'Structured diagnostics',
+        copy: 'prismio check runs the real frontend without generating code. JSON Lines diagnostics carry P#### codes, severity, files, and UTF-8 source spans. The codes are not stable yet and can change before 1.0.',
     },
     {
         icon: Bug,
@@ -161,7 +161,7 @@ const TOOLING = [
     {
         icon: Braces,
         title: 'Compiler introspection',
-        copy: 'dump-ast exposes parsed source structure. AIF manifests provide a separate, stable account of inferred memory placement for CI and analysis tools.',
+        copy: 'dump-ast exposes parsed source structure. AIF manifests provide a separate, diffable account of inferred memory placement for CI and analysis tools.',
     },
 ];
 
@@ -175,7 +175,7 @@ export default function AIReady() {
                 <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-400">
                     Prismio’s compiler, project model, native linkage, diagnostics, and memory
                     analysis form one development loop. The lexer, parser, import resolver,
-                    semantic analyzer, AIF engine, and LLVM IR generator are themselves written in Prismio.
+                    semantic analyzer, AIF engine, and LLVM IR generator are themselves written in Prismio. The runtime and the LLVM bridge are C.
                 </p>
             </div>
 
@@ -229,7 +229,7 @@ export default function AIReady() {
                             </div>
                             <p className="mt-4 text-sm leading-6 text-zinc-400">
                                 A committed seed builds the first local generation. Later generations
-                                compile themselves, with failed rebuilds leaving the last working compiler intact.
+                                compile themselves, and the build checks that the compiler reproduces its own output.
                             </p>
                         </article>
                         <article className="p-6 sm:p-8">

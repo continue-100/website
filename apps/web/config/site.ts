@@ -1,3 +1,5 @@
+import {DISCORD_INVITE_LINK} from "@prismio/utils";
+
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
@@ -12,8 +14,7 @@ export const siteConfig = {
   github: "https://github.com/prismio-lang/prismio",
   githubOrg: "https://github.com/prismio-lang",
   releasesFeed: "https://github.com/prismio-lang/prismio/releases.atom",
-  x: "https://x.com/prismio_lang",
-  discord: "https://discord.gg/RUXJjnJF",
+  discord: DISCORD_INVITE_LINK,
 };
 
 /** Public, indexable pages of prismio.org. Redirected routes (/docs, /playground, /packages) are excluded. */

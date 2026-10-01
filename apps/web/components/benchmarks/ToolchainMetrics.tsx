@@ -4,9 +4,16 @@ import { ToolchainData } from '@/lib/benchmarks';
 
 interface ToolchainMetricsProps {
     toolchain: ToolchainData;
+    totalWorkloads: number;
+    /** Arms whose compile time is from an earlier build, not this run (results.json `cached_builds`). */
+    cachedBuilds?: string[];
+    /** Profile the Prismio compiler itself was built in, when the run recorded it. */
+    prismioProfile?: string;
 }
 
-export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
+export default function ToolchainMetrics({ toolchain, totalWorkloads, cachedBuilds = [], prismioProfile }: ToolchainMetricsProps) {
+    const armNames: Record<string, string> = { cpp: 'C++', rust: 'Rust', prismio: 'Prismio' };
+    const cachedNames = cachedBuilds.map((arm) => armNames[arm] ?? arm);
     const { compileTime, binarySize } = toolchain;
 
     // Relative scales for progress bars
@@ -40,7 +47,7 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         Toolchain &amp; Binary Footprint
                     </h2>
                     <p className="text-xs text-zinc-400">
-                        Wall-clock compilation speed and final stripped binary size across the full 78-workload suite.
+                        Wall-clock compilation speed and final stripped binary size across the full {totalWorkloads}-workload suite.
                     </p>
                 </div>
             </div>
@@ -50,10 +57,10 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                 <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-5">
                     <div className="flex items-center justify-between text-xs text-zinc-400">
                         <div className="flex items-center gap-2">
-                            <Timer size={15} className="text-emerald-400" />
+                            <Timer size={15} className="text-zinc-300" />
                             <span className="font-medium text-zinc-300">Compilation Speed</span>
                         </div>
-                        <span className="font-mono text-zinc-500">Suite Clean Build</span>
+                        <span className="font-mono text-zinc-400">Suite Clean Build</span>
                     </div>
 
                     <div className="flex items-baseline gap-3">
@@ -70,19 +77,26 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                     <p className="text-xs leading-5 text-zinc-400">
                         Full compilation through the self-hosted frontend, AIF escape inference, and LLVM backend.
                     </p>
+                    {(cachedNames.length > 0 || prismioProfile) && (
+                        <p className="text-xs leading-5 text-zinc-400">
+                            {cachedNames.length > 0 &&
+                                `${cachedNames.join(' and ')} times are from an earlier build; Prismio is rebuilt every run. `}
+                            {prismioProfile && `Prismio was compiled by a ${prismioProfile} build of the compiler.`}
+                        </p>
+                    )}
 
                     {/* Comparative Bars */}
                     <div className="space-y-3 pt-2">
                         {/* Prismio */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-emerald-400 font-medium">Prismio</span>
+                                <span className="text-purple-300 font-medium">Prismio</span>
                                 <span className="text-white font-semibold">{compileTime.prismio.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${prismioCompilePct}%` }}
-                                    className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                                    className="h-full bg-purple-400 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -90,13 +104,13 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         {/* C++20 */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-amber-300">C++20 (Clang -O3)</span>
+                                <span className="text-sky-300">C++20 (Clang -O3)</span>
                                 <span className="text-zinc-300">{compileTime.cpp.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${cppCompilePct}%` }}
-                                    className="h-full bg-amber-400/80 rounded-full transition-all duration-500"
+                                    className="h-full bg-sky-400/80 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -104,13 +118,13 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         {/* Rust */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-indigo-300">Rust (rustc opt-3)</span>
+                                <span className="text-orange-300">Rust (rustc opt-3)</span>
                                 <span className="text-zinc-300">{compileTime.rust.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${rustCompilePct}%` }}
-                                    className="h-full bg-indigo-400/80 rounded-full transition-all duration-500"
+                                    className="h-full bg-orange-400/80 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -121,10 +135,10 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                 <div className="rounded-2xl border border-white/10 bg-[#0b0c10] p-6 space-y-5">
                     <div className="flex items-center justify-between text-xs text-zinc-400">
                         <div className="flex items-center gap-2">
-                            <HardDrive size={15} className="text-indigo-400" />
+                            <HardDrive size={15} className="text-zinc-300" />
                             <span className="font-medium text-zinc-300">Binary Footprint</span>
                         </div>
-                        <span className="font-mono text-zinc-500">Stripped Executable</span>
+                        <span className="font-mono text-zinc-400">Stripped Executable</span>
                     </div>
 
                     <div className="flex items-baseline gap-3">
@@ -147,13 +161,13 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         {/* C++20 */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-amber-300">C++20 (Clang -O3)</span>
+                                <span className="text-sky-300">C++20 (Clang -O3)</span>
                                 <span className="text-zinc-300">{binarySize.cpp.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${cppBinaryPct}%` }}
-                                    className="h-full bg-amber-400/80 rounded-full transition-all duration-500"
+                                    className="h-full bg-sky-400/80 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -161,13 +175,13 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         {/* Prismio */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-emerald-400 font-medium">Prismio</span>
+                                <span className="text-purple-300 font-medium">Prismio</span>
                                 <span className="text-white font-semibold">{binarySize.prismio.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${prismioBinaryPct}%` }}
-                                    className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                                    className="h-full bg-purple-400 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>
@@ -175,13 +189,13 @@ export default function ToolchainMetrics({ toolchain }: ToolchainMetricsProps) {
                         {/* Rust */}
                         <div className="space-y-1">
                             <div className="flex justify-between text-xs font-mono">
-                                <span className="text-indigo-300">Rust (rustc opt-3)</span>
+                                <span className="text-orange-300">Rust (rustc opt-3)</span>
                                 <span className="text-zinc-300">{binarySize.rust.formatted}</span>
                             </div>
                             <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
                                 <div
                                     style={{ width: `${rustBinaryPct}%` }}
-                                    className="h-full bg-indigo-400/80 rounded-full transition-all duration-500"
+                                    className="h-full bg-orange-400/80 rounded-full transition-all duration-500"
                                 />
                             </div>
                         </div>

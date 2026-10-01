@@ -87,8 +87,7 @@ export default function BenchmarkTeaser() {
                     <div className="flex gap-3">
                         <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-emerald-300" />
                         <p className="text-sm leading-6 text-zinc-400">
-                            All three arms express the same algorithm and must produce the same checksum.
-                            Fixtures are created outside the timed region.
+                            Each workload is written to express the same algorithm in all three languages and must produce the same checksum. Known differences are listed in the suite’s README. Fixtures are created outside the timed region.
                         </p>
                     </div>
                     <div className="flex gap-3">

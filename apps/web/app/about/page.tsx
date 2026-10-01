@@ -90,8 +90,8 @@ const COMMITMENTS = [
     },
     {
         tone: "bg-indigo-400",
-        title: "RFC or Discussion first",
-        copy: "Large changes are proposed in the open before any code is written.",
+        title: "Issue first",
+        copy: "Large changes start as a GitHub issue before any code is written.",
     },
     {
         tone: "bg-amber-400",
@@ -102,8 +102,8 @@ const COMMITMENTS = [
 
 const LINKS = [
     {href: "/team", label: "Team", hint: "The people behind it", tone: "group-hover:text-indigo-300"},
-    {href: "/community", label: "Community", hint: "Discord, Discussions, RFCs", tone: "group-hover:text-emerald-300"},
-    {href: "/roadmap", label: "Roadmap", hint: "What ships next", tone: "group-hover:text-amber-300"},
+    {href: "/community", label: "Community", hint: "Discord, issues, contributing", tone: "group-hover:text-emerald-300"},
+    {href: "/roadmap", label: "Roadmap", hint: "What works, what doesn't yet", tone: "group-hover:text-amber-300"},
     {href: "/benchmarks", label: "Benchmarks", hint: "Against C++ and Rust", tone: "group-hover:text-sky-300"},
 ];
 

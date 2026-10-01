@@ -5,14 +5,15 @@ import {
     ArrowLeft,
     ArrowRight,
     ArrowUpRight,
-    Code2, FileUser,
+    FileUser,
     Mail,
-    MessageSquare,
     Send,
     Sparkles,
     Terminal,
 } from "lucide-react";
 import HeaderMain from "@/components/HeaderMain";
+import DiscordIcon from "@/components/icons/DiscordIcon";
+import GithubIcon from "@/components/icons/GithubIcon";
 import FooterMain from "@prismio/ui/FooterMain";
 import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
@@ -37,7 +38,7 @@ export default function SakshamAuthorPage() {
 
             <HeaderMain/>
 
-            <main className="relative z-10 mx-auto max-w-6xl px-6 py-12 md:py-28">
+            <main className="relative z-10 mx-auto max-w-6xl  py-12 md:py-28">
                 {/* Back Link */}
                 <div className="mb-12">
                     <Link
@@ -56,7 +57,7 @@ export default function SakshamAuthorPage() {
                     {/* Left 7 Columns: Editorial Headline & Bio */}
                     <div className="lg:col-span-7 space-y-6">
                         {/* Title locked in Fraunces */}
-                        <h1 className="font-fraunces text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-[1.08]">
+                        <h1 className="font-fraunces text-4xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.1]">
                             Why I built a systems language from{" "}
                             <span className="italic text-zinc-400">scratch.</span>
                         </h1>
@@ -74,7 +75,7 @@ export default function SakshamAuthorPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 font-medium text-white transition-all"
                             >
-                                <Code2 size={15} className="text-zinc-300"/>
+                                <GithubIcon size={15}/>
                                 <span>GitHub</span>
                                 <ArrowUpRight size={12} className="opacity-50"/>
                             </a>
@@ -87,6 +88,15 @@ export default function SakshamAuthorPage() {
                             >
                                 <FileUser size={15} className="text-zinc-300"/>
                                 <span>Portfolio</span>
+                                <ArrowUpRight size={12} className="opacity-50"/>
+                            </a>
+
+                            <a
+                                href="mailto:saksham6975@gmail.com"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 font-medium text-white transition-all"
+                            >
+                                <Mail size={15}/>
+                                Email
                                 <ArrowUpRight size={12} className="opacity-50"/>
                             </a>
                         </div>
@@ -117,110 +127,185 @@ export default function SakshamAuthorPage() {
                     </div>
                 </section>
 
-                {/* ── 2. The Personal Note from Author (Kalam Font) ──────── */}
-                <section className="py-24 border-b border-white/[0.08]">
+                {/* ── 2. The Personal Note: dark, scroll-lit handwriting ── */}
+                <section className="note-section relative border-b border-white/[0.08] py-24">
+                    <style>{`
+                        .note-section { timeline-scope: --letter; }
+                        .note-progress { transform: scaleY(1); }
+                        .note-sign-path { stroke-dasharray: 1; stroke-dashoffset: 0; }
 
-                    <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-                        <h2 className="font-fraunces text-3xl sm:text-5xl text-white font-normal tracking-tight">
-                            A Note to Every Prismio Developer
-                        </h2>
-                    </div>
+                        @supports (animation-timeline: view()) {
+                            .note-text p {
+                                animation: note-light linear both;
+                                animation-timeline: view();
+                                animation-range: entry 0% entry 100%;
+                            }
+                            .note-letter { view-timeline: --letter block; }
+                            .note-progress {
+                                transform: scaleY(0);
+                                animation: note-grow linear both;
+                                animation-timeline: --letter;
+                                animation-range: cover 15% cover 85%;
+                            }
+                            .note-sign-path {
+                                stroke-dashoffset: 1;
+                                animation: note-draw linear both;
+                                animation-timeline: view();
+                                animation-range: entry 10% entry 100%;
+                            }
+                        }
+                        @keyframes note-light { from { opacity: 0.4; } to { opacity: 1; } }
+                        @keyframes note-grow { to { transform: scaleY(1); } }
+                        @keyframes note-draw { to { stroke-dashoffset: 0; } }
+                        @media (prefers-reduced-motion: reduce) {
+                            .note-text p, .note-progress, .note-sign-path { animation: none !important; }
+                            .note-text p { opacity: 1; }
+                            .note-progress { transform: scaleY(1); }
+                            .note-sign-path { stroke-dashoffset: 0; }
+                        }
+                        .note-hl {
+                            padding: 0.04em 0.22em;
+                            border-radius: 0.28em;
+                            color: #fff;
+                            font-weight: 700;
+                            -webkit-box-decoration-break: clone;
+                            box-decoration-break: clone;
+                        }
+                        .note-hl-indigo { background-color: #272a47; }
+                        .note-hl-teal { background-color: #103835; }
+                        .note-hl-amber { background-color: #463710; }
+                        .note-wavy {
+                            color: #fff;
+                            text-decoration: underline wavy rgba(45, 212, 191, 0.85);
+                            text-decoration-thickness: 2px;
+                            text-underline-offset: 7px;
+                        }
+                        .note-marker {
+                            display: inline;
+                            padding: 0 0.28em;
+                            border-radius: 0.28em;
+                            background-color: #22243e;
+                            -webkit-box-decoration-break: clone;
+                            box-decoration-break: clone;
+                        }
+                    `}</style>
 
-                    {/* The Manuscript Card */}
-                    <div
-                        className="relative mx-auto max-w-4xl rounded-3xl bg-[#0c0c10]/95 border border-white/15 p-8 sm:p-12 md:p-16 shadow-2xl backdrop-blur-2xl">
+                    <div className="pointer-events-none absolute right-0 top-1/4 h-[40rem] w-[40rem] bg-[radial-gradient(circle,rgba(67,56,202,0.16),transparent_65%)]" />
 
-                        {/* Top Margin Stamp */}
-                        <div
-                            className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-6 mb-8">
-                            <span className="font-mono text-xs text-zinc-400 tracking-wider uppercase">
-                                Engineering Journal · Prismio v0.1.0
-                            </span>
-
-                            <span className="font-mono text-xs text-zinc-400">
-                                October 2026
-                            </span>
+                    <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-20">
+                        {/* Left: title, date, reading progress */}
+                        <div className="lg:col-span-4 lg:self-start lg:sticky lg:top-28">
+                            <h2 className="font-fraunces text-3xl sm:text-4xl text-white font-normal tracking-tight">
+                                A Note to Every Prismio Developer
+                            </h2>
+                            <div className="mt-6 space-y-1 font-mono text-xs uppercase tracking-wider text-zinc-400">
+                                <p>Engineering Journal · Prismio v0.1.0</p>
+                                <p>October 2026</p>
+                            </div>
+                            <div aria-hidden className="relative mt-8 hidden h-40 w-px bg-white/10 lg:block">
+                                <div className="note-progress absolute inset-x-0 top-0 h-full origin-top bg-gradient-to-b from-indigo-400 to-teal-300" />
+                            </div>
                         </div>
 
-                        {/* THE LETTER BODY — IN KALAM FONT (LOCKED) */}
-                        <div
-                            className="font-kalam text-lg sm:text-xl md:text-2xl text-zinc-200 leading-[1.9] sm:leading-[2] space-y-7 tracking-wide">
+                        {/* Right: the letter, in Kalam */}
+                        <div className="note-letter lg:col-span-8">
+                            <div className="note-text font-kalam text-xl leading-[1.7] tracking-wide text-zinc-200 sm:text-[21px] md:text-2xl [&>p]:mb-8 max-w-2xl">
+                                <p className="text-2xl font-bold text-white sm:text-3xl">Dear developer,</p>
 
-                            <p className="text-white text-2xl sm:text-3xl font-bold font-kalam">
-                                Dear developer,
-                            </p>
-
-                            <p>
-                                If you&apos;ve made it this far, you probably know a little about Prismio already. Maybe
-                                you&apos;re thinking about trying it, maybe you just stumbled across the website, or maybe
-                                you&apos;re wondering why the hell someone would build another programming language in the
-                                first place.
-                            </p>
-
-                            <p>
-                                Honestly, I wonder that sometimes too.
-                            </p>
-                            <p>
-                                I&apos;ve always had this habit of building things whenever something bothers me. I don&apos;t
-                                know if that&apos;s a good habit or a terrible one. When existing things don&apos;t work the way I
-                                want, my first thought is usually &quot;fine, I&apos;ll build it myself.&quot;
-                            </p>
-
-                            <p>That&apos;s basically how Prismio started.</p>
-
-                            <p>I started working on it on August 24, 2024, and somehow, almost two years later, I&apos;m
-                                still here.</p>
-
-                            {/* Pull quote */}
-                            <div className="my-7 rounded-2xl bg-indigo-500/[0.06] px-7 py-6">
-                                <p className="font-kalam text-xl sm:text-2xl text-zinc-100 italic">
-                                    The hardest part was never the code. It was answering one question: why?
+                                <p>
+                                    If you&apos;ve made it this far, you probably know a little about Prismio already. Maybe
+                                    you&apos;re thinking about trying it, maybe you just stumbled across the website, or maybe
+                                    you&apos;re wondering why the hell someone would build another programming language in the
+                                    first place.
                                 </p>
+
+                                <p>Honestly, I wonder that sometimes too.</p>
+
+                                <p>
+                                    I&apos;ve always had this habit of building things whenever something bothers me. I don&apos;t
+                                    know if that&apos;s a good habit or a terrible one. When existing things don&apos;t work the way I
+                                    want, my first thought is usually <span className="italic text-sky-300">&quot;fine, I&apos;ll build it myself.&quot;</span>
+                                </p>
+
+                                <p>That&apos;s basically how Prismio started.</p>
+
+                                <p>
+                                    I started working on it on <span className="note-hl note-hl-teal">August 24, 2024</span>, and somehow, almost two years later, I&apos;m
+                                    still here.
+                                </p>
+
+                                <p className="py-4 text-2xl font-bold leading-[1.75] text-white sm:text-3xl">
+                                    <span className="note-marker">
+                                        The hardest part was never the code. It was answering one question:{" "}
+                                        <span className="text-amber-300">why?</span>
+                                    </span>
+                                </p>
+
+                                <p>
+                                    Why another language? Why this design? Why should the compiler make this decision? Why
+                                    should you trust what it&apos;s doing?
+                                </p>
+
+                                <p>
+                                    I kept coming back to one idea: the compiler should know where your data lives, and it
+                                    should be able to <span className="note-hl note-hl-indigo">explain itself</span>. I don&apos;t want memory management to feel like something
+                                    happening behind a curtain. I want the language and compiler to make those decisions
+                                    understandable.
+                                </p>
+
+                                <p>And Prismio isn&apos;t meant to stop at the language itself.</p>
+
+                                <p>
+                                    It&apos;s the first piece of a <span className="note-wavy">much bigger ecosystem</span> I&apos;m trying to build — the compiler,
+                                    tooling, package manager, libraries, and everything around them designed to actually
+                                    work together. This is just where that starts.
+                                </p>
+
+                                <p>That said, Prismio is still early.</p>
+
+                                <p>
+                                    Some things are missing. Some things are rough. Some things will probably break. That&apos;s
+                                    not something I want to hide from you. The roadmap is there, the source is open, and I&apos;m
+                                    trying to keep the whole thing as transparent as I can.
+                                </p>
+
+                                <p>So if you&apos;re curious, <span className="note-hl note-hl-amber">give Prismio a try</span>.</p>
+
+                                <p>
+                                    And if you do, I&apos;d genuinely love to hear what happens — especially if something breaks,
+                                    feels confusing, or makes you wonder <span className="italic text-sky-300">&quot;why did they do it this way?&quot;</span>
+                                </p>
+
+                                <p>Those are the things that make it better.</p>
+
+                                <p>Thanks for being here.</p>
                             </div>
 
-                            <p>
-                                Why another language? Why this design? Why should the compiler make this decision? Why
-                                should you trust what it&apos;s doing?
-                            </p>
-
-                            <p>
-                                I kept coming back to one idea: the compiler should know where your data lives, and it
-                                should be able to explain itself. I don&apos;t want memory management to feel like something
-                                happening behind a curtain. I want the language and compiler to make those decisions
-                                understandable.
-                            </p>
-
-                            <p>
-                                And Prismio isn&apos;t meant to stop at the language itself.
-                            </p>
-
-                            <p>
-                                It&apos;s the first piece of a much bigger ecosystem I&apos;m trying to build — the compiler,
-                                tooling, package manager, libraries, and everything around them designed to actually
-                                work together. This is just where that starts.
-                            </p>
-
-                            <p>That said, Prismio is still early.</p>
-
-                            <p>Some things are missing. Some things are rough. Some things will probably break. That&apos;s
-                                not something I want to hide from you. The roadmap is there, the source is open, and I&apos;m
-                                trying to keep the whole thing as transparent as I can.</p>
-
-                            <p>So if you&apos;re curious, give Prismio a try.</p>
-
-                            <p>And if you do, I&apos;d genuinely love to hear what happens — especially if something breaks,
-                                feels confusing, or makes you wonder &quot;why did they do it this way?&quot;</p>
-
-                            <p>Those are the things that make it better.</p>
-
-                            <p>Thanks for being here.</p>
-
-                            {/* Handwritten Signature in Kalam */}
-                            <div className="pt-8 border-t border-white/[0.08] text-right">
-                                <div className="font-kalam text-3xl sm:text-4xl text-white font-bold">
-                                    Saksham Jaiswal
-                                </div>
-                                <div className="text-xs font-mono text-indigo-300 mt-1">
+                            {/* Signature: the swash draws itself as you reach it */}
+                            <div className="mt-4 max-w-2xl text-right">
+                                <div className="font-kalam text-3xl font-bold text-white sm:text-4xl">Saksham Jaiswal</div>
+                                <svg
+                                    aria-hidden
+                                    viewBox="0 0 260 18"
+                                    className="ml-auto -mt-1 h-4 w-56 sm:w-64"
+                                    fill="none"
+                                >
+                                    <defs>
+                                        <linearGradient id="note-ink" x1="0" y1="0" x2="1" y2="0">
+                                            <stop offset="0%" stopColor="#a5b4fc" />
+                                            <stop offset="100%" stopColor="#5eead4" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path
+                                        className="note-sign-path"
+                                        pathLength={1}
+                                        d="M2 11 C 44 2, 78 16, 122 8 S 206 3, 258 10"
+                                        stroke="url(#note-ink)"
+                                        strokeWidth="2.25"
+                                        strokeLinecap="round"
+                                    />
+                                </svg>
+                                <div className="mt-2 font-mono text-xs text-zinc-400">
                                     Creator &amp; Lead Compiler Architect, Prismio
                                 </div>
                             </div>
@@ -231,7 +316,7 @@ export default function SakshamAuthorPage() {
                 {/* ── 4. Technical Collaboration & Contact ──────────────── */}
                 <section className="pt-12 md:pt-28 text-center">
                     <div className="max-w-2xl mx-auto space-y-5">
-                        <h2 className="font-fraunces text-3xl sm:text-5xl text-white font-normal tracking-tight">
+                        <h2 className="font-fraunces text-3xl sm:text-4xl text-white font-normal tracking-tight">
                             The conversation is always open.
                         </h2>
                         <p className="text-zinc-400 text-base leading-relaxed">
@@ -244,7 +329,7 @@ export default function SakshamAuthorPage() {
                                 href="mailto:saksham6975@gmail.com"
                                 className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all"
                             >
-                                <Send size={15}/>
+                                <Mail size={15}/>
                                 Email Saksham
                             </a>
 
@@ -254,7 +339,7 @@ export default function SakshamAuthorPage() {
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-medium text-sm transition-all"
                             >
-                                <MessageSquare size={16}/>
+                                <DiscordIcon size={16}/>
                                 Discord
                             </a>
                         </div>

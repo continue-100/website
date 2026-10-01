@@ -2,6 +2,8 @@
 @import "@heroui/styles";
 
 @config "../tailwind.config.js";
+/* Tailwind v4 only scans this app; include the shared UI package (Copyright, FooterMain, ...) */
+@source "../../../packages/ui";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

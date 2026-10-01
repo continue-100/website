@@ -21,6 +21,16 @@ export interface RawBenchmarkItem {
         cpp?: LanguageRunData;
         rust?: LanguageRunData;
     };
+    /** Written by benchmarks/run.py since schema 3: how each comparison was decided. */
+    verdict?: {cpp?: RawVerdict; rust?: RawVerdict};
+}
+
+export interface RawVerdict {
+    outcome: 'win' | 'parity' | 'loss';
+    ratio: number;
+    best_ratio: number;
+    tolerance: number;
+    noise: number;
 }
 
 export interface BenchmarkItem {
@@ -101,11 +111,141 @@ export interface ToolchainData {
     };
 }
 
+export interface ParsedBuildCommand {
+    tool: string;
+    sub?: string;
+    flags: string[];
+    sources: string[];
+    output?: string;
+}
+
+/** `environment` as benchmarks/run.py writes it (schema_version 2). Every key is optional. */
+interface RawEnvironment {
+    processor?: string;
+    cores?: number;
+    memory_bytes?: number;
+    os?: string;
+    target?: string;
+    power?: string;
+    toolchains?: {
+        prismio?: {version?: string; profile?: string};
+        clang?: string;
+        rustc?: string;
+        llvm?: string;
+    };
+    source?: {commit?: string; dirty?: boolean};
+    harness?: {name?: string; schema_version?: number};
+}
+
+/** Display strings derived from `environment`; a key is absent when the run did not record it. */
+export interface BenchmarkEnvironment {
+    processor?: string;
+    memory?: string;
+    os?: string;
+    target?: string;
+    power?: string;
+    prismio?: string;
+    prismioProfile?: string;
+    clang?: string;
+    rustc?: string;
+    llvm?: string;
+    harness?: string;
+    source?: string;
+}
+
+function describeEnvironment(raw: RawEnvironment | undefined): BenchmarkEnvironment {
+    if (!raw) return {};
+    const out: BenchmarkEnvironment = {};
+    if (raw.processor) out.processor = raw.cores ? `${raw.processor} (${raw.cores} cores)` : raw.processor;
+    if (raw.memory_bytes) out.memory = `${Math.round(raw.memory_bytes / 2 ** 30)} GB`;
+    if (raw.os) out.os = raw.os;
+    if (raw.target) out.target = raw.target;
+    if (raw.power) out.power = raw.power;
+    const tools = raw.toolchains;
+    if (tools?.prismio?.version) out.prismio = tools.prismio.version;
+    if (tools?.prismio?.profile) out.prismioProfile = tools.prismio.profile;
+    if (tools?.clang) out.clang = tools.clang;
+    if (tools?.rustc) out.rustc = tools.rustc;
+    if (tools?.llvm) out.llvm = tools.llvm;
+    if (raw.harness?.name) {
+        out.harness = raw.harness.schema_version
+            ? `${raw.harness.name} (schema v${raw.harness.schema_version})`
+            : raw.harness.name;
+    }
+    if (raw.source?.commit) {
+        out.source = raw.source.dirty ? `${raw.source.commit} (uncommitted changes)` : raw.source.commit;
+    }
+    return out;
+}
+
+/** Strip machine-specific absolute paths so a recorded command is safe to show publicly. */
+function cleanPath(token: string): string {
+    const idx = token.lastIndexOf('/benchmarks/');
+    if (idx >= 0) return token.slice(idx + 1);
+    return token.split('/').pop() || token;
+}
+
+function mergeSources(paths: string[]): string[] {
+    const groups = new Map<string, {dir: string; ext: string; names: string[]}>();
+    const order: string[] = [];
+    for (const path of paths) {
+        const slash = path.lastIndexOf('/');
+        const dir = slash >= 0 ? path.slice(0, slash) : '';
+        const file = slash >= 0 ? path.slice(slash + 1) : path;
+        const dot = file.lastIndexOf('.');
+        const ext = dot >= 0 ? file.slice(dot) : '';
+        const name = dot >= 0 ? file.slice(0, dot) : file;
+        const key = `${dir}|${ext}`;
+        if (!groups.has(key)) {
+            groups.set(key, {dir, ext, names: []});
+            order.push(key);
+        }
+        groups.get(key)!.names.push(name);
+    }
+    return order.map((key) => {
+        const {dir, ext, names} = groups.get(key)!;
+        const prefix = dir ? `${dir}/` : '';
+        return names.length > 1 ? `${prefix}{${names.join(',')}}${ext}` : `${prefix}${names[0]}${ext}`;
+    });
+}
+
+export function parseBuildCommand(raw: string | undefined): ParsedBuildCommand | null {
+    if (!raw) return null;
+    const tokens = raw.trim().split(/\s+/);
+    const tool = cleanPath(tokens[0] ?? '');
+    if (!tool) return null;
+
+    const flags: string[] = [];
+    const paths: string[] = [];
+    let sub: string | undefined;
+    let output: string | undefined;
+
+    for (let i = 1; i < tokens.length; i++) {
+        const token = tokens[i] as string;
+        if (token === '-o') {
+            output = cleanPath(tokens[i + 1] ?? '');
+            i++;
+        } else if (token.startsWith('-')) {
+            flags.push(token);
+        } else if (token.includes('/') || /\.(psm|cpp|rs)$/.test(token)) {
+            paths.push(cleanPath(token));
+        } else if (!sub && flags.length === 0 && !token.includes('=')) {
+            sub = token;
+        } else {
+            flags.push(token);
+        }
+    }
+
+    return {tool, sub, flags, sources: mergeSources(paths), output};
+}
+
 export interface BenchmarkDataset {
     generatedAt: string;
     formattedDate: string;
     runs: number;
-    buildCommands: Record<string, string>;
+    buildCommands: Record<'prismio' | 'cpp' | 'rust', ParsedBuildCommand | null>;
+    environment: BenchmarkEnvironment;
+    cachedBuilds: string[];
     eliminationNs: number;
     toolchain: ToolchainData;
 
@@ -177,23 +317,73 @@ export function calculateGeomean(values: number[]): number {
     return Math.exp(logSum / values.length);
 }
 
-export function calculateRobustJitter(samples: number[], med: number): number | null {
-    if (!samples || samples.length <= 1 || !med) return null;
-    const devs = samples.map((s) => Math.abs(s - med)).sort((a, b) => a - b);
-    const mid = Math.floor(devs.length / 2);
-    const valMid = devs[mid];
-    const valPrev = devs[mid - 1];
-    if (valMid === undefined) return null;
-    const mad = devs.length % 2 === 0 && valPrev !== undefined ? (valPrev + valMid) / 2 : valMid;
-    return (1.4826 * mad / med) * 100;
+function medianOf(values: number[]): number {
+    const v = [...values].sort((x, y) => x - y);
+    if (!v.length) return 0;
+    const mid = Math.floor(v.length / 2);
+    return v.length % 2 === 0 ? (v[mid - 1]! + v[mid]!) / 2 : v[mid]!;
 }
 
-export function getPillStatus(ratio: number, noisePct: number): 'faster' | 'slower' | 'parity' {
-    const tol = Math.max(0.05, (noisePct || 0) / 100);
-    if (ratio < 1.0 - tol) return 'faster';
-    if (ratio > 1.0 + tol) return 'slower';
-    return 'parity';
+/**
+ * Interquartile range over the median: how much of the median is jitter. The same
+ * measure benchmarks/run.py judges a result by. (A median-and-MAD figure reads a run
+ * with two timing modes as 0% noise.) Quartiles interpolate linearly, which is what
+ * Python's `statistics.quantiles(..., method="inclusive")` does.
+ */
+export function calculateSpread(samples: number[]): number {
+    if (!samples || samples.length < 2) return 0;
+    const v = [...samples].sort((x, y) => x - y);
+    const med = medianOf(v);
+    if (med <= 0) return 0;
+    if (v.length < 4) return (v[v.length - 1]! - v[0]!) / med;
+    const at = (q: number) => {
+        const pos = (v.length - 1) * q;
+        const lo = Math.floor(pos);
+        const hi = Math.ceil(pos);
+        return v[lo]! + (v[hi]! - v[lo]!) * (pos - lo);
+    };
+    return (at(0.75) - at(0.25)) / med;
 }
+
+/** The same figure as a percentage, or null when there is nothing to measure it on. */
+export function calculateRobustJitter(samples: number[], med: number): number | null {
+    if (!samples || samples.length <= 1 || !med) return null;
+    return calculateSpread(samples) * 100;
+}
+
+/**
+ * `win`, `parity` or `loss` for Prismio's samples against another arm's: a port of
+ * `verdict` in benchmarks/run.py, used when a results file predates schema 3 and so
+ * carries none. A win or a loss needs BOTH the ratio of medians and the ratio of best
+ * runs to leave the tolerance. Noise only adds time, so the best run is the steadiest
+ * estimate of what the code costs; equal best runs with different medians is the
+ * signature of timing modes (a fast and a slow one), and is parity. The tolerance on
+ * medians is the largest of the flat `parity`, either arm's own spread, and a fixed
+ * timer/scheduler floor as a fraction of the run; on best runs only `parity` and the
+ * floor, which carry no spread.
+ */
+export function computeVerdict(
+    prismio: number[],
+    other: number[],
+    parity: number,
+    floorNs: number,
+): RawVerdict {
+    const medP = medianOf(prismio);
+    const medO = medianOf(other);
+    const minP = Math.min(...prismio);
+    const minO = Math.min(...other);
+    const ratio = medP / Math.max(medO, 1);
+    const bestRatio = minP / Math.max(minO, 1);
+    const noise = Math.max(calculateSpread(prismio), calculateSpread(other));
+    const tolMedian = Math.max(parity, noise, floorNs / Math.max(medO, 1));
+    const tolBest = Math.max(parity, floorNs / Math.max(minO, 1));
+    let outcome: RawVerdict['outcome'] = 'parity';
+    if (ratio >= 1 + tolMedian && bestRatio >= 1 + tolBest) outcome = 'loss';
+    else if (ratio <= 1 - tolMedian && bestRatio <= 1 - tolBest) outcome = 'win';
+    return {outcome, ratio, best_ratio: bestRatio, tolerance: tolMedian, noise};
+}
+
+const PILL_STATUS = {win: 'faster', loss: 'slower', parity: 'parity'} as const;
 
 export function formatSpeedup(ratio: number, _status?: 'faster' | 'slower' | 'parity'): string {
     if (!ratio || !isFinite(ratio)) return '—';
@@ -208,11 +398,17 @@ export function getBenchmarkDataset(): BenchmarkDataset {
         generated_at: string;
         runs: number;
         build_commands: Record<string, string>;
+        environment?: RawEnvironment;
+        cached_builds?: string[];
+        parity?: number;
+        noise_model?: {floor_ns?: number};
         elimination_ns?: number;
         benchmarks: RawBenchmarkItem[];
     };
 
     const eliminationNs = data.elimination_ns || 10000;
+    const parity = data.parity ?? 0.04;
+    const noiseFloorNs = data.noise_model?.floor_ns ?? 25_000;
     const rawList = data.benchmarks || [];
 
     const unsupported = rawList.filter((b) => b.status === 'unsupported');
@@ -246,20 +442,21 @@ export function getBenchmarkDataset(): BenchmarkDataset {
         const cSamples = cppLang?.elapsed_ns_samples ?? [];
         const rSamples = rustLang?.elapsed_ns_samples ?? [];
 
-        const pNoise = calculateRobustJitter(pSamples, pMed) || 0;
-        const cNoise = calculateRobustJitter(cSamples, cMed) || 0;
-        const rNoise = calculateRobustJitter(rSamples, rMed) || 0;
-
         const vsCppRatio = pMed / Math.max(cMed, 1);
         const vsRustRatio = pMed / Math.max(rMed, 1);
 
+        // The harness's own verdict when the results carry one (schema 3); otherwise
+        // the same rule computed here from the samples.
+        const judge = (who: 'cpp' | 'rust', other: number[]) =>
+            (b.verdict?.[who] ?? computeVerdict(pSamples, other, parity, noiseFloorNs)).outcome;
+
         const vsCppStatus = isElimination
             ? (pMed <= eliminationNs ? 'faster' : 'parity')
-            : getPillStatus(vsCppRatio, Math.max(pNoise, cNoise));
+            : PILL_STATUS[judge('cpp', cSamples)];
 
         const vsRustStatus = isElimination
             ? (pMed <= eliminationNs ? 'faster' : 'parity')
-            : getPillStatus(vsRustRatio, Math.max(pNoise, rNoise));
+            : PILL_STATUS[judge('rust', rSamples)];
 
         let outcome: 'prismio-win' | 'prismio-loss' | 'parity';
         if (vsCppStatus === 'slower' || vsRustStatus === 'slower') {
@@ -469,7 +666,20 @@ export function getBenchmarkDataset(): BenchmarkDataset {
         generatedAt: data.generated_at,
         formattedDate,
         runs: data.runs,
-        buildCommands: data.build_commands || {},
+        buildCommands: {
+            prismio: parseBuildCommand(data.build_commands?.prismio),
+            cpp: parseBuildCommand(data.build_commands?.cpp),
+            rust: parseBuildCommand(data.build_commands?.rust),
+        },
+        environment: (() => {
+            const env = describeEnvironment(data.environment);
+            // Runs from before schema 2 still name the compiler's profile in the recorded command
+            // (`.prismio/build/debug/prismio build ...`).
+            const profile = data.build_commands?.prismio?.match(/\.prismio\/build\/([^/\s]+)\//)?.[1];
+            if (!env.prismioProfile && profile) env.prismioProfile = profile;
+            return env;
+        })(),
+        cachedBuilds: data.cached_builds ?? [],
         eliminationNs,
         toolchain,
         stats: {
