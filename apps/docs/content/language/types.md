@@ -80,7 +80,7 @@ Integer overflow wraps. `Int` is signed 32-bit, so `2147483647 + 1` is `-2147483
 Building with `--overflow-checks` turns that wrap into a reported error instead, naming the operator and the source position:
 
 ```
-runtime error: integer overflow in `+` at app.psm:13
+runtime error: integer overflow in `+` at main.psm:13
 ```
 
 The flag is off by default and is a diagnostic aid, not a semantic change: a build without it emits exactly the same code it did before the flag existed. There are not yet explicit `wrapping_*` or `checked_*` forms, so code that intends to wrap has no way to say so and will be reported under the flag.

@@ -31,9 +31,9 @@ The analysis assigns allocation sites to tiers: stack (`T0`), region/arena (`T1`
 Use the analysis command before changing code:
 
 ```bash
-prismio aif app.psm
-prismio aif app.psm --summary
-prismio aif app.psm --why=1
+prismio aif main.psm
+prismio aif main.psm --summary
+prismio aif main.psm --why=1
 ```
 
 Start with the unflagged report to see application and imported sites in terms of stack, arena, and heap storage. Its IDs can be passed directly to `--why`; use `--summary` when you need the complete tier distribution and `--manifest` for stable compiler/CI records. The explanation is more useful than adding annotations speculatively because it identifies escapes, aliases, cycles, or contracts that drive analysis.
@@ -77,7 +77,7 @@ Automatic placement is deliberately narrow, and two limits are worth knowing bec
 Compile with `--verify` while testing ownership-sensitive changes. Verification instruments allocation/free behavior and reports leaks or contract violations; it is not a replacement for semantic move checking.
 
 ```bash
-prismio build app.psm -o app-verified --verify
+prismio build main.psm -o app-verified --verify
 ./app-verified
 ```
 

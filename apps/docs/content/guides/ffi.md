@@ -3,9 +3,9 @@ title: Call C with ownership contracts
 description: Declare C ABI functions and document pointer ownership at the Prismio 0.1 FFI boundary.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-30"
 tags: [guide, ffi, c-abi, ownership]
-related: [language/ffi, cookbook/c-ffi, specification/memory-model]
+related: [guides/calling-c, language/ffi, cookbook/c-ffi, specification/memory-model]
 ---
 
 `extern fn` declarations bind directly to C ABI symbols. Prismio does not generate bindings, read headers, marshal arbitrary layouts, or install libraries for you.
@@ -49,12 +49,24 @@ Only use a contract that matches the C implementation. The compiler can enforce 
 
 ## Link the implementation
 
-The declaration emits a reference; the native link must still receive a library or object that defines the symbol. Use the compiler driver's supported linker inputs for your target. There is no Prismio package manifest that declares a native dependency.
+The declaration emits a reference; the native link must still receive an object or library that defines the symbol. Declare it in the project's `build.ums`: a `native` block compiles C sources of your own and links them, and a `link` block names a library, a search path or an exact file. [Calling C from Prismio](/guides/calling-c) walks through a whole project, including what the build caches.
+
+```ums
+targets {
+    executable("app") {
+        entry = "src/main.psm"
+        native { source("c/codec.c") }
+        link { library("z") }
+    }
+}
+```
+
+Only projects with a `build.ums` can declare native inputs. A single file built with `prismio build main.psm` takes none, so it links only the Prismio runtime and whatever the system linker adds by default.
 
 Separate front-end and linker failures by emitting LLVM IR:
 
 ```bash
-prismio build app.psm -o app.ll
+prismio build main.psm -o app.ll
 ```
 
 If IR generation succeeds but the native build reports an unresolved symbol, the source declaration was accepted and the remaining problem is link configuration or symbol spelling.

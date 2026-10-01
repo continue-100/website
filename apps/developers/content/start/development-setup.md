@@ -3,7 +3,7 @@ title: Development environment
 description: Prepare a Prismio compiler checkout with its pinned LLVM, platform tools, Python, and a known compiler generation.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-30"
 tags: [setup, llvm, toolchain]
 related: [compiler/bootstrap, start/local-compiler-loop, tooling/debugging-targets-and-build-tracing]
 ---
@@ -75,7 +75,8 @@ the cache when investigating it.
 
 For fixed-point work, use a named generation such as `build/gen2`. For the normal repository loop,
 use `prismio build`; `build.ums` routes project commands to `.prismio/build/debug/prismio` once the
-local host exists.
+local host exists and this machine has promoted it. A copied binary is not run (`P1077`); see
+[the local compiler loop](/start/local-compiler-loop#make-a-particular-generation-the-host).
 
 ## Validate the setup
 

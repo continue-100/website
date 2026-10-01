@@ -34,13 +34,28 @@ not a stable ABI promise. Application developers should use the source-level
 
 ## Representation at a glance
 
-Two tag bits in the length word select one of three storage classes:
+Tag bits in the length word select one of four storage classes:
 
 | Storage class | Where the bytes live | Storage relationship | Creation cost |
 | --- | --- | --- | --- |
 | **Inline** | In the 16-byte pair, up to 12 bytes | Self-contained | Copy up to 12 bytes |
 | **Owned** | In a NUL-terminated heap block | Owns the block | Allocation and copy |
 | **View** | In a range inside another string's block | Borrows the base | No allocation or byte copy |
+| **Borrowed** | In static storage: a literal, a module-level initialiser | Owns nothing, NUL-terminated | None |
+
+The word, for a pair that is not inline: bits 0–30 are the length, bit 31 is
+INLINE, bit 32 VIEW, bit 33 marks an owned block whose capacity grew
+geometrically (the `s = s + x` append path), and bit 34 BORROWED. For an inline
+pair, bits 32–63 are string bytes, so every other tag is meaningful only when
+INLINE is clear — which is why the release mask tests them all at once.
+
+A borrowed pair reads exactly like an owned long string: its pointer goes to C
+as it is, with no copy. It differs in two places only. Every release skips it,
+and `str_own` copies it, because a container slot or a `String?` keeps only the
+pointer and would release it. The tag is what lets a literal sit in a field, a
+`Vec` or a return beside owned Strings (added 2026-09-30). Before it, the
+ownership analysis had to decline the release of any place a literal could
+reach, and every owned String stored there leaked.
 
 <StringStorageDiagram />
 
@@ -70,7 +85,7 @@ allocations to 2**.
 
 These figures are local microbenchmarks, not portable performance guarantees.
 They were collected in 31-sample alternating A/B runs on an Apple M5 system with
-10 CPU cores, 16 GB of memory, macOS 25.5, and LLVM 22.1.8. The maintained suite
+10 CPU cores, 16 GB of memory, macOS 25.5, and LLVM 23.1.1. The maintained suite
 builds C++ with `clang++ -O3 -std=c++20` and Rust with `rustc -C opt-level=3`.
 Checksums are compared before timings are accepted.
 
@@ -685,7 +700,7 @@ threshold is not clearly beneficial and has not been measured.
 
 ### LLVM `captures(none)` is not emitted
 
-LLVM 22 spells the former `nocapture` concept as `captures(none)`. The old name
+LLVM 23 spells the former `nocapture` concept as `captures(none)`. The old name
 does not map through `LLVMGetEnumAttributeKindForName`, so Prismio skips that
 attribute. `readonly`, the property required for the measured loop hoisting,
 does map correctly.

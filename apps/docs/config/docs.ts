@@ -64,7 +64,7 @@ export const docsConfig: DocsAppConfig = {
             title: "From zero to owned data.",
             description: "A short route through the toolchain and the language rules that matter first.",
             items: [
-                { href: "/start/installation", label: "Install and bootstrap", detail: "Configure LLVM 22 and build the self-hosted compiler." },
+                { href: "/start/installation", label: "Install and bootstrap", detail: "Configure LLVM 23 and build the self-hosted compiler." },
                 { href: "/tutorials/first-program", label: "Write a complete program", detail: "Use functions, ranges, mutable bindings, and output." },
                 { href: "/language/ownership-and-borrowing", label: "Understand ownership", detail: "Learn default borrows, sink transfers, inout, and drop." },
             ],
@@ -111,6 +111,7 @@ export const docsConfig: DocsAppConfig = {
             items: [
                 { label: "Guide index", href: "/guides" },
                 { label: "Organize source", href: "/guides/modules" },
+                { label: "Calling C from Prismio", href: "/guides/calling-c" },
                 { label: "C ownership contracts", href: "/guides/ffi" },
                 { label: "Memory and AIF", href: "/guides/memory-and-aif" },
                 { label: "Compiler development", href: "/guides/compiler-development" },

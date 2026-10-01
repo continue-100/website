@@ -3,9 +3,9 @@ title: Foreign function declarations
 description: Prismio 0.1 extern fn and extern let syntax, C ABI types, ownership contracts, and globals defined in C.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-30"
 tags: [ffi, extern, c-abi, ownership-contracts, globals]
-related: [guides/ffi, cookbook/c-ffi, specification/behavior]
+related: [guides/calling-c, guides/ffi, cookbook/c-ffi, specification/behavior]
 ---
 
 `extern fn` declares a symbol supplied by the Prismio runtime or a linked C-compatible library. It has a typed signature and no Prismio body.
@@ -152,7 +152,7 @@ Keeping a foreign global private and exposing a function instead is usually the 
 
 ### Linking a foreign global
 
-A declaration does not create the storage. An object file or library in the link has to define a global with exactly that symbol name and a matching type, or the link fails. `prismio run --jit` resolves the symbol from the running process instead.
+A declaration does not create the storage. An object file or library in the link, named by the target's `native` or `link` block, has to define a global with exactly that symbol name and a matching type, or the link fails. `prismio run --jit` resolves the symbol from the running process instead.
 
 A `workload` runs at build time in a sandbox, so it sees each foreign global as a private zero, just as a foreign function there is a stub that returns zero. The shipped program still refers to the real symbol.
 
@@ -161,11 +161,11 @@ A `workload` runs at build time in a sandbox, so it sees each foreign global as 
 1. Identify the exported C-compatible symbol and its header signature.
 2. Map widths and pointer-shaped values explicitly into Prismio types.
 3. State parameter and return ownership contracts.
-4. Compile the Prismio source while passing the required object/library options to the compiler driver.
+4. Name the C source or the library in the project's `build.ums`, with a `native` or `link` block, and build with `prismio build`.
 5. Test success, failure, zero-length, and cleanup behavior on every supported target.
 6. Keep the extern declarations in one small source boundary so an ABI change is easy to audit.
 
-See the [FFI guide](/guides/ffi) for driver-oriented steps and the [C FFI cookbook](/cookbook/c-ffi) for a focused example.
+See [Calling C from Prismio](/guides/calling-c) for a complete project, the [FFI guide](/guides/ffi) for ownership contracts, and the [C FFI cookbook](/cookbook/c-ffi) for a focused example.
 
 Contract spelling is optional on legacy/runtime declarations, but ownership-sensitive external APIs should state it. The declaration must match the actual symbol and ABI. Prismio cannot inspect foreign code to validate that promise.
 

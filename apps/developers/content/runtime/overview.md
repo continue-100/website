@@ -3,7 +3,7 @@ title: Runtime architecture
 description: The native support Prismio programs link, how to see it in a built program, the boundary with compiler builtins and standard modules, and the runtime's ownership obligations.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-09-30"
 tags: [runtime, architecture, native]
 related: [runtime/supported-surface, runtime/allocation-arenas-rc-and-cycles, llvm/runtime-ir-and-optimization]
 ---
@@ -101,10 +101,9 @@ fn main() -> Int {
 ```text
 Built slice_bounds
 runtime error: slice range [0..<2] is outside collection length 1
-error[P1012]: slice_bounds exited with a failure status
 ```
 
-The first line is the runtime (`prismio_slice_check`); the second is `prismio run` reporting the exit status.
+The second line is the runtime (`prismio_slice_check`). `prismio run` prints nothing about the failure: it exits with the program's own status (`1` here, whatever `main` returned otherwise), because a program's exit status is its answer and not a toolchain fault. Only a program that could not be started at all is reported, as `P1012`.
 
 **Not every out-of-range access fails.** `list_get` with an index outside the list returns a zero value — `0` for a `Vec<Int>`, an empty string for a `Vec<String>` — rather than stopping the program. That is a deliberate single-compare fast path on the hottest read in the language, documented at its definition in `lang_runtime.c`. Slices are checked; plain element reads are not.
 

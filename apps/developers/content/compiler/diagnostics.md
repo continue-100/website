@@ -3,7 +3,7 @@ title: Compiler diagnostics
 description: How Prismio reports failures — stable codes, recovery that finds several errors in one run, warnings that don't stop a build, and how to read any of it.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-30"
 tags: [compiler, diagnostics, errors, warnings]
 related: [testing/regression-suite, tooling/ide-protocol, compiler/cli, compiler/frontend]
 ---
@@ -138,7 +138,7 @@ distinguish a new contract.
 
 | Range | Owner |
 | --- | --- |
-| `P10xx` | driver and project (`P1001`–`P1071`, e.g. an unresolved import) |
+| `P10xx` | driver and project commands (`P1001`–`P1089`, e.g. an unresolved import or an unknown target). Every code is listed with its message and fix in the [user reference](https://docs.prismio.org/compiler/diagnostics#driver-and-project-codes-p10xx) |
 | `P2001` | the lexer (one code today — the frontend's tokenizer stage) |
 | `P30xx` | parser declarations |
 | `P3101`, `P3102` | parser expressions |
@@ -147,6 +147,7 @@ distinguish a new contract.
 | `P4001`, `P4002` | general semantic errors (the catch-all; most of what you will see) |
 | `P41xx` | ownership and FFI (`P4101`–`P4110`) |
 | `P50xx` | AIF, the Adaptive Inference Framework (`P5001`–`P5007`) |
+| `UMS####` | the manifest (`build.ums`): lexer, parser, lowering, validation, dependency resolution, planning. Listed in [the manifest reference](/tooling/build-manifest#diagnostic-codes) |
 
 `P4001`/`P4002` cover most sema diagnostics because a fine-grained code per
 rule was not worth the churn — the code identifies the *subsystem*, and the
@@ -154,6 +155,22 @@ message plus source span identify the rule. See [the compiler
 overview](/compiler/overview) for where each of these stages sits in the
 pipeline, and [the frontend page](/compiler/frontend) for `P2001`/`P3xxx`
 examples from the lexer and parser specifically.
+
+### Where each `P10xx` code is produced
+
+Every driver and project code is a call to `diag_error_code` or `diag_warning_code` (or the `_at_` forms that carry a source position), so this is the map from a code to the file to open. The highest code issued is `P1089`; allocate the next number, and never reuse one. `P1009`, `P1035`, `P1038`, `P1057`, `P1060`, `P1063` and `P1074` are not issued today and stay unused.
+
+| File | Codes |
+|---|---|
+| `src/driver/imports.psm` | `P1001`, `P1002`, `P1068`–`P1072` |
+| `src/driver/compile.psm` | `P1003`–`P1005`, `P1008`, `P1010`–`P1012`, `P1075` |
+| `src/driver/workload.psm` | `P1006`, `P1007` |
+| `src/main.psm` | `P1024`–`P1034`, `P1036`, `P1037`, `P1039`–`P1050`, `P1073`, `P1076`, `P1079` |
+| `src/project/ums_cli.psm` | `P1013`–`P1023`, `P1058`, `P1078`, `P1080`–`P1082`, `P1084`–`P1088` |
+| `src/project/commands.psm` | `P1059`, `P1061`, `P1062`, `P1089` |
+| `src/project/host.psm` | `P1051`–`P1056`, `P1064`–`P1067`, `P1077`, `P1083` |
+
+A project command prints machine output when `--diagnostic-format=json` or `--manifest` is among its arguments. In that case the launcher (`dispatchToUmsHost`) prints neither the toolchain announcement nor `P1077`, so an editor's `check` on a project with an untrusted host gets the global compiler's answer and no launcher diagnostics. `P1052`, `P1064` and `P1065` are still printed.
 
 ## Failure changes in kind past semantic analysis
 

@@ -3,9 +3,9 @@ title: Wrap a C function
 description: Create a narrow Prismio 0.1 module around a C ABI function and state its ownership contract.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
+lastUpdated: "2026-09-30"
 tags: [cookbook, c, ffi, ownership]
-related: [guides/ffi, language/ffi, specification/behavior]
+related: [guides/calling-c, guides/ffi, language/ffi, specification/behavior]
 ---
 
 Put raw declarations in one source file, match C-compatible types, and state pointer ownership.
@@ -40,7 +40,7 @@ If any representation detail differs, write a C adapter with a narrow stable sig
 
 ## Link and test
 
-The symbol still has to be present at link time. Prismio 0.1 has no manifest field for native libraries, so integrate the library through the runtime/build environment used for your compiler distribution. A mismatched signature or false ownership contract is outside compiler safety guarantees.
+The symbol still has to be present at link time. Name it in `build.ums`: `native { source("c/lib.c") }` compiles a C file of your own into the program, and `link { library("name") }` links a library that is already built. [Calling C from Prismio](/guides/calling-c) shows a complete project. A mismatched signature or false ownership contract is outside compiler safety guarantees.
 
 Emit `.ll` first if you need to separate front-end acceptance from native link configuration. Then test empty strings, ordinary content, large lengths, repeated calls, and every supported target.
 
@@ -52,4 +52,4 @@ The exact declaration must follow the compiler's FFI contract grammar. Keep prod
 
 ## What this recipe does not promise
 
-It does not provide automatic header parsing, C++ name mangling, variadic calls, stable struct layout, dynamic-library manifests, or a cross-version Prismio ABI. Those capabilities are not hidden behind `extern fn`.
+It does not provide automatic header parsing, C++ name mangling, variadic calls, stable struct layout, C++ sources, dynamic-library targets, or a cross-version Prismio ABI. Those capabilities are not hidden behind `extern fn`.

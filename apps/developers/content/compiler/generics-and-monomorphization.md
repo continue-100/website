@@ -193,6 +193,14 @@ Two rewrites learned this in 0.1.0:
   call fail as "unknown function". The concrete case still reaches `semaCheckPropertySpelling`
   through overload resolution, and both name `isSome` rather than its instantiation `isSome$Int`
   (`tests/neg_194_generic_property_spelling.psm`).
+- **`semaShadowsStandardLibrary`** decides whether a program's own declaration shadows a
+  standard-library function of the same name and parameter types, by mangling each same-named
+  library declaration's parameters. It can meet a *generic* one, whose `T` is bound only at an
+  instantiation, and mangling it reported ``unknown type `T` `` against the library for any program
+  that declared a `filter`, `find`, `take` or `min` of its own, as a free function or a method, whether
+  or not anything called the generic. It skips a declaration with `genericInfo`; a generic's
+  instantiations are concrete functions with symbols of their own and are compared as such
+  (`tests/test_252_names_beside_std_generics.psm`).
 - **The index rewrite** turns `m[k]` on a struct into `at(m, k)`. `Map`'s `at` is a template of
   `impl<K, V> Map<K, V>`, so the rewrite asks `monoHasTemplate(module, "at", …)` as well as
   `semaDeclaresFunction("at")`; and the index is no longer required to be an `Int` before the
@@ -223,11 +231,27 @@ considers function templates at a call site. `monoTemplateAcceptsCall` and
 actual argument `TypeInfo` values, and `monoMatchParam` recurses into nested
 applied types rather than comparing only top-level names.
 
+**A bare integer literal fits an integer parameter of any width, in a generic call too.**
+`monoTemplateAcceptsCall` substitutes the solved arguments into each parameter and compares it with
+the argument's type. For `contains<T: Eq>(items: Vec<T>, needle: T)` called as `ids.contains(2)` on a
+`Vec<I64>`, `T` is solved from the first argument as `I64`, and the literal's first-guess type is
+`Int`, so the template was rejected and the call reported "no overload". `monoLiteralFits` accepts
+the argument when the parameter is an integer type and the argument is a literal
+(`semaIsIntLiteral`), which is the rule `semaArgMatchesType` already applied to a concrete
+parameter; the argument check then types and range-checks the literal against `I64`, so
+`bytes.contains(300)` on a `Vec<U8>` is still ``integer literal `300` does not fit in U8``. A
+`Float` parameter is not covered, as for a concrete one (`tests/test_250_literal_needle.psm`,
+`tests/neg_252_literal_needle_range.psm`).
+
 **Closure bounds.** `Fn(A, B) -> R` in a bound position is parsed by `parseCallableBound`
 (`src/parse/decl.psm`) into a `TRAIT_REF` marked callable, with the parameter types on `child1`
 and the result on `child3`; `nodeIsCallableBound` tells it apart from a trait. The result is
-required, because a closure always returns a value and a bound without one would leave nothing to
-solve from (`tests/neg_196_callable_bound_result.psm`). Two things happen at instantiation:
+required, because a bound without one would leave nothing to solve from
+(`tests/neg_196_callable_bound_result.psm`). A closure's own `call` may return nothing: a body of
+type `Void`, as in `|x: Int| println(x)`, lowers to a `call` with no return annotation and a statement
+body, where it used to name the unknown type `Void`. So an unconstrained `F`, as `Vec.forEach` uses,
+accepts such a closure and a bound `F: Fn(A) -> R` never does
+(`tests/test_253_void_closure.psm`). Two things happen at instantiation:
 
 - `monoSolveFromCallables` solves what the arguments left open. A type parameter that appears only
   in a bound's result — `U` in `F: Fn(T) -> U` — has no argument to be read from, so it is matched

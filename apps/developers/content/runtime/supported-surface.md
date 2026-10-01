@@ -575,7 +575,8 @@ everything in `ir_symbols.c`, `aif_support.c`, `diagnostics.c`, `build_driver.c`
 and `llvm-api-backend.c`.
 
 Reached through syntax: the `prismio_task_*` family, through `spawn` and `join`,
-and the `chan_*` family, through `Channel<T>`. See
+and the `chan_*` family (with `chan_send_copy`/`chan_recv_copy` for plain-data
+messages), through `Channel<T>`'s methods — a program may not name them. See
 [Native tasks and typed channels](/runtime/tasks-and-channels).
 
 ## Where the string surface's performance comes from

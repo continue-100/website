@@ -494,7 +494,9 @@ Some runtime operations require more precise rules than their surface
 signatures suggest. `list_get` returns the list's element key rather than an
 alias of the list itself. `chan_recv` produces ownership of an existing foreign
 allocation rather than allocating at the receive site, so it is barred from T0
-and arena placement. String views alias argument storage and carry view
+and arena placement. Its plain-data sibling `chan_recv_copy` is the opposite
+case: the runtime copies into storage the caller supplies, so the site is not
+foreign and is placed like a struct literal, T0 included. String views alias argument storage and carry view
 provenance back to the base.
 
 ## Layout is part of the same decision system
@@ -546,13 +548,13 @@ Current AIF diagnostics are:
 Use the report modes for different questions:
 
 ```bash
-prismio aif app.psm
-prismio aif app.psm --summary
-prismio aif app.psm --manifest
-prismio aif app.psm --why=build_scene__Void#0
-prismio aif app.psm --layout
-prismio aif app.psm --budget=1
-prismio build app.psm --verify
+prismio aif main.psm
+prismio aif main.psm --summary
+prismio aif main.psm --manifest
+prismio aif main.psm --why=build_scene__Void#0
+prismio aif main.psm --layout
+prismio aif main.psm --budget=1
+prismio build main.psm --verify
 ```
 
 - The default report groups application and imported sites by actual storage
@@ -576,7 +578,7 @@ level.
 ### Reading one manifest row
 
 ```text
-tier_one_string__Void#0  T1  Isolated  region:auto  String  AoS  inferred  app.psm:18:14
+tier_one_string__Void#0  T1  Isolated  region:auto  String  AoS  inferred  main.psm:18:14
 ```
 
 Read this from left to right:

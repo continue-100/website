@@ -1,9 +1,9 @@
 ---
 title: Compiler command-line reference
-description: Complete Prismio 0.1 build, run, bootstrap, AST, AIF, target, optimization, and verification command reference.
+description: Complete Prismio 0.1 build, run, test, project-command, AST, AIF, target, optimization, and verification command reference.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-09"
+lastUpdated: "2026-09-30"
 tags: [compiler, cli, flags, commands]
 related: [start/local-compiler-loop, aif/overview, tooling/debugging-targets-and-build-tracing]
 ---
@@ -62,10 +62,9 @@ starts -- `run`'s, a project command's step, a forwarded host -- is started thro
 
 ## Building a compiler
 
-There is no `bootstrap` command. It compiled a compiler from a table of backend sources every
-shipped compiler carried; the compiler is now an ordinary UMS target whose `native` block lists
-those sources, so `prismio build` in the checkout builds one and nothing installed knows which files
-make one. `tools/bootstrap.sh` / `tools/bootstrap.ps1` remain the independent path, including from
+There is no `bootstrap` command. The compiler is an ordinary UMS target whose `native` block lists
+its backend and runtime sources, so `prismio build` in the checkout builds one, and nothing
+installed knows which files make one. `tools/bootstrap.sh` / `tools/bootstrap.ps1` remain the independent path, including from
 the committed seed. A named generation run from the checkout (`build/gen2 build`) builds and
 promotes the project host with that generation.
 
@@ -132,7 +131,7 @@ argument as unknown and exits 1 — which is the same answer. Answering it befor
 keeps the reply about the binary asked rather than about the host it would otherwise forward to,
 and what stops the launcher's own probe from recursing. See
 [Compiler host and promotion](/tooling/compiler-host-and-promotion). `cliAif()` parses analysis flags and calls
-`aifCommand()`. `cliBootstrap()` fixes compiler-build mode and accepts only source, `-o`, and `-g`.
+`aifCommand()`. There is no bootstrap parser: `bootstrap` is a reserved name that answers `P1034`.
 The build/run parser validates incompatible pairs such as `--jit` with `--target` before calling
 `compileSource()`.
 

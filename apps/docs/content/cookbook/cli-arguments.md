@@ -1,39 +1,68 @@
 ---
 title: Read command-line arguments
-description: Access process arguments in Prismio 0.1 through program-support FFI declarations.
+description: Read the arguments a user passes to your program with process.args, and pass them from prismio run after a double dash.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
-tags: [cookbook, cli, arguments, ffi]
-related: [language/ffi, cookbook/c-ffi, compiler/cli]
+lastUpdated: "2026-09-30"
+tags: [cookbook, cli, arguments, process]
+related: [stdlib/process, compiler/cli, package-manager]
 ---
 
-Prismio 0.1 does not inject `argc` and `argv` into `main`. The linked program-support runtime exposes argument access through external declarations used by the compiler itself. Bind the exact symbols from the runtime version you ship, then wrap them in local functions.
+Your program often needs what the user typed after its name: a file to read, a port, a flag. `main` takes no `argc` and `argv`. The arguments are in `process.args`, from `import std.process`.
 
-Keep the executable entry point in the documented form:
+## See it work
 
+<!-- prismio-check: pass -->
 ```prismio
+import std.io
+import std.process
+
 fn main() -> Int {
-    // Call a local wrapper around the versioned program-support API.
+    if (process.args.count < 2) {
+        println("usage: echo_args <word>...")
+        return 2
+    }
+    for i in 1..<process.args.count {
+        println(process.args[i])
+    }
     return 0
 }
 ```
 
-Do not copy a C or older draft signature such as `main(argc, argv)` and assume the compiler supplies those parameters.
+`process.args[0]` is the program's name, so the arguments start at index 1. `prismio run` passes everything after `--` to the program exactly as typed, including words that look like compiler flags:
 
-Because this surface is not yet an importable, version-stable standard-library API, copy declarations only after checking `runtime/program_support.c` and existing compiler `extern fn` declarations. Keep raw pointers and ownership contracts out of application modules.
+```bash
+prismio run echo_args.psm -- alpha "two words" --release
+```
 
-## Safe integration shape
+```text
+Built echo_args
+alpha
+two words
+--release
+```
 
-1. Inspect the program-support implementation in the exact compiler/runtime revision.
-2. Find the existing Prismio extern declaration used by the compiler, if any.
-3. Copy the exact width, optionality, and ownership contracts into one local wrapper file.
-4. Expose application functions that return ordinary Prismio values rather than raw pointers.
-5. Handle missing index/out-of-range behavior explicitly.
-6. Test zero, one, and multiple arguments on every native target you support.
+A quoted argument stays one argument. Without `--`, `prismio run` reads the words as its own and stops at the first it does not know (`P1050`). In a project, `prismio run -- alpha` runs the project's only executable, and `prismio run app -- alpha` names the target.
 
-Argument zero and executable-path conventions can differ by platform. Do not make a portable application invariant from a host-specific observation unless the wrapper defines it.
+## What the program returns is what you get
 
-For a durable library API, wait for the planned process/arguments standard-library module. This recipe documents the current integration approach rather than promising permanent symbol names.
+`prismio run` exits with the status `main` returned and prints nothing about it. Run the example with no arguments:
 
-When the runtime symbols change, update the wrapper and tests together. Documentation intentionally omits concrete internal symbol names here so AI/search results do not turn an unstable implementation detail into a permanent public API.
+```bash
+prismio run echo_args.psm
+echo $?
+```
+
+```text
+Built echo_args
+usage: echo_args <word>...
+2
+```
+
+A shell script or CI step can therefore branch on it. The same is true of a built executable: `./echo_args a b` prints `a` and `b`.
+
+## Check the count before reading
+
+`process.args[i]` answers an empty string for an index outside `[0, process.args.count)`, the same as an argument that is empty, so ask `count` when the difference matters. [`std.process`](/stdlib/process) documents the rest of the surface, including environment variables and running other programs.
+
+Argument zero can differ by platform, since it is whatever the operating system was given. Do not build an invariant on its exact spelling.

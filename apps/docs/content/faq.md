@@ -3,7 +3,7 @@ title: Frequently asked questions
 description: Concise answers about Prismio 0.1 stability, self-hosting, memory, platforms, packages, and documentation status.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [faq, support, status]
 related: [start/overview, roadmap, compiler/targets]
 ---
@@ -42,7 +42,7 @@ Concurrency is not one of them, and that is not an omission: `spawn`/`join`/`Tas
 
 Not yet, in the sense that matters: there is no registry and nothing to fetch from one.
 
-Prismio 0.1 has a `build.ums` manifest and a lockfile, and dependencies may name a local path. There is no registry and no dependency solver: a version constraint is recorded, not satisfied, and a dependency without a local path cannot be fetched. A resolved path is not yet on the import search either, so vendor source below the entry root and pin external revisions through source control. See [package manager](/package-manager).
+Prismio 0.1 has a `build.ums` manifest and a lockfile, and dependencies may name a local path. There is no registry and no dependency solver: a version constraint is recorded, not satisfied, and a dependency without a local path cannot be fetched. A resolved path is not yet on the import search either, so vendor source below the entry root and pin external revisions through source control. A manifest can also compile C sources of your own into a program and link libraries: see [Calling C from Prismio](/guides/calling-c) and the [package manager](/package-manager).
 
 ## Why does a keyword appear in highlighting but fail to compile?
 
@@ -82,7 +82,7 @@ As values. There are no exceptions, `try`, `catch` or propagation operator: a fu
 
 ## Are documentation error IDs compiler codes?
 
-No. URLs such as `/errors/use-after-move` are permanent documentation keys. Compiler 0.1 emits prose diagnostics without stable numeric codes.
+Not the same thing. URLs such as `/errors/use-after-move` are permanent documentation keys for one rule. Compiler 0.1 also prints a permanent code, such as `error[P4001]`, but most semantic errors share one, so the code names the stage and the page names the rule. See [compiler diagnostics](/compiler/diagnostics).
 
 ## Which documentation should I trust?
 

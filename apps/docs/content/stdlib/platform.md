@@ -43,7 +43,7 @@ fn main() -> Int {
 These are facts about the compile target. A native build targets the machine it runs on, so there the answer is that machine's too. A cross build answers for the target it names:
 
 ```text
-prismio build app.psm --target x86_64-pc-windows-msvc    # platform.current is Platform.Windows
+prismio build main.psm --target x86_64-pc-windows-msvc    # platform.current is Platform.Windows
 ```
 
 Every answer is a constant, so `if (platform.isLinux) { ... } else { ... }` compiles to the one branch it takes. There is no run-time check and no call.

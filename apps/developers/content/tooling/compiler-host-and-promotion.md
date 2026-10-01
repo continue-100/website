@@ -3,7 +3,7 @@ title: Project compiler host and promotion
 description: How an installed Prismio compiler delegates to a repository-local host, checks its generation, repairs a stale one, and atomically promotes successful self-builds.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-28"
+lastUpdated: "2026-09-30"
 tags: [ums, self-hosting, compiler]
 related: [start/local-compiler-loop, compiler/bootstrap, testing/fixed-point-verification]
 ---
@@ -55,12 +55,15 @@ or replaced after promotion stops matching. On a mismatch the launcher warns `P1
 command itself; `prismio build` builds and promotes a host, which records it.
 
 Identity rather than a content hash, because hashing a 130 MB compiler would cost about a second on
-every command. `toolchain.host` must also be a path under `.prismio/` with no `..` (`UMS2405`,
-applied by the prefix reader too).
+every command. The stamp, not the path, is what keeps a cloned repository from choosing a program
+to run: `toolchain.host` may be relative to the manifest or absolute, and a sub-project may name its
+parent's host (`../.prismio/build/debug/prismio`). `clean` removes the host only when it is the
+project's own build output, relative and under `.prismio/` with no `..`, so a sub-project's `clean`
+never deletes its parent's compiler.
 
 A developer who wants a particular generation as the host runs it from the checkout under a name
 other than `prismio` -- `build/gen2 build` -- which builds the host target with that generation and
-promotes it. Copying a binary over the host no longer works: the copy is untrusted.
+promotes it. Copying a binary over the host does not work: the copy has no stamp and is untrusted.
 
 ## Generation handshake
 
@@ -135,8 +138,8 @@ the entire newest UMS grammar before deciding which compiler should parse that g
 
 `compiler_forward_cli(host)` sets a hosted-environment guard, starts the host with the original
 argument vector through the same argv spawn every driver-started program uses (`compiler_spawn_wait`
--- posix_spawn, or CreateProcess with CommandLineToArgvW quoting; `_spawnv` used to split a
-forwarded argument containing a space on Windows), waits, restores the caller's environment, and
+-- posix_spawn, or CreateProcess with CommandLineToArgvW quoting, so a forwarded argument
+containing a space stays one argument on Windows), waits, restores the caller's environment, and
 returns the host's own exit status.
 
 ## Building and promoting a host

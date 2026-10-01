@@ -3,7 +3,7 @@ title: Develop the self-hosted compiler
 description: Work on Prismio's self-hosted compiler with generation builds, fixed-point checks, and the regression suite.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-31"
+lastUpdated: "2026-09-30"
 tags: [guide, compiler, self-hosting, testing]
 related: [compiler/overview, compiler/bootstrap, specification/conformance]
 ---
@@ -59,7 +59,7 @@ launcher runs no other. Do not invoke project mode directly through
 `.prismio/build/debug/prismio`: without its global parent it cannot safely
 replace itself on every supported platform. To make a named generation the
 project's compiler, run it from the checkout -- `build/gen2 build` -- which
-builds the host with that generation and promotes it.
+builds the host with that generation and promotes it. Copying a binary over the host does not work, because the launcher runs only a host it promoted (`P1077`), and `prismio clean` removes the whole profile directory, the host and its stamp included.
 
 The bootstrap scripts stay separate because a self-hosting chain must name and
 compare its generations. Continue to use `build/gen1`, `build/gen2`, and

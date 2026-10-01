@@ -54,7 +54,7 @@ export const docsConfig: DocsAppConfig = {
             },
         },
         statusFacts: [
-            { status: "Stable", detail: "Self-hosted compiler, LLVM 22 backend, UMS projects, native tasks, and typed channels" },
+            { status: "Stable", detail: "Self-hosted compiler, LLVM 23 backend, UMS projects, native tasks, and typed channels" },
             { status: "Experimental", detail: "AIF policy, automatic layout choices, regions, and advanced memory optimization" },
             { status: "Planned", detail: "Async I/O, networking, regex, JSON, user atomics, explicit SIMD, and registry solving" },
         ],

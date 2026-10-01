@@ -3,7 +3,7 @@ title: Frequently asked questions
 description: Current answers about Prismio stability, self-hosting, AIF, LLVM, platforms, standard modules, UMS, and compiler support.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-30"
 tags: [faq, support, status]
 related: [start, roadmap, tooling/debugging-targets-and-build-tracing]
 ---
@@ -47,8 +47,8 @@ select checkout-local or packaged modules; inspect `prismio --version` when debu
 
 ## Does Prismio have a package registry?
 
-No. UMS supplies `build.ums`, targets, workspaces, local path dependencies, lock information,
-native link inputs, and the project compiler host. It does not currently fetch packages from a
+No. UMS supplies `build.ums`, targets, profiles, project commands, local path dependencies, lock
+information, native C sources and link inputs, and the project compiler host. It does not currently fetch packages from a
 registry or solve remote version constraints.
 
 ## What concurrency model exists?

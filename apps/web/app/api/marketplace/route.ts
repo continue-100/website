@@ -14,22 +14,22 @@ export interface JetBrainsPluginInfo {
 
 const FALLBACK_DATA: JetBrainsPluginInfo = {
     name: 'Prismio Language Support',
-    downloads: 17,
-    version: '1.0.0',
+    downloads: 5,
+    version: '0.1.0',
     rating: 5,
     pricingModel: 'FREE',
-    marketplaceUrl: 'https://plugins.jetbrains.com/plugin/32192-prismio-language-support',
+    marketplaceUrl: 'https://plugins.jetbrains.com/plugin/34672-prismio',
     githubUrl: 'https://github.com/prismio-lang/intellij-plugin',
 };
 
 export async function GET() {
     try {
         const [pluginRes, updatesRes] = await Promise.all([
-            fetch('https://plugins.jetbrains.com/api/plugins/32192', {
+            fetch('https://plugins.jetbrains.com/api/plugins/34672', {
                 next: { revalidate: 3600 },
                 headers: { Accept: 'application/json' },
             }),
-            fetch('https://plugins.jetbrains.com/api/plugins/32192/updates', {
+            fetch('https://plugins.jetbrains.com/api/plugins/34672/updates', {
                 next: { revalidate: 3600 },
                 headers: { Accept: 'application/json' },
             }),

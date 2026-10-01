@@ -3,7 +3,7 @@ title: Compiler architecture
 description: The self-hosted pipeline from source and imports through semantics, AIF, LLVM IR and linking — how to stop it at each stage, and which stage rejected your program.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-16"
+lastUpdated: "2026-09-30"
 tags: [compiler, architecture, self-hosting, llvm]
 related: [compiler/pipeline-and-driver, llvm/overview, compiler/bootstrap]
 ---
@@ -160,7 +160,7 @@ For a native executable, the driver merges library bitcode into the program modu
 
 There is no curated subset, no source fallback, and no opt-out. The obsolete `PRISMIO_INLINE_RUNTIME` variable is ignored, and a missing module is an installation error naming the exact file.
 
-The bootstrap command is the exception. It rebuilds compiler backend and runtime C sources from the repository, because a compiler generation needs more than the application runtime, and must pick up C changes made after its host was built. The compiler binary also embeds those C sources, and the source-built path falls back to them when the repository is not on disk.
+The compiler's own build is the exception, and it is not a special case in the toolchain. Its `build.ums` declares the runtime and backend C as `native` sources with `runtime = "none"`, so `prismio build` in the checkout compiles them from the working tree and picks up C changes made after its host was built. A compiler generation needs more than the application runtime, and the installed toolchain does not know which files make one.
 
 ## Toolchain line
 

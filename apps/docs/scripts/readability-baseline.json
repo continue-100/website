@@ -7,7 +7,6 @@
     "stdlib/strings"
   ],
   "noRunnableBlock": [
-    "compiler/diagnostics",
     "compiler/targets",
     "cookbook",
     "errors",

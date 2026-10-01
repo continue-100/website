@@ -108,6 +108,14 @@ const UMS_LINES: UmsLine[] = [
     {
         num: 14,
         tokens: [
+            {text: '        description', cls: 'text-sky-300'},
+            {text: ' = ', cls: 'text-zinc-500'},
+            {text: '"Acceptance gate"', cls: 'text-[#47d7b5]'},
+        ],
+    },
+    {
+        num: 15,
+        tokens: [
             {text: '        build', cls: 'text-sky-300'},
             {text: '(', cls: 'text-zinc-500'},
             {text: '"inspect"', cls: 'text-[#47d7b5]'},
@@ -115,7 +123,7 @@ const UMS_LINES: UmsLine[] = [
         ],
     },
     {
-        num: 15,
+        num: 16,
         tokens: [
             {text: '        run', cls: 'text-sky-300'},
             {text: '(', cls: 'text-zinc-500'},
@@ -126,13 +134,13 @@ const UMS_LINES: UmsLine[] = [
         ],
     },
     {
-        num: 16,
+        num: 17,
         tokens: [
             {text: '    }', cls: 'text-zinc-500'},
         ],
     },
     {
-        num: 17,
+        num: 18,
         tokens: [
             {text: '}', cls: 'text-zinc-500'},
         ],

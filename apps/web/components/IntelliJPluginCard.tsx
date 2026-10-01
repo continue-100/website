@@ -111,9 +111,9 @@ export default function IntelliJPluginCard({ className = '' }: IntelliJPluginCar
                 <div className="lg:col-span-5 flex flex-col items-center justify-center">
                     <div className="overflow-hidden rounded-[8px] max-w-full shadow-lg">
                         <iframe
-                            src="https://plugins.jetbrains.com/embeddable/card/32192"
+                            src="https://plugins.jetbrains.com/embeddable/card/34672"
                             width="384px"
-                            height="260px"
+                            height="280px"
                             loading="lazy"
                             title="Prismio Language Support"
                             className="block border-0 max-w-full rounded-[8px]"

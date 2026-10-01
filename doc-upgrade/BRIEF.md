@@ -18,7 +18,7 @@ Do not read whole large source files when `rg` finds the line.
   - user site: `apps/docs/content/<slug>.md` (audience: people writing Prismio programs)
   - A slug `foo` may be `foo.md`, `foo.mdx`, or `foo/index.md`.
 - Compiler to use for every command: `P=/Users/vibrant/Desktop/Projects/Prismio/prismio/.prismio/build/debug/prismio`
-  (call it as `$P`, not bare `prismio`; `$P --version` prints `prismio 0.1.0 / llvm 22.1.8`).
+  (call it as `$P`, not bare `prismio`; `$P --version` prints `prismio 0.1.0 / llvm 23.1.1`).
 - Your private scratch directory is given in your task. Create it with `mkdir -p` and put every test program there.
 - The shell is zsh: quote globs (`rg -g '*.psm'`), and do not write `echo =====`.
 

@@ -4,8 +4,7 @@
     "llvm/llvm-c-bridge",
     "performance/benchmark-contract",
     "runtime/platform-and-packaging",
-    "runtime/tasks-and-channels",
-    "tooling/build-manifest"
+    "runtime/tasks-and-channels"
   ],
   "noRunnableBlock": [
     "faq",
@@ -24,7 +23,6 @@
     "start/first-compiler-change",
     "testing/regression-suite",
     "tooling/build-graph-and-linking",
-    "tooling/build-manifest",
     "tooling/debugging-targets-and-build-tracing",
     "tooling/ide-protocol",
     "tooling/ums-overview"

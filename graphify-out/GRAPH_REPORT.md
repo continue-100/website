@@ -1,25 +1,26 @@
-# Graph Report - website  (2026-09-26)
+# Graph Report - website  (2026-10-01)
 
 ## Corpus Check
-- 455 files · ~751,127 words
+- 480 files · ~860,989 words
 - Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 35 file(s) not represented in the graph (top: .ttf 10, (none) 6, .woff 6)
 
 ## Summary
-- 4586 nodes · 4690 edges · 417 communities (351 shown, 66 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.5)
+- 4797 nodes · 5483 edges · 362 communities (317 shown, 45 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f7c2369c`
+- Built from commit: `7a5ea5f2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- types.ts
-- MDXComponents.tsx
+- play/app/page.tsx
+- calling-c.md
 - repository
 - repository
-- devDependencies
+- ui/package.json
 - aif-internals.mdx
 - string-representation.mdx
 - Package Manager
@@ -33,7 +34,7 @@
 - Loops
 - Loops
 - Testing
-- devDependencies
+- eslint-config/package.json
 - Benchmarking
 - Diagnostics
 - Installation
@@ -55,8 +56,8 @@
 - Parameters
 - Why Prismio?
 - WebAssembly
-- page.tsx
-- docs.ts
+- web/app/page.tsx
+- conversions.md
 - dependencies
 - dependencies
 - Evaluation Order
@@ -66,8 +67,8 @@
 - Parameters
 - References
 - Versioning & Stability
-- outputs
-- navigation.ts
+- tasks
+- src/types.ts
 - strings.md
 - Error Handling Patterns
 - Style Guide
@@ -88,22 +89,22 @@
 - Function Signatures
 - Function Signatures
 - compilerOptions
-- index.ts
-- .next/**
+- src/index.ts
+- ref_react
 - Detailed Comparisons
 - Control Flow
 - devDependencies
 - package.json
 - DocsArticlePage.tsx
-- types.ts
-- include
+- DocRecord
+- developers/tsconfig.json
 - Bindings
 - Bindings
 - Borrowing
 - Unsafe Code
-- include
+- docs/tsconfig.json
 - loop-guards.mdx
-- faq.md
+- docs/content/faq.md
 - Concurrency
 - Concurrency
 - Key Features at a Glance
@@ -111,79 +112,79 @@
 - dependencies
 - devDependencies
 - dependencies
-- layout.tsx
+- web/app/layout.tsx
 - dependencies
 - devDependencies
-- page.tsx
-- overview.md
+- developers/app/[...slug]/page.tsx
+- developers/content/compiler/overview.md
 - Collections
-- include
-- include
-- HeaderMain.tsx
-- include
+- packages/tsconfig.json
+- play/tsconfig.json
+- HeaderMain
+- web/tsconfig.json
 - Documentation style
 - Android Target
 - RFC Process
 - dependencies
 - devDependencies
-- index.ts
+- ui/index.ts
 - layout-selection.md
-- audit-content.mjs
-- modules.md
+- developers/scripts/audit-content.mjs
+- language/modules.md
 - math.md
 - Imports
 - Issue Labels
 - Source Repositories
-- audit-content.mjs
+- DocsNotFound
 - tiers-and-analysis-domains.md
 - add-a-runtime-or-stdlib-api.md
 - If you are changing control-flow lowering
-- next.js
+- unexpected-top-level-token.md
 - vec.md
 - highlighter.ts
 - repository
 - compilerOptions
 - closures-and-captures.md
-- diagnostics.md
+- developers/content/compiler/diagnostics.md
 - If you are changing function or call lowering
-- index.ts
+- velite/index.ts
 - arrays-and-lists.md
 - lexical-structure.md
 - iOS Target
 - Lifetimes
-- Logo.tsx
-- page.tsx
+- install/page.tsx
+- developers/app/nav-list.ts
 - Brief: Prismio documentation readability upgrade (shared by every subagent)
-- tsconfig.json
-- cli.md
+- docs-core/tsconfig.json
+- developers/content/compiler/cli.md
 - If you are changing this
 - semantic-analysis-and-types.md
 - If you are changing dispatch
 - add-a-diagnostic.md
-- faq.md
-- overview.md
-- cli.md
-- control-flow.md
-- ffi.md
+- developers/content/faq.md
+- runtime/overview.md
+- docs/content/compiler/cli.md
+- language/control-flow.md
+- language/ffi.md
 - functions.md
 - ownership-and-borrowing.md
 - types.md
 - memory-model.md
 - io.md
 - install.sh
-- tsconfig.json
+- ui/tsconfig.json
 - ffi-contracts.md
-- overview.md
+- aif/overview.md
 - regions-views-and-provenance.md
 - If you are changing this
-- frontend.md
+- If you are changing the frontend
 - ownership-and-drop-lowering.md
 - add-a-language-feature.md
 - If you are changing debug-info support
 - llvm-c-bridge.md
 - If you are changing the backend
 - collection-representations.md
-- index.md
+- start/index.md
 - repository-tour.md
 - scripts
 - methods.md
@@ -192,7 +193,7 @@
 - installation.md
 - process.md
 - scripts
-- package.json
+- docs-core/package.json
 - string-interpolation
 - imports-and-symbols.md
 - pipeline-and-driver.md
@@ -202,42 +203,42 @@
 - variables.md
 - evaluation.md
 - type-system.md
-- index.md
+- stdlib/index.md
 - Key Differences
 - Common Gotchas
 - debug-a-compiler-regression.md
-- 0.1.0.md
+- developers/content/releases/0.1.0.md
 - allocation-arenas-rc-and-cycles.md
 - platform-and-packaging.md
-- verify-doc-examples.mjs
-- overview.md
+- input.md
+- docs/content/compiler/overview.md
 - type-mismatch.md
 - compiler-development.md
 - annotations.md
-- index.md
+- package-manager/index.md
 - conformance.md
-- overview.md
+- start/overview.md
 - data-model.md
 - Key Differences
 - Key Differences
 - Basic syntax overview
-- verify-doc-examples.mjs
-- FooterMain.tsx
-- page.tsx
+- BenchmarkMethodology.tsx
+- ref_lucide_react
+- HeaderPlayground.tsx
 - Documentation upgrade — progress tracker
-- bootstrap.md
+- developers/content/compiler/bootstrap.md
 - runtime-ir-and-optimization.md
 - types-and-abi.md
-- roadmap.md
-- supported-surface.md
+- developers/content/roadmap.md
+- What is still C, and why
 - regression-suite.md
-- build-manifest.md
+- Diagnostic codes
 - ide-protocol.md
 - aif.md
-- bootstrap.md
-- ffi.md
-- modules.md
-- concurrency.md
+- docs/content/compiler/bootstrap.md
+- guides/ffi.md
+- guides/modules.md
+- language/concurrency.md
 - enums.md
 - error-handling.md
 - generics.md
@@ -246,13 +247,13 @@
 - name-resolution.md
 - Migration Guide
 - Key Differences
-- ThemeProvider.tsx
-- prismio.tmLanguage.json
-- package.json
+- scripts
+- velite/prismio.tmLanguage.json
+- typescript-config/package.json
 - reuse-reports-and-verification.md
-- c-ffi.md
+- developers/content/cookbook/c-ffi.md
 - extend-ums.md
-- index.md
+- developers/content/cookbook/index.md
 - library-artifacts.md
 - local-compiler-loop.md
 - build-graph-and-linking.md
@@ -261,11 +262,11 @@
 - ums-overview.md
 - targets.md
 - toolchain-layout.md
-- c-ffi.md
+- docs/content/cookbook/c-ffi.md
 - container-ownership.md
 - duplicate-overload.md
 - immutable-assignment.md
-- index.md
+- errors/index.md
 - integer-width-mismatch.md
 - invalid-drop.md
 - missing-return.md
@@ -285,37 +286,35 @@
 - visibility-violation.md
 - wrong-arity.md
 - closures.md
-- index.md
+- language/index.md
 - optionals.md
-- index.md
+- specification/index.md
 - build-and-run.md
 - filesystem.md
 - map.md
 - unicode.md
 - first-program.md
 - Key Differences
-- AIReady.tsx
+- exports
 - scripts
 - scripts
-- page.tsx
-- page.tsx
-- AIReady.tsx
+- packages/app/layout.tsx
+- constants
 - scripts
 - react-library.json
-- package.json
-- index.md
+- utils/package.json
+- developers/content/migration/index.md
 - development-setup.md
-- package.json
-- diagnostics.md
+- developers/package.json
+- Driver and project codes (`P10xx`)
 - option.md
 - term.md
-- package.json
-- Hero.tsx
-- package.json
-- package.json
-- page.tsx
-- page.tsx
-- package.json
+- docs/package.json
+- packages/package.json
+- play/package.json
+- benchmarks.ts
+- developers/app/layout.tsx
+- web/package.json
 - benchmark-contract.md
 - investigation-method.md
 - running-adding-and-reading-results.md
@@ -323,133 +322,87 @@
 - tasks-and-channels.md
 - first-compiler-change.md
 - Prismio Developers
-- control-flow.md
-- index.md
+- examples/control-flow.md
+- examples/index.md
 - owned-data.md
-- 0.1.0.md
-- README.md
-- Divider.tsx
-- CTA.tsx
-- Sponsors.tsx
-- README.md
-- Divider.tsx
-- README.md
-- Divider.tsx
+- New since the first release candidate
+- docs/README.md
+- packages/README.md
+- web/README.md
 - fixed-point-verification.md
-- overview.md
-- index.md
+- testing/overview.md
+- docs/content/cookbook/index.md
 - optional-links.md
-- index.md
+- guides/index.md
 - hello-world.md
 - platform.md
-- BenchmarkTeaser.tsx
-- Principles.tsx
-- WhyPrismio.tsx
-- LinkCard.tsx
-- LinkCard.tsx
-- constants
 - operators
-- string-escape
-- types
-- cli-arguments.md
-- index.md
-- concurrently
-- @fontsource-variable/jetbrains-mono
-- framer-motion
-- @heroui/react
-- @heroui/styles
-- marked
-- shiki
-- postcss.config.mjs
-- cli-arguments.md
-- @fontsource-variable/jetbrains-mono
-- framer-motion
-- @heroui/react
-- @heroui/styles
-- marked
-- react
-- shiki
-- postcss.config.mjs
-- site.ts
-- next.config.mjs
-- lucide-react
-- @prismio/utils
-- @types/react
-- postcss.config.mjs
-- site.ts
-- next.config.mjs
-- next-env.d.ts
-- @heroui/react
-- @heroui/styles
-- @heroui/react
-- next
-- postcss.config.mjs
-- next.config.mjs
-- lucide-react
-- @prismio/utils
-- @types/react
-- postcss.config.mjs
-- @heroui/react
-- @heroui/styles
-- next
-- @prismio/utils
-- react
-- shiki
-- velite
-- README.md
-- viewport
-- viewport
+- developers/content/cookbook/cli-arguments.md
+- developers/content/releases/index.md
+- developers/postcss.config.mjs
+- docs/content/cookbook/cli-arguments.md
+- docs/postcss.config.mjs
+- packages/config/site.ts
+- packages/next.config.mjs
+- packages/postcss.config.mjs
+- play/config/site.ts
+- play/postcss.config.mjs
+- web/next.config.mjs
+- web/postcss.config.mjs
+- eslint-config/README.md
+- developers/app/utils/constants.ts
+- docs/app/utils/constants.ts
+- time.md
+- packages/utils/constants.ts
+- web/utils/constants.ts
 - aif-internals-diagrams.tsx
-- MDXContent.tsx
-- @fontsource-variable/jetbrains-mono
-- framer-motion
 
 ## God Nodes (most connected - your core abstractions)
 1. `hue()` - 28 edges
-2. `.next/**` - 18 edges
-3. `Closures` - 17 edges
-4. `Closures` - 17 edges
-5. `compilerOptions` - 15 edges
-6. `Build & Run` - 15 edges
-7. `Literals` - 14 edges
-8. `Literals` - 14 edges
-9. `Pattern Matching` - 13 edges
-10. `Pattern Matching` - 13 edges
+2. `HeaderMain()` - 26 edges
+3. `FooterMain()` - 25 edges
+4. `Label()` - 22 edges
+5. `OwnedRow()` - 18 edges
+6. `Logo()` - 17 edges
+7. `Closures` - 17 edges
+8. `Closures` - 17 edges
+9. `ViewRow()` - 16 edges
+10. `InlineRow()` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `What failure looks like` --references--> `OwnedRow()`  [INFERRED]
+  apps/developers/content/aif/layout-selection.md → packages/docs-core/src/components/diagrams/string-representation-diagrams.tsx
+- `Page()` --calls--> `DocsArticlePage()`  [EXTRACTED]
+  apps/developers/app/[...slug]/page.tsx → packages/docs-core/src/components/pages/DocsArticlePage.tsx
+- `Page()` --calls--> `DocsArticlePage()`  [EXTRACTED]
+  apps/docs/app/[...slug]/page.tsx → packages/docs-core/src/components/pages/DocsArticlePage.tsx
 - `generateStaticParams()` --calls--> `generateDocStaticParams()`  [EXTRACTED]
   apps/developers/app/[...slug]/page.tsx → packages/docs-core/src/seo/index.ts
 - `generateMetadata()` --calls--> `generateDocMetadata()`  [EXTRACTED]
   apps/developers/app/[...slug]/page.tsx → packages/docs-core/src/seo/index.ts
-- `GET()` --calls--> `generateLlmsFullTxt()`  [EXTRACTED]
-  apps/developers/app/llms-full.txt/route.ts → packages/docs-core/src/seo/index.ts
-- `GET()` --calls--> `generateLlmsTxt()`  [EXTRACTED]
-  apps/developers/app/llms.txt/route.ts → packages/docs-core/src/seo/index.ts
-- `flattenDocNodes()` --calls--> `flattenNav()`  [EXTRACTED]
-  apps/developers/app/nav-list.ts → packages/docs-core/src/navigation.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (417 total, 66 thin omitted)
+## Communities (362 total, 45 thin omitted)
 
-### Community 0 - "types.ts"
+### Community 0 - "play/app/page.tsx"
 Cohesion: 0.07
-Nodes (40): PlaygroundPage(), AifVisualizerProps, TIER_COLORS, AstViewerProps, CompilerOutput(), CompilerOutputProps, TabType, CompilerToolbar() (+32 more)
+Nodes (48): Page(), AifVisualizer(), AifVisualizerProps, TIER_COLORS, AstTreeNode(), AstViewer(), AstViewerProps, CompilerOutput() (+40 more)
 
-### Community 1 - "MDXComponents.tsx"
-Cohesion: 1.00
-Nodes (3): codeY(), LifetimeTimeline(), rowTop()
+### Community 1 - "calling-c.md"
+Cohesion: 0.22
+Nodes (8): If you are changing how native code is built, Link a library you did not write, Not available yet, Programs that carry their own runtime, See it work: a checksum in C, called from Prismio, What each line does, What is rebuilt, and when, When it goes wrong
 
 ### Community 2 - "repository"
 Cohesion: 0.05
-Nodes (41): name, 0, patterns, match, name, 0, fileTypes, patterns (+33 more)
+Nodes (40): name, 0, patterns, match, name, 0, fileTypes, patterns (+32 more)
 
 ### Community 3 - "repository"
 Cohesion: 0.05
-Nodes (41): name, 0, patterns, match, name, 0, fileTypes, patterns (+33 more)
+Nodes (40): name, 0, patterns, match, name, 0, fileTypes, patterns (+32 more)
 
-### Community 4 - "devDependencies"
+### Community 4 - "ui/package.json"
 Cohesion: 0.05
 Nodes (39): dependencies, @heroui/react, @heroui/styles, lucide-react, mitt, react, react-dom, devDependencies (+31 more)
 
@@ -459,7 +412,7 @@ Nodes (36): A tier is not the emitted mechanism, Allocation hooks, Allocation si
 
 ### Community 6 - "string-representation.mdx"
 Cohesion: 0.05
-Nodes (39): A `Vec<String>` stores the pair itself, Branching around short-string materialization, C receives a temporary NUL-terminated copy, Caching the canonical pointer per SSA value, Choosing the inline capacity from Prismio workloads, Costs at ownership and ABI boundaries, Curating `rt_free` into the generated module, Effect on the maintained suite (+31 more)
+Nodes (40): A `Vec<String>` stores the pair itself, Branching around short-string materialization, C receives a temporary NUL-terminated copy, Caching the canonical pointer per SSA value, Choosing the inline capacity from Prismio workloads, Costs at ownership and ABI boundaries, Curating `rt_free` into the generated module, Effect on the maintained suite (+32 more)
 
 ### Community 7 - "Package Manager"
 Cohesion: 0.06
@@ -505,9 +458,9 @@ Nodes (32): Accumulating with a `for` Loop, `break` — Exiting a Loop, Building
 Cohesion: 0.06
 Nodes (32): `assert(condition)`, `assertEq(left, right)`, `assertFalse(value)`, Assertions, `assertNe(left, right)`, `assertPanics { ... }`, `assertTrue(value)`, Compile-Only Tests (+24 more)
 
-### Community 18 - "devDependencies"
-Cohesion: 0.06
-Nodes (31): @babel/core, @babel/eslint-parser, @babel/preset-typescript, eslint-config-prettier, @eslint/js, eslint-plugin-only-warn, eslint-plugin-react-hooks, eslint-plugin-turbo (+23 more)
+### Community 18 - "eslint-config/package.json"
+Cohesion: 0.07
+Nodes (34): config, nextJsConfig, devDependencies, @babel/core, @babel/eslint-parser, @babel/preset-typescript, eslint, eslint-config-prettier (+26 more)
 
 ### Community 19 - "Benchmarking"
 Cohesion: 0.06
@@ -570,12 +523,12 @@ Cohesion: 0.08
 Nodes (25): Brace Style, Check Mode (CI-Friendly), Configuration, Configuration Options, Disabling Formatting for a Region, Editor Integration, Format a Specific File, Format All Files in a Project (+17 more)
 
 ### Community 34 - "devDependencies"
-Cohesion: 0.08
-Nodes (25): devDependencies, babel-plugin-react-compiler, eslint, @prismio/eslint-config, @prismio/typescript-config, @shikijs/rehype, tailwindcss, @tailwindcss/postcss (+17 more)
+Cohesion: 0.15
+Nodes (13): devDependencies, babel-plugin-react-compiler, eslint, @prismio/eslint-config, @prismio/typescript-config, @shikijs/rehype, tailwindcss, @tailwindcss/postcss (+5 more)
 
 ### Community 35 - "devDependencies"
-Cohesion: 0.08
-Nodes (25): devDependencies, babel-plugin-react-compiler, eslint, @prismio/eslint-config, @prismio/typescript-config, @shikijs/rehype, tailwindcss, @tailwindcss/postcss (+17 more)
+Cohesion: 0.15
+Nodes (13): devDependencies, babel-plugin-react-compiler, eslint, @prismio/eslint-config, @prismio/typescript-config, @shikijs/rehype, tailwindcss, @tailwindcss/postcss (+5 more)
 
 ### Community 36 - "Linter"
 Cohesion: 0.08
@@ -593,17 +546,21 @@ Nodes (24): 1. Kotlin-Like Syntax with Rust-Like Safety, 2. No Garbage Collector
 Cohesion: 0.08
 Nodes (23): Browser Usage, Building, Configuring the Target, Deno Usage, Exposing Functions, Generated JavaScript Glue, Importing from JavaScript, Inspecting WASM Output (+15 more)
 
-### Community 40 - "page.tsx"
-Cohesion: 0.10
-Nodes (14): BenchmarkTeaser(), RESULTS, AVAILABLE, CTA(), NOT_YET, CodeLine, CodeToken, Hero() (+6 more)
+### Community 40 - "web/app/page.tsx"
+Cohesion: 0.11
+Nodes (21): LandingPage(), JsonLd(), JsonLdProps, AIReady(), TOOLING, UMS_LINES, UmsLine, UmsToken (+13 more)
+
+### Community 41 - "conversions.md"
+Cohesion: 0.25
+Nodes (7): Between numbers, From text, Into an enum, Text the compiler can read, What does not convert, `x as T?`: conversions that can fail, `x as T`: conversions that cannot fail
 
 ### Community 42 - "dependencies"
-Cohesion: 0.09
-Nodes (23): dependencies, concurrently, @fontsource-variable/inter, github-slugger, hamburger-react, lucide-react, mitt, next (+15 more)
+Cohesion: 0.11
+Nodes (19): dependencies, concurrently, @fontsource-variable/inter, @fontsource-variable/jetbrains-mono, framer-motion, github-slugger, hamburger-react, @heroui/react (+11 more)
 
 ### Community 43 - "dependencies"
-Cohesion: 0.09
-Nodes (23): dependencies, concurrently, @fontsource-variable/inter, github-slugger, hamburger-react, lucide-react, mitt, next (+15 more)
+Cohesion: 0.11
+Nodes (19): dependencies, concurrently, @fontsource-variable/inter, @fontsource-variable/jetbrains-mono, framer-motion, github-slugger, hamburger-react, @heroui/react (+11 more)
 
 ### Community 44 - "Evaluation Order"
 Cohesion: 0.09
@@ -633,17 +590,17 @@ Nodes (22): `Arc<T>` — Atomic Reference Counting (Thread-safe), Auto-Deref, `B
 Cohesion: 0.09
 Nodes (22): Beta, Checking Your Version, Compatibility with the LLVM Backend, Deprecation Policy, Edition System, Minor Version Bumps (0.x → 0.(x+1)), Nightly, Patch Version Bumps (0.x.y → 0.x.(y+1)) (+14 more)
 
-### Community 51 - "outputs"
-Cohesion: 0.09
-Nodes (22): ^build, ^check-types, .env*, ^lint, !.next/cache/**, !.next/dev/**, $TURBO_DEFAULT$, .vercel/** (+14 more)
+### Community 51 - "tasks"
+Cohesion: 0.13
+Nodes (14): dependsOn, inputs, outputs, dependsOn, cache, persistent, dependsOn, $schema (+6 more)
 
-### Community 52 - "navigation.ts"
-Cohesion: 0.11
-Nodes (26): flatDocsNav, flattenDocNodes(), flatDocsNav, flattenDocNodes(), DocStatusBadge(), DocStatusNotice(), draftConfig, StatusConfig (+18 more)
+### Community 52 - "src/types.ts"
+Cohesion: 0.12
+Nodes (25): DocsHeader(), DocsHeaderProps, DocsLayout(), themeInitScript, DocsNav(), DocsNavProps, DocsSearchModal(), DocsSearchModalProps (+17 more)
 
 ### Community 53 - "strings.md"
-Cohesion: 0.09
-Nodes (21): A chain of `+` is a single allocation, Access and conversion, Bytes and characters, `Char`, `==` compares content, not addresses, Comparison, FFI caution, Float text (+13 more)
+Cohesion: 0.08
+Nodes (23): A chain of `+` is a single allocation, Access and conversion, Building text from pieces, Bytes and characters, Case, `Char`, `==` compares content, not addresses, Comparison (+15 more)
 
 ### Community 54 - "Error Handling Patterns"
 Cohesion: 0.09
@@ -718,16 +675,16 @@ Cohesion: 0.10
 Nodes (19): Basic Function Declaration, Block Body Functions, Block Expression Body, Constrained Type Parameters, Expression Body Functions, Function Overloading, Function Signatures, Functions with No Return Value (+11 more)
 
 ### Community 72 - "compilerOptions"
-Cohesion: 0.10
-Nodes (19): compilerOptions, declaration, declarationMap, esModuleInterop, incremental, isolatedModules, lib, module (+11 more)
+Cohesion: 0.12
+Nodes (16): compilerOptions, declaration, declarationMap, esModuleInterop, incremental, isolatedModules, lib, module (+8 more)
 
-### Community 73 - "index.ts"
-Cohesion: 0.13
-Nodes (14): GET(), GET(), metadata, sitemap(), docsConfig, SiteConfig, GET(), GET() (+6 more)
+### Community 73 - "src/index.ts"
+Cohesion: 0.09
+Nodes (17): GET(), GET(), metadata, sitemap(), docsConfig, SiteConfig, GET(), GET() (+9 more)
 
-### Community 74 - ".next/**"
-Cohesion: 0.11
-Nodes (10): nextConfig, SiteConfig, nextConfig, geistMono, geistSans, metadata, geistMono, geistSans (+2 more)
+### Community 74 - "ref_react"
+Cohesion: 0.08
+Nodes (13): HDividerProps, FooterLink(), FooterMain(), AVAILABLE, NOT_YET, STEPS, geistMono, geistSans (+5 more)
 
 ### Community 75 - "Detailed Comparisons"
 Cohesion: 0.11
@@ -738,24 +695,24 @@ Cohesion: 0.11
 Nodes (18): Basic `when`, Block Bodies in `when`, Control Flow, FizzBuzz, Guard Clauses, HTTP Status Handling, `if` as an Expression, `if` / `else if` / `else` (+10 more)
 
 ### Community 77 - "devDependencies"
-Cohesion: 0.11
-Nodes (19): devDependencies, eslint, monaco-editor, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node (+11 more)
+Cohesion: 0.18
+Nodes (11): devDependencies, eslint, monaco-editor, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node (+3 more)
 
 ### Community 78 - "package.json"
 Cohesion: 0.11
-Nodes (18): devDependencies, prettier, turbo, typescript, engines, node, turbo, typescript (+10 more)
+Nodes (18): devDependencies, prettier, turbo, typescript, engines, node, typescript, name (+10 more)
 
 ### Community 79 - "DocsArticlePage.tsx"
-Cohesion: 0.36
-Nodes (6): DocsToc(), DocsTocProps, indentByLevel, useScrollSpy(), UseScrollSpyOptions, Heading
+Cohesion: 0.16
+Nodes (17): DocStatusBadge(), DocStatusNotice(), draftConfig, StatusConfig, statusLabel(), createMDXComponents(), MDXContent(), MDXContentProps (+9 more)
 
-### Community 80 - "types.ts"
-Cohesion: 0.24
-Nodes (10): DocsLayoutProps, DocsArticlePageProps, DocsHomePageProps, statusIcons, DocsSearchModal(), DocsSearchModalProps, plainText(), DocRecord (+2 more)
+### Community 80 - "DocRecord"
+Cohesion: 0.27
+Nodes (10): Page(), Page(), DocsLayoutProps, DocsArticlePageProps, DocsHomePage(), DocsHomePageProps, StatusFact(), statusIcons (+2 more)
 
-### Community 81 - "include"
-Cohesion: 0.11
-Nodes (17): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+9 more)
+### Community 81 - "developers/tsconfig.json"
+Cohesion: 0.18
+Nodes (10): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+2 more)
 
 ### Community 82 - "Bindings"
 Cohesion: 0.11
@@ -773,15 +730,15 @@ Nodes (17): Borrow Scope Ends at Last Use, Borrow vs Move vs Clone: When to Use 
 Cohesion: 0.11
 Nodes (17): 1. Raw Pointers, 2. Calling Unsafe Functions, 3. FFI — Calling C Functions, 4. Accessing `static mut` Variables, 5. Inline Assembly, Current Status, Minimising Unsafe Surface Area, Overview (+9 more)
 
-### Community 86 - "include"
-Cohesion: 0.11
-Nodes (17): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+9 more)
+### Community 86 - "docs/tsconfig.json"
+Cohesion: 0.18
+Nodes (10): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+2 more)
 
 ### Community 87 - "loop-guards.mdx"
 Cohesion: 0.12
 Nodes (16): Debugging a guard change, Emission, Implementation map, Index arithmetic in 64 bits, where it is proved, Loop versioning, and why totality survives, Measurements, Range, Representation (+8 more)
 
-### Community 88 - "faq.md"
+### Community 88 - "docs/content/faq.md"
 Cohesion: 0.12
 Nodes (16): Are documentation error IDs compiler codes?, Are optionals available for every type?, Are ordinary function parameters moved?, Can I return an array?, Can I use methods, traits, generics, or closures?, Does Prismio have Cargo, npm, or Go modules?, Does Prismio have references and lifetime syntax?, Does Prismio use garbage collection? (+8 more)
 
@@ -802,34 +759,34 @@ Cohesion: 0.12
 Nodes (16): Explicit Borrowing, Explicit Imports, Explicit Mutability, Explicit Returns, Language Philosophy, Principle 1: No Hidden Costs, Principle 2: Fail at Compile Time, Not Runtime, Principle 3: One Obvious Way (+8 more)
 
 ### Community 93 - "dependencies"
-Cohesion: 0.12
-Nodes (17): dependencies, framer-motion, hamburger-react, @heroui/react, lucide-react, next, @prismio/ui, react (+9 more)
+Cohesion: 0.18
+Nodes (11): dependencies, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, next, @prismio/ui (+3 more)
 
 ### Community 94 - "devDependencies"
-Cohesion: 0.12
-Nodes (17): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node, @types/react-dom (+9 more)
+Cohesion: 0.20
+Nodes (10): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node, @types/react (+2 more)
 
 ### Community 95 - "dependencies"
-Cohesion: 0.12
-Nodes (17): dependencies, framer-motion, hamburger-react, @heroui/styles, @monaco-editor/react, @prismio/ui, @prismio/utils, react (+9 more)
+Cohesion: 0.17
+Nodes (12): dependencies, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, @monaco-editor/react, next (+4 more)
 
-### Community 96 - "layout.tsx"
-Cohesion: 0.14
-Nodes (12): bricolage, fraunces, geistMono, geistSans, instrumentSerif, kalam, metadata, syne (+4 more)
+### Community 96 - "web/app/layout.tsx"
+Cohesion: 0.09
+Nodes (18): dynamic, bricolage, fraunces, geistMono, geistSans, instrumentSerif, kalam, metadata (+10 more)
 
 ### Community 97 - "dependencies"
-Cohesion: 0.12
-Nodes (17): dependencies, framer-motion, hamburger-react, @heroui/react, @heroui/styles, next, @prismio/ui, react (+9 more)
+Cohesion: 0.18
+Nodes (11): dependencies, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, next, @prismio/ui (+3 more)
 
 ### Community 98 - "devDependencies"
-Cohesion: 0.12
-Nodes (17): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node, @types/react-dom (+9 more)
-
-### Community 99 - "page.tsx"
 Cohesion: 0.20
-Nodes (10): generateMetadata(), generateStaticParams(), navigation, PageProps, generateMetadata(), generateStaticParams(), navigation, PageProps (+2 more)
+Nodes (10): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, tailwindcss, @tailwindcss/postcss, @types/node, @types/react (+2 more)
 
-### Community 100 - "overview.md"
+### Community 99 - "developers/app/[...slug]/page.tsx"
+Cohesion: 0.12
+Nodes (17): dynamicParams, generateMetadata(), generateStaticParams(), navigation, Page(), PageProps, dynamicParams, generateMetadata() (+9 more)
+
+### Community 100 - "developers/content/compiler/overview.md"
 Cohesion: 0.12
 Nodes (15): Allocation inference, If you are changing the compiler, Import resolution and flattening, Lexer and parser, LLVM generation and verification, Optimisation and linking, Semantic analysis, Stop it at any stage (+7 more)
 
@@ -837,21 +794,21 @@ Nodes (15): Allocation inference, If you are changing the compiler, Import resol
 Cohesion: 0.12
 Nodes (15): `Array<T>` — Currently Available, Choosing the Right Collection, Collections, Common Patterns (Using `Array<T>` Today), `Deque<T>` — Planned, `List<T>` — Planned, `Map<K, V>` — Planned, Map Literals (Planned) (+7 more)
 
-### Community 102 - "include"
-Cohesion: 0.12
-Nodes (15): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+7 more)
+### Community 102 - "packages/tsconfig.json"
+Cohesion: 0.20
+Nodes (9): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+1 more)
 
-### Community 103 - "include"
-Cohesion: 0.12
-Nodes (15): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+7 more)
+### Community 103 - "play/tsconfig.json"
+Cohesion: 0.20
+Nodes (9): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+1 more)
 
-### Community 104 - "HeaderMain.tsx"
-Cohesion: 0.16
-Nodes (4): COMPILER_MILESTONES, metadata, NavItem, FooterMain()
+### Community 104 - "HeaderMain"
+Cohesion: 0.09
+Nodes (33): AboutLink(), AboutPage(), FEATURES, metadata, MISSING, renderCode(), VITALS, CommunityPage() (+25 more)
 
-### Community 105 - "include"
-Cohesion: 0.12
-Nodes (15): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+7 more)
+### Community 105 - "web/tsconfig.json"
+Cohesion: 0.20
+Nodes (9): compilerOptions, incremental, paths, plugins, strictNullChecks, exclude, extends, include (+1 more)
 
 ### Community 106 - "Documentation style"
 Cohesion: 0.12
@@ -867,25 +824,25 @@ Nodes (14): 1. Draft, 2. Open for Discussion, 3. Final Comment Period (FCP), 4. 
 
 ### Community 109 - "dependencies"
 Cohesion: 0.13
-Nodes (15): dependencies, github-slugger, lucide-react, marked, mitt, @prismio/ui, react-dom, @shikijs/rehype (+7 more)
+Nodes (15): dependencies, github-slugger, @heroui/react, @heroui/styles, lucide-react, marked, mitt, next (+7 more)
 
 ### Community 110 - "devDependencies"
-Cohesion: 0.13
-Nodes (15): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, @types/node, @types/react, @types/react-dom, typescript (+7 more)
+Cohesion: 0.25
+Nodes (8): devDependencies, eslint, @prismio/eslint-config, @prismio/typescript-config, @types/node, @types/react, @types/react-dom, typescript
 
-### Community 111 - "index.ts"
-Cohesion: 0.18
-Nodes (11): DocsHeader(), DocsNotFoundProps, ThemeContext, ThemeContextProps, ThemeProvider(), useTheme(), ThemeSwitch(), DocsSearch() (+3 more)
+### Community 111 - "ui/index.ts"
+Cohesion: 0.27
+Nodes (5): DocsNotFoundProps, DocsSearchProps, LogoProps, emitter, SearchEvents
 
 ### Community 112 - "layout-selection.md"
 Cohesion: 0.14
 Nodes (13): A traced worked example: why the obvious cut loses, Acceptance, Deliberate omissions, Explicit layout operations, Field-order selection, Forcing a candidate for testing, If you are changing this, Inputs (+5 more)
 
-### Community 113 - "audit-content.mjs"
-Cohesion: 0.15
-Nodes (10): ACRONYMS, arrayField(), baseline, contentRoot, failures, field(), files, records (+2 more)
+### Community 113 - "developers/scripts/audit-content.mjs"
+Cohesion: 0.05
+Nodes (38): ACRONYMS, arrayField(), baseline, contentRoot, failures, field(), files, records (+30 more)
 
-### Community 114 - "modules.md"
+### Community 114 - "language/modules.md"
 Cohesion: 0.14
 Nodes (13): A flattened declaration space, Cycles and repeated imports, Dotted file imports, Import aliases, Import groups, Imports are not transitive, Module qualifiers, Name resolution consequences (+5 more)
 
@@ -905,9 +862,9 @@ Nodes (13): 1. Minimal Reproducible Example, 2. Expected vs. Actual Behavior, 3.
 Cohesion: 0.14
 Nodes (13): Build with Debug Info, Clone and Build, Cloning and Building from Source, Communication, Contributing, Documentation, Installing LLVM, Main Compiler (+5 more)
 
-### Community 119 - "audit-content.mjs"
-Cohesion: 0.15
-Nodes (10): ACRONYMS, arrayField(), baseline, contentRoot, failures, field(), files, records (+2 more)
+### Community 119 - "DocsNotFound"
+Cohesion: 0.53
+Nodes (3): NotFound(), NotFound(), DocsNotFound()
 
 ### Community 120 - "tiers-and-analysis-domains.md"
 Cohesion: 0.15
@@ -921,21 +878,21 @@ Nodes (12): A Float operation: one table, not five, A worked example: a return t
 Cohesion: 0.15
 Nodes (12): A worked example: why a duplicate arm is unreachable, not just dead, Basic-block API, If and conditional expressions, If you are changing control-flow lowering, Loop guards and bulk paths, Loops, Match lowering, Returns and cleanup, mechanically (+4 more)
 
-### Community 123 - "next.js"
-Cohesion: 0.27
-Nodes (3): config, nextJsConfig, config
+### Community 123 - "unexpected-top-level-token.md"
+Cohesion: 0.33
+Nodes (5): Common fixes, Correct code, Invalid code, Meaning, Why it happens
 
 ### Community 124 - "vec.md"
 Cohesion: 0.15
 Nodes (12): Build one, Change, Copy, Higher-order, Methods, Ownership, Read, Removing an element another name still reads (+4 more)
 
 ### Community 125 - "highlighter.ts"
-Cohesion: 0.26
+Cohesion: 0.19
 Nodes (11): PlaygroundEditor(), PlaygroundEditorProps, BOOLEANS, BUILTIN_TYPES, HighlightedLine, highlightPrismio(), highlightPrismioLine(), KEYWORDS_CONTROL (+3 more)
 
 ### Community 126 - "repository"
-Cohesion: 0.15
-Nodes (13): patterns, patterns, patterns, patterns, patterns, repository, comments, functions (+5 more)
+Cohesion: 0.11
+Nodes (19): patterns, patterns, patterns, patterns, patterns, repository, comments, functions (+11 more)
 
 ### Community 127 - "compilerOptions"
 Cohesion: 0.15
@@ -945,25 +902,25 @@ Nodes (12): compilerOptions, allowJs, declaration, declarationMap, jsx, module, 
 Cohesion: 0.17
 Nodes (11): Call lowering, Capture semantics, Generated representation, If you are changing this, Lowering, Memory consequences, Parsing and capture discovery, See it work (+3 more)
 
-### Community 129 - "diagnostics.md"
-Cohesion: 0.17
-Nodes (11): A failure can originate in, Diagnostic codes, Emission lifecycle, Failure changes in kind past semantic analysis, How to read a diagnostic, If you are changing diagnostics, Reporting a diagnostic bug, See it work: several errors in one run (+3 more)
+### Community 129 - "developers/content/compiler/diagnostics.md"
+Cohesion: 0.15
+Nodes (12): A failure can originate in, Diagnostic codes, Emission lifecycle, Failure changes in kind past semantic analysis, How to read a diagnostic, If you are changing diagnostics, Reporting a diagnostic bug, See it work: several errors in one run (+4 more)
 
 ### Community 130 - "If you are changing function or call lowering"
 Cohesion: 0.17
 Nodes (11): A worked example: getting an extern's ownership contract wrong, Declarations and foreign symbols, Definitions, Direct call builder, If you are changing function or call lowering, Indirect calls and trait objects, Owned temporary arguments, See it work (+3 more)
 
-### Community 131 - "index.ts"
-Cohesion: 0.20
+### Community 131 - "velite/index.ts"
+Cohesion: 0.16
 Nodes (7): Collections, Docs, Collections, Docs, createDocsVeliteConfig(), docsCollection, DocsVeliteOptions
 
 ### Community 132 - "arrays-and-lists.md"
-Cohesion: 0.17
-Nodes (11): Arrays, Bounds and iteration, Choosing, Copies and views, DataView, Not available yet, Replacing an element, Returning and storing arrays (+3 more)
+Cohesion: 0.15
+Nodes (12): Arrays, Bounds and iteration, Choosing, Copies and views, DataView, Length, ends and methods, Not available yet, Replacing an element (+4 more)
 
 ### Community 133 - "lexical-structure.md"
-Cohesion: 0.17
-Nodes (11): Current limitations, Floating-point and Boolean literals, Identifiers, Integer literals, Lexical errors, Punctuation and operators, Reserved vocabulary, Strings and characters (+3 more)
+Cohesion: 0.14
+Nodes (13): Current limitations, Digit separators, Floating-point and Boolean literals, Identifiers, Integer literals, Lexical errors, Names that mislead, Punctuation and operators (+5 more)
 
 ### Community 134 - "iOS Target"
 Cohesion: 0.17
@@ -973,33 +930,33 @@ Nodes (11): App Store Considerations, Building for iOS, iOS Target, Memory Consi
 Cohesion: 0.17
 Nodes (11): Current Status, Lifetime Annotation Syntax, Lifetime Elision, Lifetimes, Lifetimes in Structs, Reading Lifetime Annotations, See Also, The Problem Lifetimes Solve (+3 more)
 
-### Community 136 - "Logo.tsx"
-Cohesion: 0.17
-Nodes (4): navLinks, NavItem, navLinks, LogoProps
+### Community 136 - "install/page.tsx"
+Cohesion: 0.13
+Nodes (12): FILTER_TABS, PackageMeta, REGISTRY_PACKAGES, Arch, formatSize(), InstallMode, InstallPage(), OS (+4 more)
 
-### Community 137 - "page.tsx"
-Cohesion: 0.17
-Nodes (5): NavItem, metadata, PILLARS, PRINCIPLES, TIMELINE
+### Community 137 - "developers/app/nav-list.ts"
+Cohesion: 0.21
+Nodes (10): DocsNavList, firstDocLink(), flatDocsNav, flattenDocNodes(), DocsNavList, firstDocLink(), flatDocsNav, flattenDocNodes() (+2 more)
 
 ### Community 138 - "Brief: Prismio documentation readability upgrade (shared by every subagent)"
 Cohesion: 0.17
 Nodes (11): Before you finish, Brief: Prismio documentation readability upgrade (shared by every subagent), Facts: verify, don't trust, Locations, Read these first, in order, Real output only, Report (your final message), Safety rules — these are hard (+3 more)
 
-### Community 139 - "tsconfig.json"
-Cohesion: 0.17
-Nodes (11): compilerOptions, module, moduleResolution, noEmit, strictNullChecks, exclude, extends, include (+3 more)
+### Community 139 - "docs-core/tsconfig.json"
+Cohesion: 0.20
+Nodes (9): compilerOptions, module, moduleResolution, noEmit, strictNullChecks, exclude, extends, include (+1 more)
 
-### Community 140 - "cli.md"
+### Community 140 - "developers/content/compiler/cli.md"
 Cohesion: 0.18
-Nodes (10): AIF options, `bootstrap`, `build`, Build options, Dispatch implementation, Exit behavior, General commands, Inspection commands (+2 more)
+Nodes (10): AIF options, `build`, Build options, Building a compiler, Dispatch implementation, Exit behavior, General commands, Inspection commands (+2 more)
 
 ### Community 141 - "If you are changing this"
 Cohesion: 0.18
 Nodes (10): If you are changing this, Instantiation functions, See it work: two instantiations, two layouts, Substitution, Template collection and identity, Traits, defaults, and associated types, What failure looks like, What reaches later passes (+2 more)
 
 ### Community 142 - "semantic-analysis-and-types.md"
-Cohesion: 0.18
-Nodes (10): A worked example: one bad program, four diagnostics, Analysis order, Arrays: lengths, copies and views, Builtins and calls in detail, Builtins and source rewrites, Expression and statement functions, Flow and program validity, `for` over a collection (+2 more)
+Cohesion: 0.17
+Nodes (11): A worked example: one bad program, four diagnostics, Analysis order, Arrays: lengths, copies and views, Builtins and calls in detail, Builtins and source rewrites, Expression and statement functions, Flow and program validity, `for` over a collection (+3 more)
 
 ### Community 143 - "If you are changing dispatch"
 Cohesion: 0.18
@@ -1009,29 +966,29 @@ Nodes (10): Applicability and coherence, Calls, If you are changing dispatch, Me
 Cohesion: 0.18
 Nodes (10): A worked example: two independent errors, Human and machine forms, If you are changing diagnostic infrastructure, Recovery is part of the contract, Required information, See it work, Testing checklist, What a diagnostic is for (+2 more)
 
-### Community 145 - "faq.md"
+### Community 145 - "developers/content/faq.md"
 Cohesion: 0.18
 Nodes (10): Does Prismio have a package registry?, Does Prismio use LLVM?, Is Prismio production-ready?, Is the compiler really self-hosted?, What concurrency model exists?, What does AIF stand for?, What does the benchmark suite cover?, What standard modules exist? (+2 more)
 
-### Community 146 - "overview.md"
+### Community 146 - "runtime/overview.md"
 Cohesion: 0.18
 Nodes (10): Adding a C function, Allocation entry points, If you are changing the runtime, Runtime compatibility, See what a program links, Three surfaces a program can reach, What a runtime failure looks like, What source can see (+2 more)
 
-### Community 147 - "cli.md"
-Cohesion: 0.18
-Nodes (10): AIF options, `bootstrap`, `build`, Build options, Exit behavior, General commands, Inspection commands, `run` (+2 more)
+### Community 147 - "docs/content/compiler/cli.md"
+Cohesion: 0.20
+Nodes (9): AIF options, `build`, Build options, Exit behavior, General commands, Inspection commands, `run`, Script examples (+1 more)
 
-### Community 148 - "control-flow.md"
+### Community 148 - "language/control-flow.md"
 Cohesion: 0.18
 Nodes (10): `break`, `continue` and labels, Collections: `for x in items`, `if`, `else if`, `else`, `loop`, Not available yet, Ownership inside loops, Ranges: `for i in a..b`, `repeat` (+2 more)
 
-### Community 149 - "ffi.md"
+### Community 149 - "language/ffi.md"
 Cohesion: 0.18
 Nodes (10): A minimal integration workflow, ABI responsibility, `bytes`, for a C function that takes a pointer and a length, Foreign globals, Linking a foreign global, Parameter ownership contracts, Return ownership contracts, Safety boundary (+2 more)
 
 ### Community 150 - "functions.md"
-Cohesion: 0.18
-Nodes (10): Calling a function, Default parameters borrow move-only data, Entry point, `inout` permits caller-visible mutation, Not implemented, Overloading, Parameter modes, Recursion (+2 more)
+Cohesion: 0.17
+Nodes (11): Calling a function, Cold functions, Default parameters borrow move-only data, Entry point, `inout` permits caller-visible mutation, Not implemented, Overloading, Parameter modes (+3 more)
 
 ### Community 151 - "ownership-and-borrowing.md"
 Cohesion: 0.18
@@ -1046,36 +1003,36 @@ Cohesion: 0.18
 Nodes (10): Allocation inference, Arrays and stack storage, Control-flow restrictions, Destruction and scope exit, Foreign boundaries, Non-goals in 0.1, Optional values, Ownership transfer and borrowing (+2 more)
 
 ### Community 154 - "io.md"
-Cohesion: 0.18
-Nodes (10): Choosing the separator, Colour, Errors and buffering, Exact overloads, Formatting values, Several values in one call, Standard error, String output (+2 more)
+Cohesion: 0.17
+Nodes (11): Choosing the separator, Colour, Errors and buffering, Exact overloads, Formatting values, Reading input and files, Several values in one call, Standard error (+3 more)
 
 ### Community 155 - "install.sh"
 Cohesion: 0.33
 Nodes (8): banner(), error(), fatal(), fetch(), info(), install.sh script, success(), update_profile()
 
-### Community 156 - "tsconfig.json"
-Cohesion: 0.18
-Nodes (10): compilerOptions, outDir, strictNullChecks, exclude, extends, include, node_modules, @prismio/typescript-config/react-library.json (+2 more)
+### Community 156 - "ui/tsconfig.json"
+Cohesion: 0.25
+Nodes (7): compilerOptions, outDir, strictNullChecks, exclude, extends, include, @prismio/typescript-config/react-library.json
 
 ### Community 157 - "ffi-contracts.md"
-Cohesion: 0.20
-Nodes (9): A contract bug that used to reach production, `bytes`, the contract that changes marshalling rather than ownership, Constraint and ABI (application binary interface) effects, Contract resolution order, If you are changing this, See it work, Tests, The repair that would corrupt memory (+1 more)
+Cohesion: 0.18
+Nodes (10): A contract bug that used to reach production, A produced return is not arena memory, `bytes`, the contract that changes marshalling rather than ownership, Constraint and ABI (application binary interface) effects, Contract resolution order, If you are changing this, See it work, Tests (+2 more)
 
-### Community 158 - "overview.md"
+### Community 158 - "aif/overview.md"
 Cohesion: 0.20
 Nodes (9): Ask why, Checking a change, Core objects, Execution order, and why it is fixed, How code generation reads the result, See it on your own code, The ladder, The problem AIF solves (+1 more)
 
 ### Community 159 - "regions-views-and-provenance.md"
-Cohesion: 0.20
-Nodes (9): A traced worked example: a balanced ledger, and the wrong answer anyway, Deliberate omissions, If you are changing this, Interprocedural provenance, Layout consequence, Scope and region functions, See it work, Views are provenance edges (+1 more)
+Cohesion: 0.18
+Nodes (10): A field holding a view of an enum's payload, A traced worked example: a balanced ledger, and the wrong answer anyway, Deliberate omissions, If you are changing this, Interprocedural provenance, Layout consequence, Scope and region functions, See it work (+2 more)
 
 ### Community 160 - "If you are changing this"
 Cohesion: 0.20
 Nodes (9): Construction and generic inference, Desugaring to a tagged struct, Fieldless and payload representation, If you are changing this, LLVM lowering and teardown, Match checking, See it work: a recursive enum with a null representation, What failure looks like (+1 more)
 
-### Community 161 - "frontend.md"
-Cohesion: 0.20
-Nodes (9): AST data model, If you are changing the frontend, Lexer implementation, Parser implementation, See it work, What each layer owns, What failure looks like, What to test (+1 more)
+### Community 161 - "If you are changing the frontend"
+Cohesion: 0.17
+Nodes (11): AST data model, If you are changing the frontend, Lexer implementation, Parser implementation, Security checks in the lexer, See it work, Unicode tables, What each layer owns (+3 more)
 
 ### Community 162 - "ownership-and-drop-lowering.md"
 Cohesion: 0.20
@@ -1101,21 +1058,21 @@ Nodes (9): End-to-end call path, If you are changing the backend, Module lifecyc
 Cohesion: 0.20
 Nodes (9): Capacity, insertion and removal, DataView operations, Growth and mutation, List header and construction, Maps, Reads and release, Slice operations, Vec (+1 more)
 
-### Community 168 - "index.md"
+### Community 168 - "start/index.md"
 Cohesion: 0.20
 Nodes (9): Before opening a change, Boundaries, How to read an implementation page, Read in this order, See the toolchain work, What a failure looks like, What counts as evidence, What this portal is for (+1 more)
 
 ### Community 169 - "repository-tour.md"
-Cohesion: 0.20
-Nodes (9): Before trusting prose, Entry points, Finding where a change belongs, If you are reading the source, Tests and executable evidence, The C side, The map, Trace a behaviour to its owner (+1 more)
+Cohesion: 0.18
+Nodes (10): Before trusting prose, Entry points, Finding where a change belongs, If you are reading the source, Tests and executable evidence, The C side, The map, Trace a behaviour to its owner (+2 more)
 
 ### Community 170 - "scripts"
 Cohesion: 0.20
 Nodes (10): scripts, audit:content, build, build:content, check, check-types, dev, lint (+2 more)
 
 ### Community 171 - "methods.md"
-Cohesion: 0.20
-Nodes (9): Chained calls and temporaries, Generic `impl` blocks, `impl` blocks, Properties, `self`, Standard-library methods, Type-level functions, Visibility on methods (+1 more)
+Cohesion: 0.18
+Nodes (10): Calling a type calls its `new`, Chained calls and temporaries, Generic `impl` blocks, `impl` blocks, Properties, `self`, Standard-library methods, Type-level functions (+2 more)
 
 ### Community 172 - "operators.md"
 Cohesion: 0.20
@@ -1137,9 +1094,9 @@ Nodes (9): Arguments, Environment variables and the process id, Reference, Runni
 Cohesion: 0.20
 Nodes (10): scripts, audit:content, build, build:content, check, check-types, dev, lint (+2 more)
 
-### Community 177 - "package.json"
-Cohesion: 0.20
-Nodes (9): exports, ./velite, name, private, scripts, check-types, lint, type (+1 more)
+### Community 177 - "docs-core/package.json"
+Cohesion: 0.08
+Nodes (25): eslint, github-slugger, @heroui/react, @heroui/styles, lucide-react, marked, mitt, next (+17 more)
 
 ### Community 178 - "string-interpolation"
 Cohesion: 0.22
@@ -1177,9 +1134,9 @@ Nodes (8): Assignment, Branches and loops, Control transfer, Expression evaluati
 Cohesion: 0.22
 Nodes (8): Aggregate typing, Compatibility, Control-flow typing, Excluded type forms, Functions and overloads, Literal typing, Optional formation and elimination, Type universe
 
-### Community 187 - "index.md"
-Cohesion: 0.22
-Nodes (8): Available without imports, Foreign extensions, Math, Memory primitives, Output, Stability rules, Strings, Vectors
+### Community 187 - "stdlib/index.md"
+Cohesion: 0.18
+Nodes (10): Available without imports, Foreign extensions, Input, files and time, Math, Math, Memory primitives, Output, Stability rules (+2 more)
 
 ### Community 188 - "Key Differences"
 Cohesion: 0.22
@@ -1193,7 +1150,7 @@ Nodes (9): Common Gotchas, ❗ Function Keyword is `fn`, Not `fun`, `func`, or `
 Cohesion: 0.25
 Nodes (7): Build tracing and object caching, Classifying the rest, Comparing two compiler builds, If you are changing the compiler to fix what you found, Reduce, then find the stage, Running one fixture instead of the whole suite, What failure looks like
 
-### Community 191 - "0.1.0.md"
+### Community 191 - "developers/content/releases/0.1.0.md"
 Cohesion: 0.25
 Nodes (7): Compiler and tooling, Implementation anchors, Language and memory, Not included, Performance evidence, Release evidence, Runtime and standard modules
 
@@ -1205,11 +1162,11 @@ Nodes (7): Arenas, Base allocator and pools, Cycle collection, Reference countin
 Cohesion: 0.25
 Nodes (7): Build-driver responsibilities, Cache and installed-layout tests, Native build stages, Packaged layout, Platform-specific behavior, Targets, The local toolchain
 
-### Community 194 - "verify-doc-examples.mjs"
-Cohesion: 0.25
-Nodes (6): cases, compiler, contentRoot, docsRoot, failures, work
+### Community 194 - "input.md"
+Cohesion: 0.40
+Nodes (4): How fast, Limits, The three ways to read, Why it is its own module
 
-### Community 195 - "overview.md"
+### Community 195 - "docs/content/compiler/overview.md"
 Cohesion: 0.25
 Nodes (7): Allocation inference, Lexer and parser, LLVM generation and verification, Object generation and linking, Semantic analysis, Source loading and imports, Trust and fixed points
 
@@ -1225,15 +1182,15 @@ Nodes (7): Add language tests, AIF changes, Before submitting a compiler change,
 Cohesion: 0.25
 Nodes (7): Current limitations, Diagnostics and verification, Interaction with ownership, Named regions, Status and intended use, Tier pins, unique bindings
 
-### Community 199 - "index.md"
-Cohesion: 0.25
-Nodes (7): Commands, Dependencies, Not implemented, Project commands, Tests, The lockfile, The manifest
+### Community 199 - "package-manager/index.md"
+Cohesion: 0.18
+Nodes (10): A project's own compiler, C code and native libraries, Commands, Dependencies, Not implemented, Profiles, Project commands, Tests (+2 more)
 
 ### Community 200 - "conformance.md"
 Cohesion: 0.25
 Nodes (7): Conformance report checklist, Diagnostics, Documentation versioning, Experimental extensions, Reference oracle, Required behavior, Target conformance
 
-### Community 201 - "overview.md"
+### Community 201 - "start/overview.md"
 Cohesion: 0.25
 Nodes (7): A small example, Design at a glance, Documentation statuses, Memory model in 0.1, Not implemented, Source of truth, What works today
 
@@ -1253,35 +1210,39 @@ Nodes (8): 1. `val`/`var` → `let`/`let mut`, 2. `fun` → `fn`, 3. Nullability
 Cohesion: 0.25
 Nodes (7): Basic syntax overview, **Functions**, Import Statements, **Print to the standard output**, **Program entry point**, **Read from the standard input**, **Variables**
 
-### Community 206 - "verify-doc-examples.mjs"
-Cohesion: 0.25
-Nodes (6): cases, compiler, contentRoot, docsRoot, failures, work
-
-### Community 208 - "page.tsx"
+### Community 206 - "BenchmarkMethodology.tsx"
 Cohesion: 0.29
-Nodes (7): Arch, formatSize(), InstallPage(), OS, PlatformReleases, ReleaseData, ReleaseDetails
+Nodes (9): BenchmarkMethodology(), BenchmarkMethodologyProps, BUILD_COMMANDS, CodeAll(), CodeCpp(), CodePrismio(), CodeRust(), CommandTab (+1 more)
+
+### Community 207 - "ref_lucide_react"
+Cohesion: 0.05
+Nodes (28): nextConfig, nextConfig, navLinks, NotFound(), Page(), ComingSoon(), HeaderMain(), NavItem (+20 more)
+
+### Community 208 - "HeaderPlayground.tsx"
+Cohesion: 0.12
+Nodes (12): HeaderPlayground(), dynamic, dynamic, AI_CRAWLERS, dynamic, CodeLine, CodeToken, SOURCE_LINES (+4 more)
 
 ### Community 209 - "Documentation upgrade — progress tracker"
 Cohesion: 0.25
 Nodes (7): Documentation upgrade — progress tracker, Findings for the final report, Gates (all four must pass at the end), How to resume after a break, Not ours — never touch, Per-batch hints for the prompts still to launch, Status
 
-### Community 210 - "bootstrap.md"
+### Community 210 - "developers/content/compiler/bootstrap.md"
 Cohesion: 0.29
-Nodes (6): Diagnose divergence, Fixed-point meaning, Generation workflow, Platform neutrality, Reproducibility record, Why runtime/backend sources are rebuilt
+Nodes (6): Diagnose divergence, Fixed-point meaning, Generation workflow, Platform neutrality, Reproducibility record, Why the runtime and backend C sources come from the working tree
 
 ### Community 211 - "runtime-ir-and-optimization.md"
-Cohesion: 0.29
-Nodes (6): Evaluating an optimization change, Library module merging, Metadata supplied to the optimizer, Object and native output, ORC JIT path, Verification and optimization order
+Cohesion: 0.17
+Nodes (11): Evaluating an optimization change, Internalization, Library module merging, Metadata supplied to the optimizer, Object and native output, ORC JIT path, Parallel machine code, Switches (+3 more)
 
 ### Community 212 - "types-and-abi.md"
-Cohesion: 0.29
-Nodes (6): Arrays, Named structs and layout, Optional and enum encoding, Primitive and built-in mappings, Scalars in pointer-sized slots, Three storage questions
+Cohesion: 0.22
+Nodes (8): A scalar `T?` in a slot, Arrays, Checked conversions, Named structs and layout, Optional and enum encoding, Primitive and built-in mappings, Scalars in pointer-sized slots, Three storage questions
 
-### Community 213 - "roadmap.md"
+### Community 213 - "developers/content/roadmap.md"
 Cohesion: 0.29
 Nodes (6): Established baseline, Foundational memory work, How roadmap status changes, Measured optimization directions, Toolchain and platform work, Unsupported surface
 
-### Community 214 - "supported-surface.md"
+### Community 214 - "What is still C, and why"
 Cohesion: 0.08
 Nodes (25): A container's element is a view, An owned result passed straight on, C: operating-system capabilities, Choosing a layer, Command-line arguments are not a runtime function, Compiler builtins: representation operations, Console floats, colour, and float text, `errno` and target queries are builtins too (+17 more)
 
@@ -1289,37 +1250,37 @@ Nodes (25): A container's element is a view, An owned result passed straight on,
 Cohesion: 0.29
 Nodes (6): Cross-stage changes, Negative cases, Negative fixtures, Positive cases, Positive fixtures, Specialized artifact assertions
 
-### Community 216 - "build-manifest.md"
-Cohesion: 0.29
-Nodes (6): Bootstrap host, Lexer and parser functions, Lowering into the project model, Project structure, Source-preserving writer, Validation
+### Community 216 - "Diagnostic codes"
+Cohesion: 0.11
+Nodes (18): A manifest that uses everything, Blocks and the project, Blocks at the top level, `commands`, Commands, `dependencies`, Dependencies, Diagnostic codes (+10 more)
 
 ### Community 217 - "ide-protocol.md"
 Cohesion: 0.29
-Nodes (6): AST and source tooling, Compatibility, Diagnostic production, Source positions, Stream discipline, Stream discipline
+Nodes (6): AST and source tooling, Compatibility, Diagnostic production, Projects with their own compiler, Source positions, Stream discipline
 
 ### Community 218 - "aif.md"
 Cohesion: 0.29
 Nodes (6): Analysis evidence, Compiler development, Reports, Runtime verification, Source constraints, Tier vocabulary
 
-### Community 219 - "bootstrap.md"
+### Community 219 - "docs/content/compiler/bootstrap.md"
 Cohesion: 0.29
-Nodes (6): Diagnose divergence, Fixed-point meaning, Generation workflow, Platform neutrality, Reproducibility record, Why runtime/backend sources are rebuilt
+Nodes (6): Diagnose divergence, Fixed-point meaning, Generation workflow, Platform neutrality, Reproducibility record, Why the runtime and backend C sources come from the working tree
 
-### Community 220 - "ffi.md"
+### Community 220 - "guides/ffi.md"
 Cohesion: 0.29
 Nodes (6): Centralize raw declarations, Declare the symbol, Link the implementation, Portability rules, Start from the C declaration, Verify ownership paths
 
-### Community 221 - "modules.md"
+### Community 221 - "guides/modules.md"
 Cohesion: 0.29
 Nodes (6): Avoid declaration conflicts, Choose explicit or wildcard imports, Diagnose an import failure, Handle nested directories, Start with a source tree, Understand the root
 
-### Community 222 - "concurrency.md"
-Cohesion: 0.29
-Nodes (6): Channels, Not implemented, Tasks, The four rules, What AIF does with a task, Where a proved join pays
+### Community 222 - "language/concurrency.md"
+Cohesion: 0.25
+Nodes (7): Channels, Not implemented, Plain-data messages are copied, Tasks, The four rules, What AIF does with a task, Where a proved join pays
 
 ### Community 223 - "enums.md"
-Cohesion: 0.29
-Nodes (6): Comparison and copying, Current limitations, Declaration and construction, Matching, Modeling data with a tag, Runtime representation
+Cohesion: 0.25
+Nodes (7): Comparison and copying, Current limitations, Declaration and construction, Matching, Modeling data with a tag, Numbers and enums, Runtime representation
 
 ### Community 224 - "error-handling.md"
 Cohesion: 0.29
@@ -1349,15 +1310,15 @@ Nodes (6): Coming from Kotlin, Migration Guide, Next Steps, Quick Syntax Referen
 Cohesion: 0.29
 Nodes (7): 1. Error Handling: `Result` Instead of Multiple Returns, 2. No `nil` — Use `Option`, 3. Pattern Matching Instead of Type Switch, 4. Concurrency, Coming from Go, Key Differences, Syntax Cheat Sheet: Go → Prismio
 
-### Community 231 - "ThemeProvider.tsx"
-Cohesion: 0.18
-Nodes (12): Alloc(), Bar(), blockHeight(), Bracket(), CompilerStations(), LatticeChains(), PipelineMap(), RowTitle() (+4 more)
+### Community 231 - "scripts"
+Cohesion: 0.67
+Nodes (3): scripts, check-types, lint
 
-### Community 232 - "prismio.tmLanguage.json"
-Cohesion: 0.29
-Nodes (6): fileTypes, pr, name, patterns, $schema, scopeName
+### Community 232 - "velite/prismio.tmLanguage.json"
+Cohesion: 0.33
+Nodes (5): fileTypes, name, patterns, $schema, scopeName
 
-### Community 233 - "package.json"
+### Community 233 - "typescript-config/package.json"
 Cohesion: 0.29
 Nodes (6): license, name, private, publishConfig, access, version
 
@@ -1365,7 +1326,7 @@ Nodes (6): license, name, private, publishConfig, access, version
 Cohesion: 0.33
 Nodes (5): Explanations and policy reports, Inspecting a decision, Report entry points, Reuse and runtime verification, What verification proves
 
-### Community 235 - "c-ffi.md"
+### Community 235 - "developers/content/cookbook/c-ffi.md"
 Cohesion: 0.33
 Nodes (5): Link and test, Owned foreign results, Verify the real ABI, What this recipe does not promise, Why the wrapper exists
 
@@ -1373,7 +1334,7 @@ Nodes (5): Link and test, Owned foreign results, Verify the real ABI, What this 
 Cohesion: 0.33
 Nodes (5): A worked example: adding a project command needs no grammar change, Add the capability at its earliest owning stage, If you are changing the host boundary, See it work, What a broken manifest looks like
 
-### Community 237 - "index.md"
+### Community 237 - "developers/content/cookbook/index.md"
 Cohesion: 0.33
 Nodes (5): Choose the right section, Compiler contributor recipes, Completion rule, Integration recipes, The loop every recipe assumes
 
@@ -1382,16 +1343,16 @@ Cohesion: 0.33
 Nodes (5): Changing the set, How they reach the program, PLIB v3, Runtime bitcode, Two producers, one format
 
 ### Community 239 - "local-compiler-loop.md"
-Cohesion: 0.33
-Nodes (5): Before committing, Focused tests while editing, Ordinary loop, Trace or bypass caches, Use named generations for reproducibility
+Cohesion: 0.29
+Nodes (6): Before committing, Focused tests while editing, Make a particular generation the host, Ordinary loop, Trace or bypass caches, Use named generations for reproducibility
 
 ### Community 240 - "build-graph-and-linking.md"
 Cohesion: 0.33
 Nodes (5): Build execution, Dependencies, Dependency and target lookup, Incrementality, Link inputs
 
 ### Community 241 - "compiler-host-and-promotion.md"
-Cohesion: 0.33
-Nodes (5): Bootstrap discovery, Building and promoting a host, Generation handshake, Promotion, Routing
+Cohesion: 0.29
+Nodes (6): Bootstrap discovery, Building and promoting a host, Generation handshake, Promotion, Routing, Trust
 
 ### Community 242 - "debugging-targets-and-build-tracing.md"
 Cohesion: 0.33
@@ -1409,7 +1370,7 @@ Nodes (5): Cross-compilation, LLVM requirement, Portability checklist, WebAssemb
 Cohesion: 0.33
 Nodes (5): Inside a checkout, sources win, Reading a missing-module error, Where LLVM is, Why the runtime is bitcode, Why the standard library is `.plib`
 
-### Community 246 - "c-ffi.md"
+### Community 246 - "docs/content/cookbook/c-ffi.md"
 Cohesion: 0.33
 Nodes (5): Link and test, Owned foreign results, Verify the real ABI, What this recipe does not promise, Why the wrapper exists
 
@@ -1425,7 +1386,7 @@ Nodes (5): Common fixes, Correct code, Invalid code, Meaning, Why it happens
 Cohesion: 0.33
 Nodes (5): Common fixes, Correct code, Invalid code, Meaning, Why it happens
 
-### Community 250 - "index.md"
+### Community 250 - "errors/index.md"
 Cohesion: 0.33
 Nodes (5): How to use this index, Ownership and memory errors, Syntax, names, and control flow, Type and call errors, Version and stability
 
@@ -1502,18 +1463,18 @@ Cohesion: 0.33
 Nodes (5): Common fixes, Correct code, Invalid code, Meaning, Why it happens
 
 ### Community 269 - "closures.md"
-Cohesion: 0.33
-Nodes (5): Captures are by value, Not in 0.1, Parameter types are written, Three spellings of one call, What a closure actually is
+Cohesion: 0.29
+Nodes (6): Captures are by value, Closure bounds, Not in 0.1, Parameter types are written, Three spellings of one call, What a closure actually is
 
-### Community 270 - "index.md"
+### Community 270 - "language/index.md"
 Cohesion: 0.33
 Nodes (5): Current surface, Implemented language areas, Not part of 0.1, Reading paths, Reference conventions
 
 ### Community 271 - "optionals.md"
-Cohesion: 0.33
-Nodes (5): `expect`, Optional struct links, Ownership, Testing for absence, Unsupported forms
+Cohesion: 0.20
+Nodes (9): `expect`, In containers, and printing, Linked data, Making one, Not in 0.1, Ownership, Reading one, `T?` and `Option<T>` (+1 more)
 
-### Community 272 - "index.md"
+### Community 272 - "specification/index.md"
 Cohesion: 0.33
 Nodes (5): Evidence hierarchy, Feature status, Normative vocabulary, Scope, Version identification
 
@@ -1522,12 +1483,12 @@ Cohesion: 0.33
 Nodes (5): Analysis and verification, Entry file and imports, Exit status and failures, Optimization levels, Output modes
 
 ### Community 274 - "filesystem.md"
-Cohesion: 0.33
-Nodes (5): Directories, Files, Paths, Still missing, Why not declare the runtime calls yourself
+Cohesion: 0.25
+Nodes (7): Directories, Files, Paths, Reading a file a line at a time, Still missing, What a path is, Why not declare the runtime calls yourself
 
 ### Community 275 - "map.md"
-Cohesion: 0.33
-Nodes (5): Keys implement `Key + Copy`, Lookup is constant time, Operations, Values are scalars, Vec
+Cohesion: 0.20
+Nodes (9): Creating a map, Keys implement `Key + Copy`, Lookup is constant time, Map literals, Operations, Removal, and what it does to positions, There is no `keys()`, Values are scalars (+1 more)
 
 ### Community 276 - "unicode.md"
 Cohesion: 0.33
@@ -1541,10 +1502,6 @@ Nodes (5): Create the source file, Make the program branch, Try an intentional e
 Cohesion: 0.33
 Nodes (6): 1. Static Typing, 2. Explicit Mutability, 3. No Garbage Collector — Ownership Instead, 4. Indentation vs. Braces, Coming from Python, Key Differences
 
-### Community 279 - "AIReady.tsx"
-Cohesion: 0.33
-Nodes (4): TOOLING, UMS_LINES, UmsLine, UmsToken
-
 ### Community 280 - "scripts"
 Cohesion: 0.33
 Nodes (6): scripts, build, check-types, dev, lint, start
@@ -1553,17 +1510,13 @@ Nodes (6): scripts, build, check-types, dev, lint, start
 Cohesion: 0.33
 Nodes (6): scripts, build, check-types, dev, lint, start
 
-### Community 282 - "page.tsx"
+### Community 282 - "packages/app/layout.tsx"
 Cohesion: 0.33
-Nodes (4): EXPENSE_AREAS, metadata, SPONSORSHIP_LEVELS, STEWARDSHIP_PRINCIPLES
+Nodes (3): geistMono, geistSans, metadata
 
-### Community 283 - "page.tsx"
-Cohesion: 0.33
-Nodes (4): CONTRIBUTOR_ROLES, GOVERNANCE_STEPS, metadata, WORKING_GROUPS
-
-### Community 284 - "AIReady.tsx"
-Cohesion: 0.33
-Nodes (4): TOOLING, UMS_LINES, UmsLine, UmsToken
+### Community 283 - "constants"
+Cohesion: 0.67
+Nodes (3): match, name, constants
 
 ### Community 285 - "scripts"
 Cohesion: 0.33
@@ -1573,11 +1526,11 @@ Nodes (6): scripts, build, check-types, dev, lint, start
 Cohesion: 0.33
 Nodes (5): compilerOptions, jsx, extends, ./base.json, $schema
 
-### Community 287 - "package.json"
+### Community 287 - "utils/package.json"
 Cohesion: 0.33
 Nodes (5): exports, name, private, type, version
 
-### Community 288 - "index.md"
+### Community 288 - "developers/content/migration/index.md"
 Cohesion: 0.40
 Nodes (4): Audit prototype code, Find the owning break, Generated artifacts are not migration inputs, Verification
 
@@ -1585,49 +1538,45 @@ Nodes (4): Audit prototype code, Find the owning break, Generated artifacts are 
 Cohesion: 0.40
 Nodes (4): Choose the compiler explicitly, Platform notes, Required tools, Validate the setup
 
-### Community 290 - "package.json"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
+### Community 290 - "developers/package.json"
+Cohesion: 0.06
+Nodes (34): babel-plugin-react-compiler, concurrently, eslint, @fontsource-variable/inter, @fontsource-variable/jetbrains-mono, framer-motion, github-slugger, hamburger-react (+26 more)
 
-### Community 291 - "diagnostics.md"
-Cohesion: 0.40
-Nodes (4): Diagnostic stages, Reading a diagnostic, Source spans, Warnings and notes
+### Community 291 - "Driver and project codes (`P10xx`)"
+Cohesion: 0.15
+Nodes (12): Building and running one file, Codes, Command-line arguments, Creating a project, Diagnostic stages, Driver and project codes (`P10xx`), Project commands, Reading a diagnostic (+4 more)
 
 ### Community 292 - "option.md"
-Cohesion: 0.40
-Nodes (4): Matching, Option, Representation, Result
+Cohesion: 0.29
+Nodes (6): Limits, `map` and `andThen` take a closure, Matching, Option, Representation, Result
 
 ### Community 293 - "term.md"
 Cohesion: 0.40
 Nodes (4): Methods, Not available yet, When not to colour, Writing sequences yourself
 
-### Community 294 - "package.json"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
+### Community 294 - "docs/package.json"
+Cohesion: 0.06
+Nodes (34): babel-plugin-react-compiler, concurrently, eslint, @fontsource-variable/inter, @fontsource-variable/jetbrains-mono, framer-motion, github-slugger, hamburger-react (+26 more)
 
-### Community 295 - "Hero.tsx"
-Cohesion: 0.40
-Nodes (3): FILTER_TABS, PackageMeta, REGISTRY_PACKAGES
+### Community 296 - "packages/package.json"
+Cohesion: 0.08
+Nodes (23): eslint, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, next, @prismio/eslint-config (+15 more)
 
-### Community 296 - "package.json"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
+### Community 297 - "play/package.json"
+Cohesion: 0.08
+Nodes (23): eslint, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, next, @prismio/eslint-config (+15 more)
 
-### Community 297 - "package.json"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
+### Community 298 - "benchmarks.ts"
+Cohesion: 0.14
+Nodes (24): BenchmarksPage(), BenchmarkMatrix(), BenchmarkMatrixProps, ToolchainMetrics(), ToolchainMetricsProps, CATEGORY_ICONS, CATEGORY_NAMES, UnsupportedCatalog() (+16 more)
 
-### Community 298 - "page.tsx"
-Cohesion: 0.40
-Nodes (3): COVERAGE, RESULTS, UNAVAILABLE
+### Community 299 - "developers/app/layout.tsx"
+Cohesion: 0.17
+Nodes (9): metadata, RootLayout(), viewport, metadata, RootLayout(), viewport, DocsRootLayout(), docsViewport (+1 more)
 
-### Community 299 - "page.tsx"
-Cohesion: 0.15
-Nodes (8): metadata, metadata, metadata, docsConfig, DocsRootLayout(), docsViewport, DocsNotFound(), generateDocsRootMetadata()
-
-### Community 300 - "package.json"
-Cohesion: 0.40
-Nodes (4): name, private, type, version
+### Community 300 - "web/package.json"
+Cohesion: 0.08
+Nodes (23): eslint, framer-motion, hamburger-react, @heroui/react, @heroui/styles, lucide-react, next, @prismio/eslint-config (+15 more)
 
 ### Community 301 - "benchmark-contract.md"
 Cohesion: 0.50
@@ -1646,8 +1595,8 @@ Cohesion: 0.50
 Nodes (3): Boundary map, Compatibility, Trusted and unsafe boundaries
 
 ### Community 305 - "tasks-and-channels.md"
-Cohesion: 0.33
-Nodes (5): Channel runtime, `Channel<T>` at source level, Channels, Task runtime, The four channel rules
+Cohesion: 0.25
+Nodes (7): A refused message, and the pointer path's ledger, Channel runtime, `Channel<T>` at source level, Channels, Plain-data channels, Task runtime, The four channel rules
 
 ### Community 306 - "first-compiler-change.md"
 Cohesion: 0.50
@@ -1657,11 +1606,11 @@ Nodes (3): Follow one node end to end, Prove the boundary, Trace the path
 Cohesion: 0.50
 Nodes (3): Content contract, Local development, Prismio Developers
 
-### Community 308 - "control-flow.md"
+### Community 308 - "examples/control-flow.md"
 Cohesion: 0.50
 Nodes (3): Boundaries demonstrated, Variation: count matches, Why it works
 
-### Community 309 - "index.md"
+### Community 309 - "examples/index.md"
 Cohesion: 0.50
 Nodes (3): Browse by concept, Run an example, Verification contract
 
@@ -1669,77 +1618,61 @@ Nodes (3): Browse by concept, Run an example, Verification contract
 Cohesion: 0.50
 Nodes (3): Call-by-call ownership, Intentional failure, Why `counter` does not need `mut`
 
-### Community 311 - "0.1.0.md"
-Cohesion: 0.50
-Nodes (3): Included, Not included, Performance
+### Community 311 - "New since the first release candidate"
+Cohesion: 0.18
+Nodes (10): Breaking changes, Fixed, In the first release candidate, Known limits, Language, New since the first release candidate, Not included, Performance (+2 more)
 
-### Community 312 - "README.md"
-Cohesion: 0.50
-Nodes (3): Deploy on Vercel, Getting Started, Learn More
-
-### Community 316 - "README.md"
+### Community 312 - "docs/README.md"
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
-### Community 318 - "README.md"
+### Community 316 - "packages/README.md"
 Cohesion: 0.50
 Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
-### Community 333 - "constants"
-Cohesion: 0.67
-Nodes (3): match, name, constants
+### Community 318 - "web/README.md"
+Cohesion: 0.50
+Nodes (3): Deploy on Vercel, Getting Started, Learn More
 
 ### Community 334 - "operators"
 Cohesion: 0.67
 Nodes (3): match, name, operators
 
-### Community 335 - "string-escape"
+### Community 338 - "developers/content/cookbook/cli-arguments.md"
 Cohesion: 0.40
-Nodes (3): GAPS, NEXT, SHIPPED
+Nodes (4): Check the count before reading, If you are changing how arguments reach a program, See it work, What the program returns is what you get
 
-### Community 336 - "types"
-Cohesion: 0.67
-Nodes (3): types, match, name
+### Community 349 - "docs/content/cookbook/cli-arguments.md"
+Cohesion: 0.50
+Nodes (3): Check the count before reading, See it work, What the program returns is what you get
 
-### Community 340 - "concurrently"
-Cohesion: 0.67
-Nodes (3): string-escape, match, name
-
-### Community 341 - "@fontsource-variable/jetbrains-mono"
-Cohesion: 0.11
-Nodes (19): AifPipelineDiagram(), AifRegionPlacementDiagram(), AifTierDecisionDiagram(), StringStorageDiagram(), StringViewLifetimeDiagram(), baseMDXComponents, getCellAlignment(), getTextContent() (+11 more)
-
-### Community 351 - "framer-motion"
-Cohesion: 0.17
-Nodes (16): roundedRect(), Anatomy(), cellX(), gates, InlineRow(), LengthField(), lifetimeRows, LongField() (+8 more)
+### Community 404 - "time.md"
+Cohesion: 0.29
+Nodes (6): `Duration`: a span of time, Not available yet, Platforms, Sleeping, The wall clock, Two clocks, for two questions
 
 ### Community 413 - "aif-internals-diagrams.tsx"
-Cohesion: 0.09
-Nodes (28): allocationPaths, bracketBlockers, Call, Impl, implTone, ladder, LAT, Lattice (+20 more)
-
-### Community 414 - "MDXContent.tsx"
-Cohesion: 0.60
-Nodes (4): createMDXComponents(), MDXContent(), MDXContentProps, useMDXComponent()
+Cohesion: 0.06
+Nodes (87): AifPipelineDiagram(), AifRegionPlacementDiagram(), AifTierDecisionDiagram(), Alloc(), allocationPaths, Bar(), blockHeight(), Bracket() (+79 more)
 
 ## Knowledge Gaps
-- **3100 isolated node(s):** `Collections`, `Docs`, `navigation`, `PageProps`, `metadata` (+3095 more)
-  These have ≤1 connection - possible missing edges or undocumented components.
-- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **3360 isolated node(s):** `Collections`, `Docs`, `navigation`, `PageProps`, `dynamicParams` (+3355 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3530 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **45 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `.next/**` connect `.next/**` to `layout.tsx`, `page.tsx`, `index.ts`, `page.tsx`, `types.ts`, `outputs`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `outputs` connect `outputs` to `.next/**`?**
-  _High betweenness centrality (0.000) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `play/package.json`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Why does `monaco-editor` connect `play/app/page.tsx` to `play/package.json`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Why does `@monaco-editor/react` connect `play/app/page.tsx` to `play/package.json`?**
+  _High betweenness centrality (0.002) - this node is a cross-community bridge._
 - **What connects `Collections`, `Docs`, `navigation` to the rest of the system?**
-  _3100 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06845238095238096 - nodes in this community are weakly interconnected._
+  _3360 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `play/app/page.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.06777493606138107 - nodes in this community are weakly interconnected._
 - **Should `repository` be split into smaller, more focused modules?**
-  _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `repository` be split into smaller, more focused modules?**
-  _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
-- **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._

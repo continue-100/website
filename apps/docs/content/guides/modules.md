@@ -3,7 +3,7 @@ title: Organize source with modules
 description: Structure Prismio 0.1 source files with relative dotted imports and direct wildcard imports.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
+lastUpdated: "2026-09-30"
 tags: [guide, modules, imports]
 related: [language/modules, specification/name-resolution, package-manager]
 ---
@@ -109,4 +109,4 @@ When resolution fails:
 
 Prismio 0.1 has no `pub`, import aliases, selective imports, manifest-defined dependencies, or package registry. Do not use URL-like or globally installed package names in import statements.
 
-Foreign object/library linking is separate from Prismio imports. Declare symbols with `extern fn` and pass linker inputs through the compiler driver rather than placing a library name in `import`.
+Foreign object/library linking is separate from Prismio imports. Declare symbols with `extern fn` and name the C source or library in the target's `native` or `link` block of `build.ums` ([Calling C from Prismio](/guides/calling-c)), rather than placing a library name in `import`.

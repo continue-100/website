@@ -4,7 +4,7 @@ description: Implementation status for current and planned Prismio language, too
 status: stable
 draft: true
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [roadmap, status, coming-soon]
 related: [start/overview, releases/0.1.0, faq]
 ---
@@ -54,17 +54,24 @@ This page distinguishes shipped compiler behavior from intent. It does not assig
 | Descending ranges (`10..0` counts down) | Implemented |
 | `break` with a value, `if`/`match` as expressions | Coming Soon |
 | Payload enums, `Option` and `Result` | Implemented |
+| Scalar optionals (`Int?`, `Float?`, an enum's `T?`) by value, in containers | Implemented |
+| Conversions: `as T?` that answer `none`, `as String`, text read at compile time | Implemented |
+| An enum as its own type, exhaustive `match` over its variants | Implemented |
 | Closures | Implemented |
 | Closure bounds (`F: Fn(A) -> R`), solving a result type from the closure | Implemented |
 | Inferred closure parameter types, storing or returning a closure | Coming Soon |
 | User-written lifetimes | Coming Soon |
 | Exceptions or result propagation syntax (`?`) | Coming Soon |
 | Tasks: `spawn`, `join`, `Task<R>` | Experimental |
-| Blocking typed channels: `Channel<T>` | Implemented |
+| Blocking typed channels: `Channel<T>`, `for msg in c` | Implemented |
+| Plain-data messages copied rather than boxed | Implemented |
+| `select` over channels, non-blocking send and receive | Coming Soon |
 | Async functions, `await`, atomics, synchronization types | Coming Soon |
 | Macros and compiler plug-ins | Coming Soon |
-| Package manifest (`build.ums`), lockfile, path dependencies | Implemented |
+| Package manifest (`build.ums`) with profiles, project commands, native C sources, a lockfile and path dependencies | Implemented |
 | Package registry and version solving | Coming Soon |
+| Importing modules from a path dependency | Coming Soon |
+| C++ sources in `native`, and static or shared library targets | Coming Soon |
 | Formatter, linter, and language server | Coming Soon |
 | Android and iOS toolchains | Coming Soon |
 
@@ -72,9 +79,9 @@ The twenty standard modules, from `std.io` and `std.input` to `std.time` and `st
 importable modules; see [the library status page](/stdlib). `std.io` is an import rather than a
 prelude, so a program that names no I/O carries none.
 
-Channels are the exception to "a library is a module you import": `Channel<T>` and its seven
-operations are compiler builtins, in the same category as a Vec's `push` and indexing, so they need
-no import. There is no executor and no `await` — a send blocks while the channel is full and a
+Channels are the exception to "a library is a module you import": `Channel<T>` and its methods —
+`send`, `receive`, `share`, `close`, `length`, `free`, and `for msg in c` — are lowered by the
+compiler, in the same category as a Vec's `push` and indexing, so they need no import. There is no executor and no `await` — a send blocks while the channel is full and a
 receive blocks until a message arrives or the channel closes. See
 [concurrency](/language/concurrency).
 

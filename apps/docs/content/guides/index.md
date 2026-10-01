@@ -3,8 +3,8 @@ title: Prismio guides
 description: Practical guides for organizing Prismio programs, integrating C, reasoning about memory, and developing the self-hosted compiler.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
-tags: [guides, modules, ffi, aif, compiler]
+lastUpdated: "2026-09-30"
+tags: [guides, modules, ffi, c, aif, compiler]
 related: [tutorials, language, cookbook]
 ---
 
@@ -13,7 +13,8 @@ Guides connect multiple reference rules into a maintainable workflow. They assum
 ## Application development
 
 - [Organize source with modules](/guides/modules) explains entry-rooted dotted imports, wildcard imports, flattened names, and project layout.
-- [Call C with ownership contracts](/guides/ffi) covers exact ABI declarations, borrow/consume/retain contracts, native linking, and wrapper design.
+- [Calling C from Prismio](/guides/calling-c) compiles your own C into a program with a `native` block, calls it through `extern fn`, and shows when the build recompiles it.
+- [Call C with ownership contracts](/guides/ffi) covers exact ABI declarations, borrow/consume/retain contracts, and wrapper design.
 - [Choose memory intent with AIF](/guides/memory-and-aif) starts from stable ownership, inspects allocation evidence, and adds experimental constraints only when measured.
 
 ## Compiler development

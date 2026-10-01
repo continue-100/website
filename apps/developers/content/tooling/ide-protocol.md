@@ -3,7 +3,7 @@ title: IDE and JSON diagnostics protocol
 description: The analysis-only check command, versioned JSON Lines diagnostics, source positions, severities, and editor integration rules.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-25"
+lastUpdated: "2026-09-30"
 tags: [ide, diagnostics, json]
 related: [compiler/diagnostics, compiler/cli, cookbook/add-a-diagnostic]
 ---
@@ -28,9 +28,28 @@ message, source file, and source range according to the current protocol.
 
 ## Stream discipline
 
-Machine records are written to stderr, one JSON object per line, ending with a `summary` record.
-A `note` record follows the diagnostic it explains, usually with no location of its own, and
-belongs with it. A single stray non-JSON line must not stop a client reading the rest.
+Diagnostic records are written to **stderr**, one JSON object per line, ending with a `summary`
+record; stdout stays empty. A `note` record follows the diagnostic it explains, usually with no
+location of its own, and belongs with it. A single stray non-JSON line must not stop a client
+reading the rest, so a client that merges the two streams still parses correctly.
+
+`aif --manifest` is the compiler's other machine-readable output, and it goes to stdout as plain
+`key value` lines. Build progress, target selection and other explanatory status are stderr text and
+are never JSON.
+
+## Projects with their own compiler
+
+A project can name its own compiler in `build.ums`, and the installed `prismio` forwards commands
+to it, but only when this machine built it. An editor should not have to know any of that. When a
+command carries `--diagnostic-format=json` or `--manifest`, the launcher prints no toolchain
+announcement and no `P1077` (the project compiler was not built on this machine), and answers with
+the global compiler, so `check` works in a freshly cloned project whose host has not been built.
+
+Three launcher warnings are still printed as diagnostics with no file: `P1052` (the configured host
+will not start), `P1064` (the host is an older generation and is being rebuilt first) and `P1065`
+(no target builds the host). They describe the toolchain and not the file being edited, so a client
+should not attach them to the file. The IntelliJ plugin drops them, with `P1077` should a compiler
+ever emit it. See [the diagnostic codes](https://docs.prismio.org/compiler/diagnostics#the-projects-own-compiler).
 
 ## Source positions
 
@@ -60,14 +79,8 @@ A machine record contains, at minimum, severity, message, source path, start/end
 compiler's available stable category/code. Multiple records use JSON Lines: one complete JSON
 object per line, never a JSON array mixed with status text.
 
-## Stream discipline
-
-Machine data goes to stdout. Build progress, host forwarding, target selection, and explanatory
-status go to stderr. `aif --manifest` follows the same rule. Callers can then pipe stdout into an
-IDE/parser without filtering human text.
-
 `umsDiagnosticAdd` is the UMS counterpart. It stores code, manifest path, line, column, token
-length, message, and recovery. `umsDiagnosticsPrint` renders the collection after parsing,
+length and message. `umsDiagnosticsPrint` renders the collection after parsing,
 lowering, and validation, allowing one run to report several independent manifest issues.
 
 ## AST and source tooling

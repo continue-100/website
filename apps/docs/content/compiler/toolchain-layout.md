@@ -3,7 +3,7 @@ title: Toolchain layout
 description: What an installed Prismio toolchain contains, why a compiler is a directory rather than a file, and how to read a missing-module error.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-30"
 tags: [installation, packaging, runtime, stdlib]
 related: [start/installation, compiler/overview, compiler/bootstrap, stdlib]
 ---
@@ -36,7 +36,7 @@ The reason is optimization. The driver merges that bitcode into your program's o
 Two consequences are worth knowing:
 
 - **Your executable does not contain the whole runtime.** After the merge, runtime definitions nothing reaches are deleted. A program that never touches a map does not carry the map implementation.
-- **There is no fallback.** Earlier versions could quietly compile the runtime from source when the installed artifacts were unusable, which produced a working but slower program and no indication of why. A missing or unreadable module is now an error that names the file.
+- **There is no fallback.** When an installed artifact is missing or unreadable, the build stops with an error that names the file. It does not quietly compile the runtime from source, which would produce a working but slower program and no indication of why.
 
 ## Why the standard library is `.plib`
 

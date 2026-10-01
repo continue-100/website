@@ -195,18 +195,12 @@ export function getPillStatus(ratio: number, noisePct: number): 'faster' | 'slow
     return 'parity';
 }
 
-export function formatSpeedup(ratio: number, status: 'faster' | 'slower' | 'parity'): string {
-    if (status === 'faster') {
-        const speedup = 1 / Math.max(ratio, 1e-6);
-        const pct = Math.round((1 - ratio) * 100);
-        return `${speedup.toFixed(2)}× (-${pct}%)`;
-    }
-    if (status === 'slower') {
-        const pct = Math.round((ratio - 1) * 100);
-        return `${ratio.toFixed(2)}× (+${pct}%)`;
-    }
-    const pct = Math.round(Math.abs(ratio - 1) * 100);
-    return `${ratio.toFixed(2)}× (±${pct}%)`;
+export function formatSpeedup(ratio: number, _status?: 'faster' | 'slower' | 'parity'): string {
+    if (!ratio || !isFinite(ratio)) return '—';
+    const pct = Math.round((ratio - 1) * 100);
+    if (pct === 0) return `${ratio.toFixed(2)}× (parity)`;
+    const sign = pct > 0 ? `+${pct}` : `${pct}`;
+    return `${ratio.toFixed(2)}× (${sign}%)`;
 }
 
 export function getBenchmarkDataset(): BenchmarkDataset {

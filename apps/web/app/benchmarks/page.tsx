@@ -45,12 +45,12 @@ export default function BenchmarksPage() {
                 <section className="grid gap-10 border-b border-white/[0.09] pb-16 lg:grid-cols-12 lg:gap-16">
                     <div className="lg:col-span-8">
                         <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-white md:text-6xl">
-                            Results, context, and the workloads Prismio cannot run yet.
+                            Tested against C++ and Rust.
                         </h1>
                         <p className="mt-7 max-w-3xl text-base leading-7 text-zinc-300 md:text-lg md:leading-8">
-                            The maintained suite differential-tests the same algorithm in Prismio, C++, and Rust.
-                            It reports elapsed medians across multiple runs with checksum validation—and marks
-                            missing language or standard-library capabilities as unsupported rather than replacing them with stand-ins.
+                            Differential benchmarks evaluating Prismio against Clang++ C++20 (-O3) and Rustc 2021 (opt-level 3).
+                            Every workload is tested against identical algorithms, multi-run medians, and canonical checksum verification—with
+                            transparent tracking for capabilities still in development.
                         </p>
                     </div>
 

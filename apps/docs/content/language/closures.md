@@ -48,6 +48,8 @@ The consequences are worth stating, because they are what make closures cheap he
 - **A closure cannot be stored.** A generic parameter is a borrow, and moving a borrowed value into
   a container is already rejected, so a closure lives for the call it is passed to.
 
+A closure's body may answer nothing: `|x: Int| println(x)` is a closure whose `call` has no return type, and a generic that only calls it — `v.forEach(|x: Int| println(x))` — accepts it as it accepts any other.
+
 ## Parameter types are written
 
 `|x: Int| x + 1`, not `|x| x + 1`. Inferring a closure parameter means solving it from the callee's

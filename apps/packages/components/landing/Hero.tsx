@@ -327,7 +327,7 @@ export default function Hero() {
                                 </div>
                                 <div>
                                     <span className="text-zinc-400 block font-mono text-[11px]">Compiler Target</span>
-                                    <span className="font-semibold text-zinc-900 font-mono">LLVM 22 AOT</span>
+                                    <span className="font-semibold text-zinc-900 font-mono">LLVM 23 AOT + JIT</span>
                                 </div>
                             </div>
                         </div>

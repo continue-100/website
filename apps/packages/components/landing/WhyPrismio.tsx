@@ -3,17 +3,17 @@ import {ArrowDown, CheckCircle2} from 'lucide-react';
 
 const STEPS = [
     {
-        command: 'prismio aif app.psm',
+        command: 'prismio aif main.psm',
         title: 'Inspect the storage plan',
         copy: 'See every potential allocation site grouped by stack, compiler-placed arena, owned heap, shared heap, cycle management, and thread transfer.',
     },
     {
-        command: 'prismio aif app.psm --why=7',
+        command: 'prismio aif main.psm --why=7',
         title: 'Ask why a decision was made',
         copy: 'Trace the minimal cause of one placement and see which repairs are valid—and which would contradict facts already proven by the analysis.',
     },
     {
-        command: 'prismio build app.psm --verify',
+        command: 'prismio build main.psm --verify',
         title: 'Check the emitted program',
         copy: 'Run the real binary against verifier shims that report allocations, releases, leaks, and invalid releases without changing the program’s code generation decisions.',
     },

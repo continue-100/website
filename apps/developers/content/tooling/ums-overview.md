@@ -3,7 +3,7 @@ title: Unified Manifest System overview
 description: The UMS architecture from build.ums tokens and AST through validation, dependency resolution, build planning, and command execution.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-08"
+lastUpdated: "2026-09-30"
 tags: [ums, build-system, projects]
 related: [tooling/build-manifest, tooling/build-graph-and-linking, tooling/compiler-host-and-promotion]
 ---
@@ -17,7 +17,8 @@ executable build plan. It is a build and project system, not the language's sour
 turns that syntax into workspace, package, target, dependency, and toolchain models.
 `validation.psm` rejects inconsistent configurations before the builder creates commands.
 `ums/dependency` discovers and resolves local dependencies. `ums/builder/build_plan.psm`
-orders artifacts and native inputs.
+orders artifacts and native inputs. What each block, key and call accepts is in
+[the manifest reference](/tooling/build-manifest).
 
 Command behavior lives under `ums/commands`; `src/project/ums_cli.psm` connects project
 commands to the compiler CLI.
@@ -64,11 +65,14 @@ and fills package, workspace, target, dependency, command, toolchain, profile, a
 
 `dispatchToUmsHost` runs before ordinary project command handling. It uses the bootstrap parser to
 discover a project-local compiler host and forwards the original CLI when the active executable is
-not already that host.
+not already that host, but only to a host this machine promoted: promotion writes a
+`<host>.trusted` stamp with the file's identity, and a host without a matching stamp is never
+started (`P1077`). The path must be under `.prismio/`, so a cloned repository cannot choose a
+program for `prismio` to run.
 
 UMS errors are accumulated in a `Vec<UmsDiagnostic>`. `umsDiagnosticAdd` records a stable code,
-manifest path, line, column, length, message, and recovery hint; `umsDiagnosticsPrint` is the only
-human rendering boundary.
+manifest path, line, column, length and message; `umsDiagnosticsPrint` is the only human rendering
+boundary. The codes are listed with their messages in [the manifest reference](/tooling/build-manifest#diagnostic-codes).
 
 When extending UMS, follow data from token to AST to model to validation to build plan to command.
 A field parsed but never lowered is dead syntax; a field lowered but never validated becomes a

@@ -12,7 +12,7 @@ related: [language/enums, language/control-flow, specification/evaluation]
 
 The syntax is:
 
-```text
+```prismio
 match (expression) {
     pattern => { statements }
     _ => { fallback statements }

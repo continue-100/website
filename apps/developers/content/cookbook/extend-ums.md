@@ -5,7 +5,7 @@ status: stable
 version: "0.1.0"
 tags: [cookbook, ums, build-system]
 related: [tooling/ums-overview, tooling/build-manifest, tooling/compiler-host-and-promotion, compiler/diagnostics]
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-30"
 ---
 
 A Prismio project has one manifest, `build.ums`, and `prismio build`/`run`/`test`/`clean` read it. When that manifest needs a new capability — a target field, a package rule, a dependency kind, a toolchain component — the question is not "how do I write the syntax" but **where in the pipeline that capability's one semantic owner belongs**, because a change entering at the wrong stage either can't see the information it needs or duplicates a rule that already exists somewhere else. **UMS**, the Unified Manifest System, is that pipeline: it is self-hosted Prismio code living at the repository root (`ums/`), not inside the compiler's `src/`.
@@ -111,7 +111,7 @@ error[P1062]: a project command cannot be named `build`
   note: that name is a built-in command and built-ins win; rename it in build.ums
 ```
 
-This is deliberate, and it is a CLI decision, not a UMS one: `init`, `build`, `run`, `test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast`, `runtime-hash` and any name ending `.psm` are reserved because `src/main.psm` dispatches them directly -- `prismioBuiltinCommands` in `src/project/commands.psm` is the one list, read by the `P1062` check and the `P1039` note -- and UMS validates a command's *shape* without knowing that list itself.
+This is deliberate, and it is a CLI decision, not a UMS one: `init`, `build`, `run`, `test`, `clean`, `check`, `bootstrap` (which now only reports that it was removed, `P1034`), `aif`, `dump-ast`, `runtime-hash` and any name ending `.psm` are reserved because `src/main.psm` dispatches them directly -- `prismioBuiltinCommands` in `src/project/commands.psm` is the one list, read by the `P1062` check and the `P1039` note -- and UMS validates a command's *shape* without knowing that list itself.
 
 ## A worked example: adding a project command needs no grammar change
 

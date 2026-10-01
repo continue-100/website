@@ -3,7 +3,7 @@ title: Compiler pipeline and driver
 description: How the driver carries source through imports, semantics, AIF, LLVM, object emission and linking — and why a program can pass every earlier command and fail at build.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-17"
+lastUpdated: "2026-09-30"
 tags: [compiler, pipeline, driver]
 related: [compiler/overview, llvm/overview, runtime/overview, aif/overview]
 ---
@@ -168,14 +168,14 @@ One function backs each command below, including `compileSource`'s own **JIT** (
 | `dumpAstCommand(path)` | source path → exit status | Stops after analysis and serializes the resolved AST as JSON |
 | `checkCommand(path)` | source path → exit status | Runs the full frontend without producing IR or a native artifact |
 | `aifCommand(...)` | path plus report flags → exit status | Runs the analyzed module through AIF and selects human, summary, ownership, theta-field, explanation, or manifest output — but does not call `aifReportPins` |
-| `compileSource(...)` | path, output, run/bootstrap/JIT/debug/verify/optimization flags → exit status | Owns target setup, AIF profile passes, module generation, output paths, native build, optional execution, and cleanup — this is the one that calls `aifReportPins` before codegen |
-| `checkRuntimeFreshness()` | no input | Compares the runtime embedded in the compiler with the working-tree/runtime hash before a build that depends on current C support |
+| `compileSource(...)` | path, output, and a `CompileOptions` (run, verify, debug info, optimization, JIT, overflow checks, installed runtime, run directory) → exit status | Owns target setup, AIF profile passes, module generation, output paths, native build, optional execution, and cleanup — this is the one that calls `aifReportPins` before codegen |
+| `checkRuntimeFreshness()` | no input | Compares the hash recorded in the installed runtime library with the hash of the runtime sources on disk, when both exist, and stops with `P1004` before linking a stale library |
 | `reportForcedLayouts()` | no input | Reports command-line AIF layout overrides after analysis |
 
-`src/main.psm` parses the public command-line interface (CLI). `main` dispatches to `cliCheck`, `cliDumpAst`, `cliAif`, `cliBootstrap`, or the build/run path. It reads process arguments only through `cli_arg_count` and `cli_arg`, so platform-specific `argc`/`argv` handling stays confined to `runtime/program_support.c`.
+`src/main.psm` parses the public command-line interface (CLI). `main` dispatches to `cliCheck`, `cliDumpAst`, `cliAif`, the project commands, or the build/run path. It reads process arguments only through `cli_arg_count` and `cli_arg`, so platform-specific `argc`/`argv` handling stays confined to `runtime/program_support.c`.
 
-For an ordinary build, `compileSource` configures `compiler_set_debug_info`, `compiler_set_verify_mode`, the selected target/sysroot, overflow checks, and LLVM optimization. It asks `compiler_temp_ir_path` for a private intermediate, calls `generateModule`, and writes IR; an `.ll` output ends there. A native output continues through `compiler_build_executable`; bootstrap instead uses `compiler_bootstrap_executable`, so runtime C is rebuilt from the checkout rather than copied from the older host. `run --jit` calls `ir_jit_run_main` for JIT execution; ordinary `run` executes the linked temporary with `compiler_run_executable`.
+For an ordinary build, `compileSource` configures `compiler_set_debug_info`, `compiler_set_verify_mode`, the selected target/sysroot, overflow checks, and LLVM optimization. It asks `compiler_temp_ir_path` for a private intermediate, calls `generateModule`, and writes IR; an `.ll` output ends there. A native output continues through `compiler_build_executable`, which compiles the target's `native` sources through the object cache and links them beside the program. A target with `runtime = "none"` (`installedRuntime: false`), as the compiler's own is, links no installed runtime, so its runtime C comes from the checkout. `run --jit` calls `ir_jit_run_main` for JIT execution; ordinary `run` executes the linked temporary with `compiler_run_executable`.
 
 Workload-guided AIF is a deliberate two-pass path, in `src/driver/workload.psm`: `runWorkloadProfile` enables workload mode, generates an instrumented executable, runs it with `compiler_run_workload`, and publishes the profile only on success. The final analysis then consumes that profile. `discardWorkloadProfile` and `endWorkloadPass` reset mode and delete temporary state so one compile cannot contaminate the next compiler invocation.
 
-When adding a pipeline phase: define whether it requires parsed, imported, semantically resolved, or AIF-annotated input; whether it mutates the AST or writes side tables; how it reports failure; which temporary files it owns; and whether it must run in `check`, `dump-ast`, bootstrap, workload, JIT, and native-build modes. Add order assertions — a phase that happens to work after code generation on one fixture may still violate the compiler's data contract, the way `aif`'s pin check silently not running was a contract question rather than a crash.
+When adding a pipeline phase: define whether it requires parsed, imported, semantically resolved, or AIF-annotated input; whether it mutates the AST or writes side tables; how it reports failure; which temporary files it owns; and whether it must run in `check`, `dump-ast`, workload, JIT, and native-build modes. Add order assertions — a phase that happens to work after code generation on one fixture may still violate the compiler's data contract, the way `aif`'s pin check silently not running was a contract question rather than a crash.

@@ -3,7 +3,7 @@ title: Package manager
 description: The UMS manifest, project commands, path dependencies and the lockfile in Prismio 0.1, and what a registry would still add.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-28"
+lastUpdated: "2026-09-30"
 tags: [package-manager, registry, dependencies, manifest, lockfile]
 related: [language/modules, guides/modules, roadmap]
 ---
@@ -146,6 +146,12 @@ That is single-file mode, not an implicit project. A directory becomes a
 Prismio project by having `build.ums`, just as a Cargo project is identified by
 its manifest.
 
+Every block, key and call the manifest accepts, with its defaults and every
+error code it can report, is in the
+[manifest reference](https://developers.prismio.org/tooling/build-manifest). The
+`P10xx` errors the commands themselves report are in the
+[diagnostic codes](/compiler/diagnostics#driver-and-project-codes-p10xx).
+
 ## C code and native libraries
 
 A target can compile C sources of its own and link them into the executable.
@@ -174,7 +180,7 @@ targets {
 Each source is compiled with the toolchain's clang at `-O2` (`-g` too, in a
 profile with debug info) and cached by content: an unchanged source, with its
 headers and flags unchanged, is not compiled again. Only C sources are accepted.
-A Prismio function calls the C one through an `extern fn` declaration.
+A Prismio function calls the C one through an `extern fn` declaration. [Calling C from Prismio](/guides/calling-c) walks through a complete project and shows when the cache rebuilds a source.
 
 | Declaration | Meaning |
 |---|---|
@@ -274,11 +280,11 @@ position among the fixed arguments; it is the only identifier a step argument
 accepts.
 
 Built-in commands win. A manifest that names one of `init`, `build`, `run`,
-`test`, `clean`, `check`, `bootstrap`, `aif`, `dump-ast` or `runtime-hash`, or a
+`test`, `clean`, `check`, `bootstrap` (removed, and still reserved), `aif`, `dump-ast` or `runtime-hash`, or a
 name ending in `.psm`, is rejected when it loads, so a project cannot quietly
 redefine what `prismio build` means, and a future release adding a verb fails
-loudly rather than silently taking one over. A command name starts with a letter
-or a digit.
+loudly rather than silently taking one over. A command name starts with a letter,
+a digit or `_`.
 
 A `build` step may not name the `toolchain.host` target: the rebuilt compiler is
 promoted by the global parent only after the process exits, so later steps in the

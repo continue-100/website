@@ -3,7 +3,7 @@ title: Runtime platforms and packaging
 description: Platform abstraction, the packaged and project-local toolchain layouts, artifact discovery, and native targets.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-24"
+lastUpdated: "2026-09-30"
 tags: [runtime, platforms, packaging]
 related: [compiler/bootstrap, tooling/debugging-targets-and-build-tracing, start/development-setup]
 ---
@@ -43,7 +43,7 @@ are not the criterion: a `.plib` contains bitcode too. See
 [Library artifacts](/runtime/library-artifacts) for both formats.
 
 The application runtime is distinct from the compiler backend, and **the backend is not in the
-package**. It used to be, as `lib/backend.a`, which nothing a user builds could link. A compiler is
+package**: there is no `lib/backend.a`, because nothing a user builds could link it. A compiler is
 built from its checkout like any other UMS project: the `prismio` target in `build.ums` lists the
 runtime and backend C files as `native` sources, declares `runtime = "none"` because it carries the
 checkout's runtime instead of the installed one, and links the pinned LLVM through
@@ -109,11 +109,16 @@ runtime bitcode into the program module with `merge_libraries_into_program`, com
 module with `compile_ir_to_object`, construct platform link arguments, and publish the executable.
 There is no curated subset and no source fallback — a missing module fails the build.
 
-`compiler_bootstrap_executable` intentionally compiles runtime sources from the working tree. It
-is used when producing a new compiler generation, because a compiler's own runtime must contain C
-changes made after its host was built. That path also defines `PRISMIO_BOOTSTRAP_COMPAT`, which is
-how a one-generation compatibility symbol stays available to compilers without ever reaching
-packaged runtime bitcode.
+The same function builds a target that declares `native` sources: `compile_native_sources` compiles
+each one (through the object cache) and the link takes the objects beside the program, and a target
+with `runtime = "none"` skips merging the installed runtime bitcode. That is how a new compiler
+generation is produced. The compiler is an ordinary target whose `native` list is its runtime and
+backend C, compiled from the working tree, so a compiler's own runtime contains C changes made
+after its host was built. Its `build.ums`, like the bootstrap scripts, defines
+`PRISMIO_BOOTSTRAP_COMPAT`, which is how a one-generation compatibility symbol stays available to
+compilers built from repository sources without ever reaching packaged runtime bitcode.
+`compiler_bootstrap_executable` survives only as a stub in a build without LLVM headers, and reports
+that the compiler predates native targets.
 
 `compile_ir_to_object` optimizes at `-O3` and emits the object in process through `ir_emit_object`
 (`llvm-api-backend.c`). It reproduces the old `clang -O3 -mllvm -enable-nontrivial-unswitch -c`
@@ -154,12 +159,19 @@ The driver must state which artifact is missing instead of reporting a generic l
 
 ## Cache and installed-layout tests
 
-The object cache serves the bootstrap and toolchain-source paths, which compile C. Its key includes
-source/runtime bytes, target flags, optimization/debug/verification choices, and relevant native
-inputs. `object_cache_disabled`, `object_cache_trace`, and `object_cache_dir` control diagnostics
-and location; a cache hit must be byte-compatible with a fresh build. An ordinary program build
-compiles no C and so produces no cache entries at all — `run_inline_runtime_default_test` asserts
-that, because a cache entry appearing there would mean a retired source path had come back.
+The object cache serves every path that compiles C: the toolchain-source paths, and each `native`
+source a target declares (`compile_native_sources`). A native entry is keyed by the source's bytes,
+the exact flags (target triple, `-O2`, `-g` under a profile with debug info, then the declared
+`include`, `define` and `flag` entries) and the bytes of every response file among them. The headers
+a source includes are not known before the compile, so clang reports them (`-MD`) and the entry
+records each with a content hash in `<entry>.deps`, checked on every hit. The key does not cover the
+compiler binary itself, so an in-place clang upgrade needs `PRISMIO_OBJ_CACHE=0` once.
+`object_cache_disabled`, `object_cache_trace`, and `object_cache_dir` control diagnostics and
+location; a cache hit must be byte-compatible with a fresh build. A program whose target declares no
+`native` block compiles no C and so produces no cache entries at all —
+`run_inline_runtime_default_test` asserts that, because a cache entry appearing there would mean a
+retired source path had come back. [Calling C from Prismio](https://docs.prismio.org/guides/calling-c)
+shows the trace output for each kind of change.
 
 Packaging tests should install to a temporary prefix, move or hide the repository, run
 `prismio --version`, compile and execute a program, exercise `std.*`, debug output, UMS native

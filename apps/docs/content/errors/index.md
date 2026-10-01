@@ -3,12 +3,12 @@ title: Compiler error reference
 description: Permanent, searchable documentation pages for every distinct failure class covered by the Prismio 0.1 negative compiler suite.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-08-09"
+lastUpdated: "2026-09-30"
 tags: [errors, diagnostics, troubleshooting, index]
 related: [compiler/diagnostics, specification/conformance, language]
 ---
 
-Prismio 0.1 emits prose diagnostics, not stable numeric codes. The identifiers below are permanent documentation URL keys. Match the central message fragment rather than expecting a code in compiler output.
+Every diagnostic prints a code such as `error[P4001]`, and codes are permanent, but most semantic errors share one, so it names the stage and not the rule. The identifiers below are permanent documentation URL keys for a rule. Match the central message fragment, and use the [code reference](/compiler/diagnostics#codes) for the `P10xx` driver and project codes.
 
 Each page answers five questions: what the diagnostic means, why the compiler rejects the program, a minimal invalid example, a compiler-checked correction, and common repair strategies. The URL remains stable even when diagnostic wording improves.
 
@@ -62,4 +62,4 @@ After applying a fix, compile again. Some follow-up diagnostics disappear when t
 
 ## Version and stability
 
-These pages describe compiler 0.1.0. Message prose, punctuation, notes, and colors are not stable. The required rejection and the underlying language rule are the durable contract. Future numeric compiler codes can be mapped to these permanent pages without changing their canonical URLs.
+These pages describe compiler 0.1.0. Message prose, punctuation, notes, and colors are not stable. The required rejection and the underlying language rule are the durable contract. Compiler codes can be mapped to these permanent pages without changing their canonical URLs.

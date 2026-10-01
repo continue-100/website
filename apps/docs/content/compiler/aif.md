@@ -37,10 +37,10 @@ Conservative/unknown evidence can push a site to a more general tier. A source c
 Inspect decisions without building an executable:
 
 ```bash
-prismio aif app.psm
-prismio aif app.psm --summary
-prismio aif app.psm --why=1
-prismio aif app.psm --manifest
+prismio aif main.psm
+prismio aif main.psm --summary
+prismio aif main.psm --why=1
+prismio aif main.psm --manifest
 ```
 
 The default report groups potential allocation sites into application and imported source, translates tiers into storage mechanisms such as stack, arena, or unique heap, and assigns short numeric IDs. A site is a source location, not a runtime allocation count. `--why=<ID>` explains one numbered decision; stable manifest symbols remain accepted for compiler tooling.

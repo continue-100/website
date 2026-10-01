@@ -3,7 +3,7 @@ title: Repository tour
 description: Where each decision lives in the compiler checkout — compiler, runtime, std, UMS, tests, evidence — and how to find what owns a behaviour.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-27"
+lastUpdated: "2026-09-30"
 tags: [repository, architecture, contributing]
 related: [compiler/overview, runtime/overview, tooling/ums-overview]
 ---
@@ -127,7 +127,7 @@ or `clang` cannot read LLVM 23 bitcode. See [releases](/releases#what-a-release-
 
 ### Entry points
 
-`src/main.psm` parses the CLI. `cliCheck()`, `cliDumpAst()`, `cliAif()`, and `cliBootstrap()` validate command-specific arguments; project-shaped commands are offered to `src/project/ums_cli.psm`. `src/driver/compile.psm` then provides `checkCommand()`, `dumpAstCommand()`, `aifCommand()`, and `compileSource()`, so analysis-only commands share the same imports and sema as native compilation.
+`src/main.psm` parses the CLI. `cliCheck()`, `cliDumpAst()`, and `cliAif()` validate command-specific arguments; project-shaped commands are offered to `src/project/ums_cli.psm`. `src/driver/compile.psm` then provides `checkCommand()`, `dumpAstCommand()`, `aifCommand()`, and `compileSource()`, so analysis-only commands share the same imports and sema as native compilation.
 
 The frontend entry sequence is `createLexer()` → `lexAllTokens()` → `parserCreate()` → `parseModule()` → recursive import loading in `src/driver/imports.psm` → semantic analysis. `src/sema/checker.psm` owns the main `semaExpr()` and `semaStatement()` visitors; generics, enums, ownership, traits, flow, imports, and symbol resolution are separate modules.
 
