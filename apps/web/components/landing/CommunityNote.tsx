@@ -35,7 +35,7 @@ export default function CommunityNote() {
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
                 <div className="lg:col-span-5">
                     <h2 id="community-heading" className="text-4xl font-semibold tracking-[-0.035em] text-white md:text-5xl">
-                        Developed in the open.
+                        <span>Developed in the{' '}</span> <span className={'text-green-300'}>open.</span>
                     </h2>
                     <p className="mt-6 text-base leading-7 text-zinc-300">
                         Prismio is developed openly as an independent systems language project,
@@ -52,7 +52,7 @@ export default function CommunityNote() {
                     </dl>
                 </div>
 
-                <ul className="divide-y divide-white/[0.1] border-y border-white/[0.1] lg:col-span-7">
+                <ul className="divide-y divide-white/[0.1] lg:col-span-7">
                     {LINKS.map((item) => {
                         const className =
                             'group flex items-center justify-between gap-6 py-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-400';

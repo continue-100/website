@@ -7,7 +7,7 @@ import {faqItems} from "@/config/faq";
 
 export default function FAQ() {
     return (
-        <section aria-labelledby="faq-heading" className="mx-auto max-w-7xl px-6 pb-4">
+        <section aria-labelledby="faq-heading" className="mx-auto max-w-7xl px-6">
             <div className="grid gap-12 border-t border-white/[0.1] pt-24 md:pt-28 lg:grid-cols-12 lg:gap-20">
                 <div className="lg:col-span-4">
                     <h2 id="faq-heading" className="text-4xl font-semibold tracking-[-0.035em] text-white md:text-5xl">

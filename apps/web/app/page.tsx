@@ -21,7 +21,7 @@ export default function LandingPage() {
             <JsonLd data={faqStructuredData} />
             <HeaderMain />
 
-            <main className="relative z-10 pb-20">
+            <main className="relative z-10">
                 <Hero />
                 <BenchmarkTeaser />
                 <WhyPrismio />
