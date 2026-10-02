@@ -14,6 +14,7 @@ import {
 import HeaderMain from "@/components/HeaderMain";
 import DiscordIcon from "@/components/icons/DiscordIcon";
 import GithubIcon from "@/components/icons/GithubIcon";
+import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import FooterMain from "@prismio/ui/FooterMain";
 import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
@@ -21,6 +22,20 @@ export const metadata = {
     title: "Author's Note & Technical Journey · Saksham Jaiswal · Prismio",
     description: "A note from Saksham Jaiswal on compiler architecture, the vision behind Prismio, and building a self-hosted systems language.",
 };
+
+const LINKEDIN_URL = "https://www.linkedin.com/in/saksham6975";
+
+// One treatment per role: Email is the action, the profiles are where to find the work.
+const PRIMARY_LINK =
+    "inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]";
+const PROFILE_LINK =
+    "inline-flex w-full min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 text-sm font-medium text-white transition-colors hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 sm:w-auto sm:px-5";
+
+const PROFILE_LINKS = [
+    {label: "GitHub", href: "https://github.com/saksham1319", icon: <GithubIcon size={16}/>},
+    {label: "LinkedIn", href: LINKEDIN_URL, icon: <LinkedinIcon size={16} className="text-[#70b5f9]"/>},
+    {label: "Portfolio", href: "https://saksham1319.vercel.app", icon: <FileUser size={16} className="text-zinc-300"/>},
+];
 
 export default function SakshamAuthorPage() {
     return (
@@ -38,7 +53,7 @@ export default function SakshamAuthorPage() {
 
             <HeaderMain/>
 
-            <main className="relative z-10 mx-auto max-w-6xl  py-12 md:py-28">
+            <main className="relative z-10 mx-auto max-w-7xl px-4 pb-0 pt-12 sm:px-5 md:pt-28">
                 {/* Back Link */}
                 <div className="mb-12">
                     <Link
@@ -67,43 +82,38 @@ export default function SakshamAuthorPage() {
                             and why systems programming deserves human-explainable determinism.
                         </p>
 
-                        {/* Quick Contact & Links */}
-                        <div className="pt-4 flex flex-wrap items-center gap-3 text-sm">
-                            <a
-                                href="https://github.com/saksham1319"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 font-medium text-white transition-all"
-                            >
-                                <GithubIcon size={15}/>
-                                <span>GitHub</span>
-                                <ArrowUpRight size={12} className="opacity-50"/>
-                            </a>
-
-                            <a
-                                href="https://saksham1319.vercel.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 font-medium text-white transition-all"
-                            >
-                                <FileUser size={15} className="text-zinc-300"/>
-                                <span>Portfolio</span>
-                                <ArrowUpRight size={12} className="opacity-50"/>
-                            </a>
-
+                        {/* Contact & profiles: one primary action, then the places to find the work */}
+                        <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
                             <a
                                 href="mailto:saksham6975@gmail.com"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 font-medium text-white transition-all"
+                                className={`${PRIMARY_LINK} justify-center`}
                             >
                                 <Mail size={15}/>
-                                Email
-                                <ArrowUpRight size={12} className="opacity-50"/>
+                                <span>Email me</span>
                             </a>
+
+                            <ul aria-label="Profiles" className="grid grid-cols-3 gap-2 sm:flex sm:gap-3">
+                                {PROFILE_LINKS.map(({label, href, icon}) => (
+                                    <li key={label}>
+                                        <a
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`${PROFILE_LINK} justify-center`}
+                                        >
+                                            {icon}
+                                            <span>{label}</span>
+                                            <ArrowUpRight size={12} aria-hidden className="hidden opacity-50 sm:block"/>
+                                            <span className="sr-only">(opens in a new tab)</span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
 
                     {/* Right 5 Columns: Portrait */}
-                    <div className="lg:col-span-5 flex flex-col items-center justify-center">
+                    <div className="lg:col-span-5 flex flex-col items-center justify-center lg:items-end">
                         <figure className="relative w-full max-w-[260px]">
                             <div className="absolute -inset-1 rounded-[2rem] bg-indigo-500/10 blur-xl opacity-50"/>
                             <div className="relative rounded-3xl border border-white/15 bg-[#0d0d12] p-3 shadow-2xl">
@@ -314,7 +324,7 @@ export default function SakshamAuthorPage() {
                 </section>
 
                 {/* ── 4. Technical Collaboration & Contact ──────────────── */}
-                <section className="pt-12 md:pt-28 text-center">
+                <section className="pt-32 text-center">
                     <div className="max-w-2xl mx-auto space-y-5">
                         <h2 className="font-fraunces text-3xl sm:text-4xl text-white font-normal tracking-tight">
                             The conversation is always open.
@@ -324,20 +334,30 @@ export default function SakshamAuthorPage() {
                             or contribute to the standard library, feel free to reach out.
                         </p>
 
-                        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                        <div className="flex flex-col items-stretch gap-3 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
                             <a
                                 href="mailto:saksham6975@gmail.com"
-                                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 px-7 py-3 rounded-full bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition-all"
                             >
                                 <Mail size={15}/>
                                 Email Saksham
                             </a>
 
                             <a
+                                href={LINKEDIN_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#0A66C2] hover:bg-[#004182] text-white font-medium text-sm transition-all"
+                            >
+                                <LinkedinIcon size={16}/>
+                                LinkedIn
+                            </a>
+
+                            <a
                                 href={DISCORD_INVITE_LINK}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-medium text-sm transition-all"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-medium text-sm transition-all"
                             >
                                 <DiscordIcon size={16}/>
                                 Discord

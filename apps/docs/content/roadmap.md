@@ -2,7 +2,6 @@
 title: Roadmap and feature status
 description: Implementation status for current and planned Prismio language, tooling, platform, and library capabilities.
 status: stable
-draft: true
 version: "0.1.0"
 lastUpdated: "2026-09-30"
 tags: [roadmap, status, coming-soon]

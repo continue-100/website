@@ -3,7 +3,7 @@ title: Terminal colors
 description: The std.term module — colour, bold, underline and other terminal styles as String methods, and whether stdout will show them.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-23"
+lastUpdated: "2026-10-02"
 tags: [standard-library, terminal, color, ansi, console]
 related: [stdlib/io, stdlib/strings, language/lexical-structure]
 ---
@@ -46,6 +46,37 @@ Here both halves are bold, and each keeps its own colour.
 | Decide | `forTerminal()` — the styled text when stdout shows colour, `plain()` otherwise |
 
 `rgb` needs a terminal with 24-bit colour, which most current ones have; the 256-colour palette works almost everywhere. How the sixteen named colours look is up to the terminal's theme.
+
+## Styling anything printable
+
+Every style also works on a value that is not a `String`, as long as it has a `Display` (a number, a `Bool`, a `Char`, an `Option`, a type of your own with an `impl Display`). The value is shown first and the text is styled:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.display
+import std.io
+import std.term
+
+struct Version {
+    major: Int,
+    minor: Int
+}
+
+impl Display for Version {
+    fn show(self) -> String {
+        return "${self.major}.${self.minor}"
+    }
+}
+
+fn main() -> Int {
+    let version = Version { major: 1, minor: 4 }
+    println(404.red().bold())
+    println("compiler".dim(), version.green())
+    return 0
+}
+```
+
+`plain` is the exception: it removes escape sequences from text, and a value that is not text has none. A `String` still takes the `String` method, so styling text costs what it always did; `std.term` imports `std.display` for the rest.
 
 ## When not to colour
 

@@ -14,12 +14,12 @@ dispatchers, validates results, samples workloads, and writes JSON plus an HTML 
 ## Command surface
 
 ```bash
-PRISMIO=$PWD/build/gen2 python3 benchmarks/run.py --runs 9
-PRISMIO=$PWD/build/gen2 python3 benchmarks/run.py --only binary_trees --runs 15
+prismio bench --runs 9
+prismio bench --only binary_trees --runs 15
 python3 benchmarks/run.py --list
 ```
 
-`--compiler` overrides `PRISMIO`. `--llvm-bin` chooses the LLVM/Clang directory. `--only` is
+`prismio bench` measures the project compiler, and refuses to run if `src/`, `std/` or `runtime/` is newer than it (`--allow-stale-compiler` overrides). Every arm is rebuilt and timed on every run, with CPU time beside wall time; `--reuse-reference-builds` brings back the cached C++ and Rust builds for a quick run-time-only check. The C++ arm uses LTO when the machine's linker can (it falls back to none, and the report records the command). Called directly, `benchmarks/run.py` takes `--compiler` or `PRISMIO`, and `--compiler` overrides `PRISMIO`. `--llvm-bin` chooses the LLVM/Clang directory. `--only` is
 repeatable and `select_benchmarks()` rejects unknown names. `--skip-build` requires all three suite
 executables already under `benchmarks/build`; use it only when source and compiler inputs have not
 changed. `--output` changes the JSON path and the sibling HTML destination. `--open` opens the

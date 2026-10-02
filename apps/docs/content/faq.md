@@ -28,7 +28,7 @@ Source ownership rules remain the same regardless of the selected allocation tie
 
 ## Which platforms are supported?
 
-The compiler is exercised in CI on Windows, macOS, and Linux. WebAssembly targeting exists experimentally at the IR/runtime layer. Android and iOS toolchains are Coming Soon.
+The compiler is built and tested on Windows (x86-64), macOS (Apple silicon) and Linux (x86-64) by the project's CI, which is started by hand rather than on every push; the Linux and Windows ARM64 archives are built and tested on virtual machines. The compiler links three LLVM backends, AArch64, X86 and WebAssembly, so `--target` accepts those three families. WebAssembly targeting exists experimentally at the IR/runtime layer. Android and iOS toolchains are Coming Soon.
 
 Native support does not yet imply a stable binary distribution, cross-compilation SDK, or ABI. LLVM 23.1.1 is the pinned backend line.
 

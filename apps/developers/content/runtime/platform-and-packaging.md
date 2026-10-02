@@ -3,7 +3,7 @@ title: Runtime platforms and packaging
 description: Platform abstraction, the packaged and project-local toolchain layouts, artifact discovery, and native targets.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-30"
+lastUpdated: "2026-10-02"
 tags: [runtime, platforms, packaging]
 related: [compiler/bootstrap, tooling/debugging-targets-and-build-tracing, start/development-setup]
 ---
@@ -30,6 +30,25 @@ static archives, so `tools/package.py` and `tools/install.py` copy that DLL besi
 Earlier prefixes carried `third_party/llvm-paths.json` instead. That file named the
 *build machine's* LLVM so that the prefix could run that machine's `clang`, which meant a package
 only worked on the machine that built it.
+
+**A prefix states the oldest system it runs on, and nothing may take the build machine's.**
+Until 2026-10-02 every macOS version came from the machine: the 0.1.0 archive said
+`minos 27.0` and would not start on macOS 26. Each version now has one source:
+
+- `PRISMIO_MACOS_FLOOR` (11.0) in `llvm-api-backend.c` is what a program targets: its object, a
+  target's native C (`compile_native_sources`) and its link (`macos_min_flag`).
+  `MACOSX_DEPLOYMENT_TARGET` overrides it. `MACOS_FLOOR` in `tools/package.py` builds the runtime
+  bitcode and every `.plib` for the same version, and `tools/check_source_lists.py` compares
+  the two.
+- `macos_min` in `third_party/llvm-paths.json` (14.0) is what the compiler targets. It is the
+  `minos` of the official LLVM release's own clang. `tools/setup_llvm.py` lowers the archives
+  for it and writes it into both response files, where it follows and overrides the program floor.
+- On Linux, glibc binds each symbol to the build machine's version. Only the build machine can
+  set that floor, so build a Linux release on the oldest distribution it supports.
+
+`tools/release.py` builds a program with the packaged compiler and reads both binaries. It
+refuses a macOS artifact above either floor, and a Windows one that imports `VCRUNTIME*` or
+`MSVCP*`. On Linux it prints the newest glibc version each binary needs.
 
 Everything is located relative to the running executable — `find_in_lib_dir` searches
 `<exe>/../lib` then `<exe>/lib`, and `standardModulePath` reads `<exe>/../stdlib` — so a prefix

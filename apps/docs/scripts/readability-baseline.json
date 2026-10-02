@@ -7,7 +7,6 @@
     "stdlib/strings"
   ],
   "noRunnableBlock": [
-    "compiler/targets",
     "cookbook",
     "errors",
     "faq",
@@ -17,7 +16,6 @@
     "language/macros",
     "migration",
     "releases",
-    "releases/0.1.0",
     "roadmap",
     "specification",
     "specification/behavior",

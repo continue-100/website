@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/prismio-lang/website/blob/main/SECURITY.md
+    about: Please do not open a public issue for security problems. Follow the security policy.
+  - name: Compiler, runtime, or standard library
+    url: https://github.com/prismio-lang/prismio/issues
+    about: Problems with Prismio itself belong in the compiler repository.

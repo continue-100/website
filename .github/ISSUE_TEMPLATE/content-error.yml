@@ -1,0 +1,30 @@
+name: Wrong or outdated content
+description: A page says something that is not true, an example does not work, or a link is broken.
+title: "[content] "
+labels: ["content"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page
+      description: The URL of the page.
+      placeholder: https://docs.prismio.org/...
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong
+      description: Quote the sentence or command, and say what actually happens.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should say
+      description: If you know. A link to the compiler source or output helps.
+  - type: input
+    id: version
+    attributes:
+      label: Prismio version
+      description: The output of `prismio --version`, if the problem is an example that fails.

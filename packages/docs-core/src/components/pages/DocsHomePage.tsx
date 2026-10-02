@@ -111,7 +111,7 @@ export function DocsHomePage({ config, docs }: DocsHomePageProps) {
                             {home.foundations.description}
                         </p>
                     </div>
-                    <ol className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+                    <ol className="divide-y divide-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
                         {home.foundations.items.map((item, index) => (
                             <li key={item.href}>
                                 <Link

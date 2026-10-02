@@ -18,7 +18,7 @@ repository root: the bootstrap scripts resolve `src`, `runtime`, `bootstrap`, an
 - The pinned LLVM, which `tools/setup_llvm.py` downloads into `third_party/llvm`. Do not install one.
 - A platform linker and SDK appropriate for the host: Xcode Command Line Tools on macOS, `cc` and
   the C library development files on Linux, Visual Studio's C++ tools on Windows.
-- Python 3.8 or newer for tests, packaging, and support scripts.
+- Python 3.9 or newer for tests, packaging, and support scripts.
 - Git and ordinary shell tooling.
 
 **The LLVM a compiler is built against belongs to the checkout, not to the machine.**
@@ -67,7 +67,7 @@ tools/bootstrap.sh --compiler build/gen0 --out build/gen1
 tools/bootstrap.sh --compiler build/gen1 --out build/gen2
 ```
 
-Windows uses `tools/bootstrap.ps1` with `-Seed` or `-Compiler` and `-Out`. The shell and PowerShell
+Windows uses `tools/bootstrap.ps1` with `-Seed` or `-Compiler` and `-Out`. Once a compiler exists, `build.ums` declares the repository's own commands: `prismio build`, `prismio suite`, `prismio verify`, `prismio gate` and `prismio release` (see [how a release is cut](/releases)). The compiler links three LLVM backends, AArch64, X86 and WebAssembly; they are listed in `runtime/prismio_llvm.h` and `tools/setup_llvm.py`, and `tools/check_source_lists.py` fails if the two disagree. The committed seed has to stay current with `src/` (`tools/refresh_seed.sh`), because CI only checks that it can still parse it. The shell and PowerShell
 scripts compile the LLVM bridge and runtime support, consume the same source inventory, use a
 content-keyed object cache, link into a temporary path, and install the completed compiler
 atomically. `PRISMIO_LLVM_DIR` overrides recorded LLVM discovery. `PRISMIO_OBJ_CACHE=0` disables
@@ -82,9 +82,13 @@ local host exists and this machine has promoted it. A copied binary is not run (
 
 ```bash
 build/gen2 --version
-PRISMIO=$PWD/build/gen2 python3 tests/test_runner.py --list
-PRISMIO=$PWD/build/gen2 python3 tests/test_runner.py test_92_field_view_provenance
+python3 tools/package.py --compiler build/gen2 --out build/dist
+PRISMIO=$PWD/build/dist/bin/prismio python3 tests/test_runner.py --list
+PRISMIO=$PWD/build/dist/bin/prismio python3 tests/test_runner.py test_92_field_view_provenance
 ```
+
+A bare generation can build compilers but not ordinary programs, because a program links the runtime as
+installed bitcode beside the executable, so the tests run against the packaged compiler.
 
 `--version` prints Prismio, loaded LLVM, compiler executable, and the resolved standard-library
 directory. Treat an unexpected compiler or `(none found)` stdlib as a setup error before debugging

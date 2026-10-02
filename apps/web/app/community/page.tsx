@@ -53,7 +53,7 @@ const START_HERE = [
     {
         icon: Rocket,
         title: 'Set up a local build',
-        copy: 'Python 3.8+ is the only thing you install yourself. The setup script provisions the pinned LLVM and builds the first compiler from the committed seed.',
+        copy: 'Python 3.9+ is the only thing you install yourself. The setup script provisions the pinned LLVM and builds the first compiler from the committed seed; after that the checkout is a Prismio project with its own commands (prismio build, suite, verify, gate).',
         href: `${REPO}/blob/main/CONTRIBUTING.md#prerequisites`,
     },
     {
@@ -112,7 +112,7 @@ const STEPS = [
     },
     {
         title: 'Open a pull request against main',
-        copy: 'CI bootstraps the compiler from the committed seed, checks that it reproduces itself (gen0 → gen1 → gen2), then runs the test suite.',
+        copy: 'Run prismio gate first: it lints, packages the compiler and runs the whole release gate. CI does not run on push; a maintainer starts it by hand on the pull request, and it bootstraps from the committed seed, checks that the compiler reproduces itself (gen0 → gen1 → gen2), then runs the suite.',
     },
 ];
 

@@ -5,7 +5,7 @@ status: stable
 version: "0.1.0"
 lastUpdated: "2026-09-30"
 tags: [ide, diagnostics, json]
-related: [compiler/diagnostics, compiler/cli, cookbook/add-a-diagnostic]
+related: [compiler/diagnostics, compiler/cli, cookbook/add-a-diagnostic, tooling/intellij-plugin]
 ---
 
 Editors should invoke `prismio check <source.psm> --diagnostic-format=json`. The command runs

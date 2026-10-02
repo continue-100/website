@@ -64,7 +64,7 @@ export const docsConfig: DocsAppConfig = {
             title: "From zero to owned data.",
             description: "A short route through the toolchain and the language rules that matter first.",
             items: [
-                { href: "/start/installation", label: "Install and bootstrap", detail: "Configure LLVM 23 and build the self-hosted compiler." },
+                { href: "/start/installation", label: "Install", detail: "Install a release archive with one command, verify it, or build the compiler from source." },
                 { href: "/tutorials/first-program", label: "Write a complete program", detail: "Use functions, ranges, mutable bindings, and output." },
                 { href: "/language/ownership-and-borrowing", label: "Understand ownership", detail: "Learn default borrows, sink transfers, inout, and drop." },
             ],
@@ -112,6 +112,7 @@ export const docsConfig: DocsAppConfig = {
                 { label: "Guide index", href: "/guides" },
                 { label: "Organize source", href: "/guides/modules" },
                 { label: "Calling C from Prismio", href: "/guides/calling-c" },
+                { label: "IntelliJ plugin", href: "/guides/intellij" },
                 { label: "C ownership contracts", href: "/guides/ffi" },
                 { label: "Memory and AIF", href: "/guides/memory-and-aif" },
                 { label: "Compiler development", href: "/guides/compiler-development" },
@@ -201,6 +202,7 @@ export const docsConfig: DocsAppConfig = {
             items: [
                 { label: "Library status", href: "/stdlib" },
                 { label: "Console I/O", href: "/stdlib/io" },
+                { label: "Display and printing", href: "/stdlib/display" },
                 { label: "Standard input", href: "/stdlib/input" },
                 { label: "Terminal colors", href: "/stdlib/term" },
                 { label: "Strings", href: "/stdlib/strings" },

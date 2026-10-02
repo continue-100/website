@@ -8,7 +8,7 @@ export function GET() {
 
 > ${siteConfig.description}
 
-Prismio ${PRISMIO_VERSION} is in active development and is not production-ready. Pages marked Planned in the documentation describe unimplemented features and must not be presented as accepted syntax.
+Prismio ${PRISMIO_VERSION} is the first release, published 2026-10-02, and is pre-1.0: the language and library can still change incompatibly, and it is not production-ready. Install it with: curl -fsSL https://prismio.org/install.sh | sh (macOS and Linux) or from a release archive on GitHub. Pages marked Coming Soon in the documentation describe unimplemented features and must not be presented as accepted syntax.
 
 ## Start here
 

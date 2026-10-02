@@ -5,7 +5,7 @@ status: stable
 version: "0.1.0"
 lastUpdated: "2026-09-27"
 tags: [standard-library, runtime, status]
-related: [stdlib/io, stdlib/input, stdlib/strings, stdlib/math, stdlib/time, stdlib/filesystem, stdlib/vec, stdlib/map, stdlib/option, roadmap]
+related: [stdlib/io, stdlib/display, stdlib/input, stdlib/strings, stdlib/math, stdlib/time, stdlib/filesystem, stdlib/vec, stdlib/map, stdlib/option, roadmap]
 ---
 
 Prismio ships twenty standard-library modules:
@@ -13,7 +13,8 @@ Prismio ships twenty standard-library modules:
 | Module | Covers |
 | --- | --- |
 | [`std.io`](/stdlib/io) | `print`, `println`, `eprint`, `eprintln` |
-| [`std.input`](/stdlib/input) | standard input: `stdin.lines()`, `stdin.readLine()`, `stdin.readAll()` |
+| [`std.display`](/stdlib/display) | the `Display` trait; `print` and `println` for any type that has it, `Option` included |
+| [`std.input`](/stdlib/input) | standard input: `stdin.lines()`, `stdin.readLine()`, `stdin.readLineOr()`, `stdin.readInt()`, `stdin.readLines()` and more |
 | [`std.string`](/stdlib/strings) | `String` and `Char` methods, parsing, formatting, `StringBuilder`, and the `String` operators |
 | [`std.unicode`](/stdlib/unicode) | grapheme clusters, terminal width, normalization |
 | [`std.fs`](/stdlib/filesystem) | files, directories, paths, `readLines`, `metadata` |

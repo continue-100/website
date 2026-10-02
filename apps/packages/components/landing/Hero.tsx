@@ -206,6 +206,10 @@ export default function Hero() {
                         Packaged via the Unified Manifest System (<code className="bg-zinc-100 border border-zinc-300 px-1.5 py-0.5 rounded text-zinc-800 font-mono text-xs">build.ums</code>)
                         and verified by the Adaptive Inference Framework.
                     </p>
+                    <p className="max-w-2xl mx-auto mb-10 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+                        <span className="font-semibold">Coming soon.</span> Prismio 0.1 has no package registry yet, and the packages shown on this page
+                        are illustrative mock-ups, not real packages.
+                    </p>
                 </div>
 
                 {/* ── Search Bar & Filter Strip ───────────────────────── */}

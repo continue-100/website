@@ -36,9 +36,9 @@ const CARD = 'rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-bl
 const FOCUS = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400';
 
 const MODES: {id: InstallMode; label: string; status: string; ready: boolean}[] = [
-    {id: 'source', label: 'Build from source', status: 'Available now', ready: true},
-    {id: 'script', label: 'Install script', status: 'With 0.1.0', ready: false},
-    {id: 'binaries', label: 'Prebuilt binaries', status: 'With 0.1.0', ready: false},
+    {id: 'script', label: 'Install script', status: 'macOS and Linux', ready: true},
+    {id: 'binaries', label: 'Prebuilt binaries', status: 'All platforms', ready: true},
+    {id: 'source', label: 'Build from source', status: 'Any machine', ready: true},
 ];
 
 function stepsFor(os: OS): Step[] {
@@ -164,7 +164,7 @@ function Command({text}: {text: string}) {
 }
 
 export default function InstallPage() {
-    const [mode, setMode] = useState<InstallMode>('source');
+    const [mode, setMode] = useState<InstallMode>('script');
     const [os, setOs] = useState<OS>('macOS');
     const [detected, setDetected] = useState<OS | null>(null);
     const [verifyTab, setVerifyTab] = useState<VerifyTab>('version');
@@ -191,7 +191,7 @@ export default function InstallPage() {
         setDetected(found);
     }, []);
 
-    // Published releases, if any (there are none until 0.1.0 is released).
+    // The latest published release, for the download list. The page works without it.
     useEffect(() => {
         let cancelled = false;
         (async () => {
@@ -246,7 +246,7 @@ export default function InstallPage() {
                         Install <span className="text-sky-300">Prismio</span>
                     </h1>
                     <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-zinc-300 sm:text-lg">
-                        {PRISMIO_VERSION} is a pre-release. Build it from source today; the installers arrive with the release.
+                        {PRISMIO_VERSION} is the first release. Install it with one command, download an archive, or build it from source.
                     </p>
 
                     {/* At a glance */}
@@ -270,7 +270,7 @@ export default function InstallPage() {
                         </div>
                         <div className="px-5 py-4">
                             <dt className="text-xs text-zinc-400">You need</dt>
-                            <dd className="mt-1 font-mono text-sm text-white">Python 3.8+ and a C toolchain</dd>
+                            <dd className="mt-1 font-mono text-sm text-white">A C toolchain</dd>
                         </div>
                     </dl>
 
@@ -390,20 +390,30 @@ export default function InstallPage() {
 
                     {mode === 'script' && (
                         <div className="space-y-6">
-                            <NotYetNotice />
                             <div>
                                 <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Install script</h2>
                                 <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
-                                    On release, one command downloads the archive for your platform into{' '}
-                                    <code className="font-mono text-zinc-200">~/.prismio</code> and adds it to your PATH in{' '}
-                                    <code className="font-mono text-zinc-200">.zshrc</code> or{' '}
-                                    <code className="font-mono text-zinc-200">.bashrc</code>.
+                                    One command downloads the archive for your platform, checks its SHA-256 against the one published beside it, and
+                                    installs into <code className="font-mono text-zinc-200">~/.prismio</code>. It then adds that directory to your PATH in{' '}
+                                    <code className="font-mono text-zinc-200">.zshrc</code>, <code className="font-mono text-zinc-200">.bashrc</code> or the
+                                    profile your shell uses. It refuses to install an archive that does not match.
                                 </p>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <Preview label="macOS and Linux" prompt="$" command="curl -fsSL https://prismio.org/install.sh | sh" />
-                                <Preview label="Windows (planned)" prompt=">" command="winget install prismio-lang.prismio" />
                             </div>
+                            <p className="max-w-xl text-sm leading-7 text-zinc-400">
+                                <span className="font-semibold text-zinc-200">Windows:</span> download the <code className="font-mono text-zinc-200">.zip</code> from
+                                the Prebuilt binaries tab, unpack it, and put its <code className="font-mono text-zinc-200">bin</code> directory on your PATH.
+                            </p>
+                            <p className="max-w-xl text-sm leading-7 text-zinc-400">
+                                Set <code className="font-mono text-zinc-200">PRISMIO_VERSION</code> to install a specific release,{' '}
+                                <code className="font-mono text-zinc-200">PRISMIO_INSTALL</code> to choose the directory, and{' '}
+                                <code className="font-mono text-zinc-200">PRISMIO_NO_MODIFY_PATH=1</code> to leave your shell profile alone. The
+                                compiler carries its own LLVM but links programs with your system&apos;s C tools: the Xcode Command Line Tools on
+                                macOS, or <code className="font-mono text-zinc-200">build-essential</code> on Debian and Ubuntu. Details in the{' '}
+                                <a href={`${DOCS}/start/installation`} className={`text-sky-300 underline underline-offset-4 ${FOCUS}`}>installation guide</a>.
+                            </p>
                         </div>
                     )}
 
@@ -437,17 +447,20 @@ export default function InstallPage() {
                                     </ul>
                                 </>
                             ) : (
-                                <>
-                                    <NotYetNotice />
-                                    <div>
-                                        <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Prebuilt binaries</h2>
-                                        <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
-                                            Archives for macOS, Linux, and Windows will be published on GitHub Releases with {PRISMIO_VERSION}.
-                                            No release exists yet.
-                                        </p>
-                                    </div>
-                                </>
+                                <div>
+                                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Prebuilt binaries</h2>
+                                    <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
+                                        Archives for macOS, Linux and Windows are on GitHub Releases, named{' '}
+                                        <code className="font-mono text-zinc-200">prismio-&lt;version&gt;-&lt;os&gt;-&lt;arch&gt;</code>.
+                                    </p>
+                                </div>
                             )}
+                            <p className="max-w-xl text-sm leading-7 text-zinc-400">
+                                Every archive has a <code className="font-mono text-zinc-200">.sha256</code> beside it. The archives are{' '}
+                                <span className="font-semibold text-zinc-200">not signed</span>: the checksum shows the download is intact, not who
+                                made it, so take both from the release page. The ARM64 builds for Linux and Windows are built and tested on virtual
+                                machines rather than in CI, so treat them as less exercised than the x64 and macOS archives.
+                            </p>
                             <a
                                 href={`${REPO}/releases`}
                                 target="_blank"
@@ -535,18 +548,6 @@ export default function InstallPage() {
             </main>
 
             <FooterMain />
-        </div>
-    );
-}
-
-function NotYetNotice() {
-    return (
-        <div className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm leading-6 text-amber-100">
-            <Info size={16} className="mt-1 shrink-0 text-amber-300" />
-            <p>
-                <span className="font-semibold">Not available yet.</span> This installs from a GitHub Release, and {PRISMIO_VERSION} has not
-                been released. Until then, build from source.
-            </p>
         </div>
     );
 }

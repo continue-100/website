@@ -1,0 +1,28 @@
+name: Website bug
+description: "Something on the website is broken: layout, links, accessibility, or behaviour."
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page
+      placeholder: https://prismio.org/...
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead. A screenshot helps.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+  - type: input
+    id: browser
+    attributes:
+      label: Browser, device, and screen size
+      placeholder: Safari 26 on iPhone, 390px wide

@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-10-01T18:09:35.341530+00:00",
+  "generated_at": "2026-10-02T09:50:27.335369+00:00",
   "runs": 5,
   "build_commands": {
     "prismio": ".prismio/build/debug/prismio build benchmarks/prismio/suite.psm -o benchmarks/build/prismio-suite",
@@ -31,7 +31,7 @@
       "rustc": "1.97.1"
     },
     "source": {
-      "commit": "f7a3b15",
+      "commit": "1dc470f",
       "dirty": true
     },
     "harness": {
@@ -40,19 +40,29 @@
     }
   },
   "compile_ns": {
-    "prismio": 845130583,
-    "cpp": 2711255166,
-    "rust": 3052437375
+    "prismio": 839950166,
+    "cpp": 2207715375,
+    "rust": 2918706708
   },
+  "compile_cpu_ns": {
+    "prismio": 1499531999,
+    "cpp": 2040036999,
+    "rust": 2745243000
+  },
+  "compile_runs": 1,
   "binary_bytes": {
-    "prismio": 225104,
+    "prismio": 225216,
     "cpp": 153896,
     "rust": 610808
   },
-  "cached_builds": [
-    "cpp",
-    "rust"
-  ],
+  "cached_builds": [],
+  "cached_built_at": {},
+  "compiler": {
+    "path": "/Users/vibrant/Desktop/Projects/Prismio/prismio/.prismio/build/debug/prismio",
+    "bytes": 61447232,
+    "modified": "2026-10-02 09:50 UTC"
+  },
+  "build_skipped": false,
   "elimination_ns": 10000,
   "benchmarks": [
     {
@@ -63,77 +73,77 @@
       "result": 5985853,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 12014000,
-          "wall_ns_median": 14506000,
+          "elapsed_ns_median": 12541000,
+          "wall_ns_median": 15141041,
           "elapsed_ns_samples": [
-            22771000,
-            13204000,
-            12014000,
-            11910000,
-            12014000
+            20016000,
+            19505000,
+            12541000,
+            11777000,
+            11879000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1753088,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 12058541,
-          "wall_ns_median": 14494792,
+          "elapsed_ns_median": 11819375,
+          "wall_ns_median": 14646167,
           "elapsed_ns_samples": [
-            15584459,
-            12517208,
-            11880167,
-            12058541,
-            12050708
+            20806250,
+            15081458,
+            11819375,
+            11719625,
+            11672125
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
-            1687552,
-            1687552,
-            1687552,
-            1687552,
-            1687552
+            1720320,
+            1703936,
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 12048709,
-          "wall_ns_median": 14492292,
+          "elapsed_ns_median": 11824792,
+          "wall_ns_median": 14517084,
           "elapsed_ns_samples": [
-            13479333,
-            12134125,
-            11901334,
-            12048709,
-            11924334
+            22678541,
+            13315125,
+            11801541,
+            11777084,
+            11824792
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1867776,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9963,
-          "best_ratio": 1.0025,
-          "tolerance": 0.0991,
-          "noise": 0.0991
+          "ratio": 1.0611,
+          "best_ratio": 1.009,
+          "tolerance": 0.6081,
+          "noise": 0.6081
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9971,
-          "best_ratio": 1.0007,
-          "tolerance": 0.0991,
-          "noise": 0.0991
+          "ratio": 1.0606,
+          "best_ratio": 1.0,
+          "tolerance": 0.6081,
+          "noise": 0.6081
         }
       }
     },
@@ -145,77 +155,77 @@
       "result": 458935349,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 505000,
-          "wall_ns_median": 2713875,
+          "elapsed_ns_median": 514000,
+          "wall_ns_median": 2679083,
           "elapsed_ns_samples": [
-            512000,
-            505000,
-            517000,
-            503000,
-            500000
+            515000,
+            499000,
+            514000,
+            502000,
+            528000
           ],
-          "peak_rss_bytes_median": 2228224,
+          "peak_rss_bytes_median": 2211840,
           "peak_rss_bytes_samples": [
-            2228224,
-            2228224,
-            2228224,
-            2228224,
-            2228224
+            2211840,
+            2211840,
+            2211840,
+            2211840,
+            2211840
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 471500,
-          "wall_ns_median": 2448375,
+          "elapsed_ns_median": 472042,
+          "wall_ns_median": 2634375,
           "elapsed_ns_samples": [
-            464500,
-            470750,
-            476875,
-            472625,
-            471500
+            473292,
+            469416,
+            479334,
+            472042,
+            468208
           ],
-          "peak_rss_bytes_median": 2113536,
+          "peak_rss_bytes_median": 2129920,
           "peak_rss_bytes_samples": [
-            2113536,
-            2113536,
-            2113536,
-            2113536,
-            2113536
+            2129920,
+            2129920,
+            2129920,
+            2129920,
+            2129920
           ]
         },
         "rust": {
-          "elapsed_ns_median": 646083,
-          "wall_ns_median": 2702792,
+          "elapsed_ns_median": 636917,
+          "wall_ns_median": 3000208,
           "elapsed_ns_samples": [
-            646083,
-            634792,
-            638042,
-            653833,
-            647167
+            636917,
+            629458,
+            638458,
+            682125,
+            630750
           ],
-          "peak_rss_bytes_median": 2326528,
+          "peak_rss_bytes_median": 2342912,
           "peak_rss_bytes_samples": [
-            2326528,
-            2326528,
-            2326528,
-            2326528,
-            2326528
+            2342912,
+            2342912,
+            2342912,
+            2342912,
+            2342912
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "loss",
-          "ratio": 1.071,
-          "best_ratio": 1.0764,
+          "ratio": 1.0889,
+          "best_ratio": 1.0658,
           "tolerance": 0.053,
-          "noise": 0.0178
+          "noise": 0.0253
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.7816,
-          "best_ratio": 0.7877,
+          "ratio": 0.807,
+          "best_ratio": 0.7927,
           "tolerance": 0.04,
-          "noise": 0.0178
+          "noise": 0.0253
         }
       }
     },
@@ -227,77 +237,77 @@
       "result": 504265700,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 23259000,
-          "wall_ns_median": 25611708,
+          "elapsed_ns_median": 22529000,
+          "wall_ns_median": 24681416,
           "elapsed_ns_samples": [
-            23428000,
-            22333000,
-            23259000,
-            25222000,
-            20768000
+            22529000,
+            21581000,
+            23561000,
+            21046000,
+            22788000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 24626625,
-          "wall_ns_median": 27218416,
+          "elapsed_ns_median": 22674000,
+          "wall_ns_median": 25241250,
           "elapsed_ns_samples": [
-            21743000,
-            25555667,
-            24626625,
-            22515583,
-            24980667
+            24282917,
+            22674000,
+            22638916,
+            20996500,
+            24089667
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
-            1687552,
-            1687552,
-            1687552,
-            1687552,
-            1687552
+            1703936,
+            1703936,
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 25803792,
-          "wall_ns_median": 28137250,
+          "elapsed_ns_median": 25541208,
+          "wall_ns_median": 28065209,
           "elapsed_ns_samples": [
-            27150125,
-            24066959,
-            24119666,
-            25803792,
-            26027000
+            24390208,
+            26325625,
+            27508417,
+            25541208,
+            24344417
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9445,
-          "best_ratio": 0.9552,
-          "tolerance": 0.1001,
-          "noise": 0.1001
+          "ratio": 0.9936,
+          "best_ratio": 1.0024,
+          "tolerance": 0.064,
+          "noise": 0.064
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.9014,
-          "best_ratio": 0.8629,
-          "tolerance": 0.0739,
-          "noise": 0.0739
+          "ratio": 0.8821,
+          "best_ratio": 0.8645,
+          "tolerance": 0.0758,
+          "noise": 0.0758
         }
       }
     },
@@ -309,77 +319,77 @@
       "result": 1004850,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 67181000,
-          "wall_ns_median": 69632167,
+          "elapsed_ns_median": 68909000,
+          "wall_ns_median": 71314709,
           "elapsed_ns_samples": [
-            67174000,
-            67111000,
-            70087000,
-            67796000,
-            67181000
+            69005000,
+            68743000,
+            68909000,
+            69167000,
+            68909000
           ],
-          "peak_rss_bytes_median": 3424256,
+          "peak_rss_bytes_median": 3407872,
           "peak_rss_bytes_samples": [
-            3424256,
-            3424256,
-            3424256,
-            3424256,
-            3424256
+            3407872,
+            3407872,
+            3407872,
+            3407872,
+            3407872
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 66479667,
-          "wall_ns_median": 68717916,
+          "elapsed_ns_median": 68236833,
+          "wall_ns_median": 70708209,
           "elapsed_ns_samples": [
-            66479667,
-            66232042,
-            69381459,
-            66984084,
-            66446500
+            68129208,
+            68236833,
+            68121417,
+            68485500,
+            68418875
           ],
-          "peak_rss_bytes_median": 3309568,
+          "peak_rss_bytes_median": 3325952,
           "peak_rss_bytes_samples": [
-            3309568,
-            3309568,
-            3309568,
-            3309568,
-            3309568
+            3325952,
+            3325952,
+            3325952,
+            3325952,
+            3325952
           ]
         },
         "rust": {
-          "elapsed_ns_median": 128417750,
-          "wall_ns_median": 130732875,
+          "elapsed_ns_median": 131404542,
+          "wall_ns_median": 133904417,
           "elapsed_ns_samples": [
-            127968042,
-            128297625,
-            134302958,
-            129176958,
-            128417750
+            131404542,
+            131024000,
+            131848542,
+            131344125,
+            132306959
           ],
-          "peak_rss_bytes_median": 3506176,
+          "peak_rss_bytes_median": 3522560,
           "peak_rss_bytes_samples": [
-            3506176,
-            3506176,
-            3506176,
-            3489792,
-            3506176
+            3522560,
+            3522560,
+            3522560,
+            3522560,
+            3522560
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0105,
-          "best_ratio": 1.0133,
+          "ratio": 1.0099,
+          "best_ratio": 1.0091,
           "tolerance": 0.04,
-          "noise": 0.0093
+          "noise": 0.0042
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.5231,
-          "best_ratio": 0.5244,
+          "ratio": 0.5244,
+          "best_ratio": 0.5247,
           "tolerance": 0.04,
-          "noise": 0.0093
+          "noise": 0.0038
         }
       }
     },
@@ -391,77 +401,77 @@
       "result": 33756443,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 4596000,
-          "wall_ns_median": 6892667,
+          "elapsed_ns_median": 4657000,
+          "wall_ns_median": 6726792,
           "elapsed_ns_samples": [
-            4493000,
-            4596000,
-            4763000,
-            4613000,
-            4586000
+            4507000,
+            4649000,
+            4685000,
+            4739000,
+            4657000
           ],
-          "peak_rss_bytes_median": 2211840,
+          "peak_rss_bytes_median": 2195456,
           "peak_rss_bytes_samples": [
-            2211840,
-            2211840,
-            2211840,
-            2211840,
-            2211840
+            2195456,
+            2195456,
+            2195456,
+            2195456,
+            2195456
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 4376917,
-          "wall_ns_median": 6677041,
+          "elapsed_ns_median": 4502166,
+          "wall_ns_median": 6646417,
           "elapsed_ns_samples": [
-            4352625,
-            4449625,
-            4376917,
-            4368417,
-            4470041
+            4457917,
+            4443125,
+            4574916,
+            4502166,
+            4613667
           ],
-          "peak_rss_bytes_median": 2113536,
+          "peak_rss_bytes_median": 2129920,
           "peak_rss_bytes_samples": [
-            2113536,
-            2113536,
-            2113536,
-            2113536,
-            2113536
+            2129920,
+            2129920,
+            2129920,
+            2129920,
+            2129920
           ]
         },
         "rust": {
-          "elapsed_ns_median": 4589583,
-          "wall_ns_median": 6678292,
+          "elapsed_ns_median": 4633000,
+          "wall_ns_median": 6950250,
           "elapsed_ns_samples": [
-            4608834,
-            4589583,
-            4688250,
-            4442417,
-            4476750
+            4545292,
+            4633000,
+            4580083,
+            4644709,
+            4787583
           ],
-          "peak_rss_bytes_median": 2326528,
+          "peak_rss_bytes_median": 2342912,
           "peak_rss_bytes_samples": [
-            2310144,
-            2326528,
-            2326528,
-            2326528,
-            2326528
+            2342912,
+            2342912,
+            2342912,
+            2342912,
+            2342912
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0501,
-          "best_ratio": 1.0323,
+          "ratio": 1.0344,
+          "best_ratio": 1.0144,
           "tolerance": 0.04,
-          "noise": 0.0186
+          "noise": 0.026
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0014,
-          "best_ratio": 1.0114,
+          "ratio": 1.0052,
+          "best_ratio": 0.9916,
           "tolerance": 0.04,
-          "noise": 0.0288
+          "noise": 0.0139
         }
       }
     },
@@ -473,77 +483,77 @@
       "result": 33756443,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 3778000,
-          "wall_ns_median": 5989584,
+          "elapsed_ns_median": 4035000,
+          "wall_ns_median": 6723833,
           "elapsed_ns_samples": [
-            3736000,
-            3723000,
-            3778000,
-            3850000,
-            3880000
+            5256000,
+            4323000,
+            4035000,
+            3834000,
+            3886000
           ],
-          "peak_rss_bytes_median": 2654208,
+          "peak_rss_bytes_median": 2637824,
           "peak_rss_bytes_samples": [
-            2654208,
-            2654208,
-            2654208,
-            2654208,
-            2654208
+            2637824,
+            2637824,
+            2637824,
+            2637824,
+            2637824
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 3620458,
-          "wall_ns_median": 5549791,
+          "elapsed_ns_median": 3877500,
+          "wall_ns_median": 6327459,
           "elapsed_ns_samples": [
-            3798375,
-            3595250,
-            3599416,
-            3620458,
-            3703917
+            3909625,
+            4775875,
+            3877500,
+            3799459,
+            3738666
           ],
-          "peak_rss_bytes_median": 2539520,
+          "peak_rss_bytes_median": 2555904,
           "peak_rss_bytes_samples": [
-            2539520,
-            2523136,
-            2539520,
-            2539520,
-            2539520
+            2555904,
+            2555904,
+            2555904,
+            2555904,
+            2555904
           ]
         },
         "rust": {
-          "elapsed_ns_median": 4994958,
-          "wall_ns_median": 7008542,
+          "elapsed_ns_median": 5125541,
+          "wall_ns_median": 7830125,
           "elapsed_ns_samples": [
-            4979875,
-            5107458,
-            4998625,
-            4994958,
-            4942458
+            5282541,
+            5292667,
+            5094875,
+            5101334,
+            5125541
           ],
-          "peak_rss_bytes_median": 2752512,
+          "peak_rss_bytes_median": 2768896,
           "peak_rss_bytes_samples": [
-            2752512,
-            2752512,
-            2752512,
-            2752512,
-            2752512
+            2768896,
+            2768896,
+            2768896,
+            2768896,
+            2768896
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0435,
-          "best_ratio": 1.0355,
-          "tolerance": 0.04,
-          "noise": 0.0302
+          "ratio": 1.0406,
+          "best_ratio": 1.0255,
+          "tolerance": 0.1083,
+          "noise": 0.1083
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.7564,
-          "best_ratio": 0.7533,
-          "tolerance": 0.04,
-          "noise": 0.0302
+          "ratio": 0.7872,
+          "best_ratio": 0.7525,
+          "tolerance": 0.1083,
+          "noise": 0.1083
         }
       }
     },
@@ -555,77 +565,77 @@
       "result": 152047993,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 54000,
-          "wall_ns_median": 2043333,
+          "elapsed_ns_median": 63000,
+          "wall_ns_median": 2056542,
           "elapsed_ns_samples": [
-            52000,
+            87000,
+            82000,
+            56000,
             54000,
-            61000,
-            51000,
-            54000
+            63000
           ],
-          "peak_rss_bytes_median": 2097152,
+          "peak_rss_bytes_median": 2080768,
           "peak_rss_bytes_samples": [
-            2097152,
-            2097152,
-            2097152,
             2080768,
-            2097152
+            2080768,
+            2080768,
+            2080768,
+            2080768
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 91083,
-          "wall_ns_median": 2121125,
+          "elapsed_ns_median": 97709,
+          "wall_ns_median": 2091792,
           "elapsed_ns_samples": [
-            94917,
-            91083,
-            93334,
-            88916,
-            89584
+            97709,
+            91541,
+            95875,
+            100125,
+            106500
           ],
-          "peak_rss_bytes_median": 1998848,
+          "peak_rss_bytes_median": 2015232,
           "peak_rss_bytes_samples": [
-            1998848,
-            1998848,
-            1998848,
-            1998848,
-            1998848
+            2015232,
+            2015232,
+            2015232,
+            2015232,
+            2015232
           ]
         },
         "rust": {
-          "elapsed_ns_median": 165250,
-          "wall_ns_median": 2100959,
+          "elapsed_ns_median": 165541,
+          "wall_ns_median": 2302334,
           "elapsed_ns_samples": [
-            169958,
-            178709,
-            159084,
-            165250,
-            157584
+            162500,
+            165750,
+            268833,
+            165541,
+            164542
           ],
-          "peak_rss_bytes_median": 2211840,
+          "peak_rss_bytes_median": 2228224,
           "peak_rss_bytes_samples": [
-            2211840,
-            2211840,
-            2211840,
-            2211840,
-            2211840
+            2228224,
+            2228224,
+            2228224,
+            2228224,
+            2228224
           ]
         }
       },
       "verdict": {
         "cpp": {
-          "outcome": "win",
-          "ratio": 0.5929,
-          "best_ratio": 0.5736,
-          "tolerance": 0.2745,
-          "noise": 0.0412
+          "outcome": "parity",
+          "ratio": 0.6448,
+          "best_ratio": 0.5899,
+          "tolerance": 0.4127,
+          "noise": 0.4127
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.3268,
-          "best_ratio": 0.3236,
-          "tolerance": 0.1513,
-          "noise": 0.0658
+          "ratio": 0.3806,
+          "best_ratio": 0.3323,
+          "tolerance": 0.4127,
+          "noise": 0.4127
         }
       }
     },
@@ -637,77 +647,77 @@
       "result": 542195018,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 640000,
-          "wall_ns_median": 2566584,
+          "elapsed_ns_median": 658000,
+          "wall_ns_median": 2561084,
           "elapsed_ns_samples": [
-            637000,
-            640000,
+            665000,
+            662000,
+            656000,
             658000,
-            648000,
-            635000
+            655000
           ],
           "peak_rss_bytes_median": 3031040,
           "peak_rss_bytes_samples": [
             3031040,
-            3031040,
+            3014656,
             3031040,
             3031040,
             3031040
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 633916,
-          "wall_ns_median": 2455583,
+          "elapsed_ns_median": 653833,
+          "wall_ns_median": 2624583,
           "elapsed_ns_samples": [
-            675125,
-            627417,
-            684791,
-            631125,
-            633916
+            641709,
+            681833,
+            648125,
+            663250,
+            653833
           ],
-          "peak_rss_bytes_median": 2899968,
+          "peak_rss_bytes_median": 2916352,
           "peak_rss_bytes_samples": [
-            2899968,
-            2899968,
-            2899968,
-            2899968,
-            2899968
+            2916352,
+            2916352,
+            2916352,
+            2916352,
+            2916352
           ]
         },
         "rust": {
-          "elapsed_ns_median": 658375,
-          "wall_ns_median": 2687916,
+          "elapsed_ns_median": 668625,
+          "wall_ns_median": 2794834,
           "elapsed_ns_samples": [
-            685375,
-            633292,
-            658375,
-            662917,
-            649125
+            685916,
+            689584,
+            668625,
+            659584,
+            659834
           ],
-          "peak_rss_bytes_median": 3112960,
+          "peak_rss_bytes_median": 3129344,
           "peak_rss_bytes_samples": [
-            3112960,
-            3112960,
-            3112960,
-            3112960,
-            3112960
+            3129344,
+            3129344,
+            3129344,
+            3129344,
+            3129344
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0096,
-          "best_ratio": 1.0121,
-          "tolerance": 0.0694,
-          "noise": 0.0694
+          "ratio": 1.0064,
+          "best_ratio": 1.0207,
+          "tolerance": 0.04,
+          "noise": 0.0231
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9721,
-          "best_ratio": 1.0027,
+          "ratio": 0.9841,
+          "best_ratio": 0.9931,
           "tolerance": 0.04,
-          "noise": 0.0209
+          "noise": 0.039
         }
       }
     },
@@ -719,52 +729,52 @@
       "result": 12798,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 36000,
-          "wall_ns_median": 1975083,
+          "elapsed_ns_median": 38000,
+          "wall_ns_median": 2124834,
           "elapsed_ns_samples": [
+            45000,
+            38000,
+            38000,
             37000,
-            36000,
-            35000,
-            37000,
-            36000
+            37000
           ],
-          "peak_rss_bytes_median": 1818624,
+          "peak_rss_bytes_median": 1802240,
           "peak_rss_bytes_samples": [
+            1802240,
             1818624,
-            1818624,
-            1818624,
-            1818624,
-            1818624
+            1802240,
+            1802240,
+            1802240
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 143500,
-          "wall_ns_median": 2156500,
+          "elapsed_ns_median": 144708,
+          "wall_ns_median": 2039167,
           "elapsed_ns_samples": [
-            140750,
-            141084,
-            144791,
-            143500,
-            158250
+            143834,
+            144500,
+            144708,
+            146416,
+            145959
           ],
           "peak_rss_bytes_median": 1720320,
           "peak_rss_bytes_samples": [
             1720320,
             1720320,
-            1703936,
-            1703936,
+            1720320,
+            1720320,
             1720320
           ]
         },
         "rust": {
-          "elapsed_ns_median": 420791,
-          "wall_ns_median": 2447458,
+          "elapsed_ns_median": 427750,
+          "wall_ns_median": 2528417,
           "elapsed_ns_samples": [
-            436125,
-            417959,
-            419167,
-            447750,
-            420791
+            427084,
+            427750,
+            490792,
+            423542,
+            440125
           ],
           "peak_rss_bytes_median": 1916928,
           "peak_rss_bytes_samples": [
@@ -779,17 +789,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.2509,
-          "best_ratio": 0.2487,
-          "tolerance": 0.1742,
-          "noise": 0.0278
+          "ratio": 0.2626,
+          "best_ratio": 0.2572,
+          "tolerance": 0.1728,
+          "noise": 0.0263
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.0856,
-          "best_ratio": 0.0837,
-          "tolerance": 0.0594,
-          "noise": 0.0403
+          "ratio": 0.0888,
+          "best_ratio": 0.0874,
+          "tolerance": 0.0584,
+          "noise": 0.0305
         }
       }
     },
@@ -802,76 +812,76 @@
       "languages": {
         "prismio": {
           "elapsed_ns_median": 296000,
-          "wall_ns_median": 2241458,
+          "wall_ns_median": 2266375,
           "elapsed_ns_samples": [
-            291000,
-            316000,
-            289000,
+            306000,
             296000,
-            301000
+            296000,
+            308000,
+            294000
           ],
-          "peak_rss_bytes_median": 2359296,
+          "peak_rss_bytes_median": 2342912,
           "peak_rss_bytes_samples": [
             2342912,
-            2359296,
-            2359296,
-            2359296,
-            2359296
+            2342912,
+            2342912,
+            2326528,
+            2342912
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 343000,
-          "wall_ns_median": 2374292,
+          "elapsed_ns_median": 356959,
+          "wall_ns_median": 2322833,
           "elapsed_ns_samples": [
-            2764292,
-            327833,
-            343000,
-            352625,
-            321375
+            402667,
+            314667,
+            364292,
+            356959,
+            321000
           ],
-          "peak_rss_bytes_median": 2260992,
+          "peak_rss_bytes_median": 2277376,
           "peak_rss_bytes_samples": [
+            2277376,
+            2277376,
+            2277376,
             2260992,
-            2228224,
-            2260992,
-            2244608,
-            2260992
+            2277376
           ]
         },
         "rust": {
-          "elapsed_ns_median": 286750,
-          "wall_ns_median": 2319208,
+          "elapsed_ns_median": 288542,
+          "wall_ns_median": 2370125,
           "elapsed_ns_samples": [
-            267208,
-            286750,
-            280084,
-            293625,
-            293541
+            262375,
+            288542,
+            297792,
+            295208,
+            278166
           ],
-          "peak_rss_bytes_median": 2457600,
+          "peak_rss_bytes_median": 2490368,
           "peak_rss_bytes_samples": [
-            2473984,
-            2457600,
-            2457600,
             2490368,
-            2457600
+            2473984,
+            2490368,
+            2490368,
+            2490368
           ]
         }
       },
       "verdict": {
         "cpp": {
-          "outcome": "win",
-          "ratio": 0.863,
-          "best_ratio": 0.8993,
-          "tolerance": 0.0729,
-          "noise": 0.0723
+          "outcome": "parity",
+          "ratio": 0.8292,
+          "best_ratio": 0.9343,
+          "tolerance": 0.1213,
+          "noise": 0.1213
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0323,
-          "best_ratio": 1.0816,
-          "tolerance": 0.0872,
-          "noise": 0.0469
+          "ratio": 1.0258,
+          "best_ratio": 1.1205,
+          "tolerance": 0.0866,
+          "noise": 0.0591
         }
       }
     },
@@ -883,52 +893,52 @@
       "result": 16422170,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 511000,
-          "wall_ns_median": 2395250,
+          "elapsed_ns_median": 516000,
+          "wall_ns_median": 2506750,
           "elapsed_ns_samples": [
             527000,
-            503000,
-            533000,
-            511000,
-            488000
+            566000,
+            516000,
+            506000,
+            508000
           ],
           "peak_rss_bytes_median": 2260992,
           "peak_rss_bytes_samples": [
+            2244608,
             2260992,
             2260992,
-            2260992,
-            2260992,
+            2244608,
             2260992
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 502750,
-          "wall_ns_median": 2436542,
+          "elapsed_ns_median": 515292,
+          "wall_ns_median": 2440375,
           "elapsed_ns_samples": [
-            489333,
-            513625,
-            607584,
-            502750,
-            499667
+            515292,
+            533583,
+            509083,
+            519667,
+            509125
           ],
           "peak_rss_bytes_median": 2113536,
           "peak_rss_bytes_samples": [
-            2097152,
+            2113536,
+            2113536,
             2113536,
             2129920,
-            2097152,
-            2129920
+            2113536
           ]
         },
         "rust": {
-          "elapsed_ns_median": 473334,
-          "wall_ns_median": 2499292,
+          "elapsed_ns_median": 511666,
+          "wall_ns_median": 2703458,
           "elapsed_ns_samples": [
-            473334,
-            469375,
-            483125,
-            467292,
-            489084
+            511666,
+            509208,
+            504417,
+            515084,
+            613000
           ],
           "peak_rss_bytes_median": 2359296,
           "peak_rss_bytes_samples": [
@@ -943,17 +953,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0164,
-          "best_ratio": 0.9973,
-          "tolerance": 0.0497,
-          "noise": 0.047
+          "ratio": 1.0014,
+          "best_ratio": 0.9939,
+          "tolerance": 0.0485,
+          "noise": 0.0368
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0796,
-          "best_ratio": 1.0443,
-          "tolerance": 0.0528,
-          "noise": 0.047
+          "ratio": 1.0085,
+          "best_ratio": 1.0031,
+          "tolerance": 0.0489,
+          "noise": 0.0368
         }
       }
     },
@@ -965,77 +975,77 @@
       "result": 50203900,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 389000,
-          "wall_ns_median": 2268042,
+          "elapsed_ns_median": 405000,
+          "wall_ns_median": 2768750,
           "elapsed_ns_samples": [
+            399000,
             405000,
-            389000,
-            386000,
-            410000,
-            389000
+            501000,
+            393000,
+            465000
           ],
           "peak_rss_bytes_median": 1933312,
           "peak_rss_bytes_samples": [
+            1949696,
+            1916928,
             1933312,
             1933312,
-            1933312,
-            1933312,
-            1933312
+            1916928
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 364667,
-          "wall_ns_median": 2255333,
+          "elapsed_ns_median": 389708,
+          "wall_ns_median": 2860000,
           "elapsed_ns_samples": [
-            376958,
-            364667,
-            363250,
-            388333,
-            364583
+            516792,
+            389917,
+            389708,
+            376417,
+            378792
           ],
-          "peak_rss_bytes_median": 1802240,
+          "peak_rss_bytes_median": 1818624,
           "peak_rss_bytes_samples": [
+            1818624,
+            1818624,
             1802240,
             1802240,
-            1802240,
-            1802240,
-            1785856
+            1818624
           ]
         },
         "rust": {
-          "elapsed_ns_median": 388833,
-          "wall_ns_median": 2473375,
+          "elapsed_ns_median": 409000,
+          "wall_ns_median": 3015042,
           "elapsed_ns_samples": [
-            392208,
-            390292,
-            388833,
-            382208,
-            388459
+            653500,
+            485916,
+            404333,
+            409000,
+            393083
           ],
-          "peak_rss_bytes_median": 2015232,
+          "peak_rss_bytes_median": 2031616,
           "peak_rss_bytes_samples": [
-            2015232,
+            2048000,
             2031616,
-            2015232,
             2031616,
-            1998848
+            2031616,
+            2031616
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0667,
-          "best_ratio": 1.0626,
-          "tolerance": 0.0686,
-          "noise": 0.0411
+          "ratio": 1.0392,
+          "best_ratio": 1.0441,
+          "tolerance": 0.163,
+          "noise": 0.163
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0004,
-          "best_ratio": 1.0099,
-          "tolerance": 0.0643,
-          "noise": 0.0411
+          "ratio": 0.9902,
+          "best_ratio": 0.9998,
+          "tolerance": 0.1995,
+          "noise": 0.1995
         }
       }
     },
@@ -1047,18 +1057,18 @@
       "result": 466763307,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 1691000,
-          "wall_ns_median": 3746666,
+          "elapsed_ns_median": 1683000,
+          "wall_ns_median": 3717875,
           "elapsed_ns_samples": [
-            1574000,
-            1707000,
-            1691000,
-            1695000,
-            1662000
+            1668000,
+            1761000,
+            1672000,
+            1683000,
+            1693000
           ],
           "peak_rss_bytes_median": 2162688,
           "peak_rss_bytes_samples": [
-            2129920,
+            2162688,
             2162688,
             2162688,
             2162688,
@@ -1066,58 +1076,58 @@
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 1837750,
-          "wall_ns_median": 3874292,
+          "elapsed_ns_median": 1761667,
+          "wall_ns_median": 3705834,
           "elapsed_ns_samples": [
-            1837750,
-            1887750,
-            1725125,
-            1732709,
-            1879375
+            1647875,
+            1715042,
+            1799666,
+            1761667,
+            1765875
           ],
-          "peak_rss_bytes_median": 2162688,
+          "peak_rss_bytes_median": 2146304,
           "peak_rss_bytes_samples": [
-            2162688,
-            2162688,
-            2162688,
-            2162688,
-            2162688
+            2146304,
+            2146304,
+            2146304,
+            2179072,
+            2179072
           ]
         },
         "rust": {
-          "elapsed_ns_median": 2594292,
-          "wall_ns_median": 4621500,
+          "elapsed_ns_median": 2595500,
+          "wall_ns_median": 4971459,
           "elapsed_ns_samples": [
-            2594292,
-            2437125,
-            2601625,
-            2456000,
-            2616250
+            2748417,
+            2578833,
+            2674208,
+            2537750,
+            2595500
           ],
-          "peak_rss_bytes_median": 2342912,
+          "peak_rss_bytes_median": 2359296,
           "peak_rss_bytes_samples": [
-            2326528,
-            2342912,
             2375680,
-            2326528,
-            2342912
+            2359296,
+            2359296,
+            2359296,
+            2359296
           ]
         }
       },
       "verdict": {
         "cpp": {
-          "outcome": "win",
-          "ratio": 0.9201,
-          "best_ratio": 0.9124,
-          "tolerance": 0.0798,
-          "noise": 0.0798
+          "outcome": "parity",
+          "ratio": 0.9553,
+          "best_ratio": 1.0122,
+          "tolerance": 0.04,
+          "noise": 0.0289
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.6518,
-          "best_ratio": 0.6458,
-          "tolerance": 0.0561,
-          "noise": 0.0561
+          "ratio": 0.6484,
+          "best_ratio": 0.6573,
+          "tolerance": 0.04,
+          "noise": 0.0367
         }
       }
     },
@@ -1136,59 +1146,59 @@
       "result": 134410,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 281000,
-          "wall_ns_median": 2252125,
+          "elapsed_ns_median": 274000,
+          "wall_ns_median": 2324292,
           "elapsed_ns_samples": [
-            279000,
-            290000,
-            282000,
+            273000,
             267000,
-            281000
+            274000,
+            287000,
+            294000
           ],
-          "peak_rss_bytes_median": 2867200,
+          "peak_rss_bytes_median": 2850816,
           "peak_rss_bytes_samples": [
-            2867200,
-            2867200,
-            2867200,
-            2867200,
-            2867200
+            2850816,
+            2850816,
+            2850816,
+            2850816,
+            2850816
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 455959,
-          "wall_ns_median": 2415542,
+          "elapsed_ns_median": 463583,
+          "wall_ns_median": 2310417,
           "elapsed_ns_samples": [
-            459125,
-            455959,
-            456666,
-            444000,
-            436750
+            439583,
+            473459,
+            490958,
+            435833,
+            463583
           ],
-          "peak_rss_bytes_median": 3162112,
+          "peak_rss_bytes_median": 3178496,
           "peak_rss_bytes_samples": [
             3178496,
             3178496,
-            3162112,
-            3162112,
-            3162112
+            3178496,
+            3178496,
+            3178496
           ]
         },
         "rust": {
-          "elapsed_ns_median": 404042,
-          "wall_ns_median": 2406250,
+          "elapsed_ns_median": 403667,
+          "wall_ns_median": 2423708,
           "elapsed_ns_samples": [
-            403500,
-            407792,
-            420833,
-            404042,
-            396041
+            407208,
+            431125,
+            391750,
+            402208,
+            403667
           ],
-          "peak_rss_bytes_median": 2490368,
+          "peak_rss_bytes_median": 2506752,
           "peak_rss_bytes_samples": [
-            2490368,
-            2490368,
             2506752,
-            2490368,
+            2506752,
+            2506752,
+            2506752,
             2506752
           ]
         }
@@ -1196,17 +1206,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.6163,
-          "best_ratio": 0.6113,
-          "tolerance": 0.0548,
-          "noise": 0.0278
+          "ratio": 0.591,
+          "best_ratio": 0.6126,
+          "tolerance": 0.0731,
+          "noise": 0.0731
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.6955,
-          "best_ratio": 0.6742,
+          "ratio": 0.6788,
+          "best_ratio": 0.6816,
           "tolerance": 0.0619,
-          "noise": 0.0107
+          "noise": 0.0511
         }
       }
     },
@@ -1218,77 +1228,77 @@
       "result": 379505043,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 4150000,
-          "wall_ns_median": 6109958,
+          "elapsed_ns_median": 4119000,
+          "wall_ns_median": 6428458,
           "elapsed_ns_samples": [
-            4229000,
-            4150000,
-            4174000,
-            4134000,
-            4141000
+            4136000,
+            4077000,
+            4239000,
+            4100000,
+            4119000
           ],
-          "peak_rss_bytes_median": 3129344,
+          "peak_rss_bytes_median": 3112960,
           "peak_rss_bytes_samples": [
-            3129344,
-            3129344,
-            3129344,
-            3129344,
-            3129344
+            3112960,
+            3112960,
+            3112960,
+            3112960,
+            3112960
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 7946667,
-          "wall_ns_median": 10272708,
+          "elapsed_ns_median": 7958000,
+          "wall_ns_median": 9985166,
           "elapsed_ns_samples": [
-            7923625,
-            7997625,
-            7946667,
-            7904041,
-            7984291
+            8043041,
+            7956584,
+            7958000,
+            7823000,
+            7994042
           ],
-          "peak_rss_bytes_median": 3653632,
+          "peak_rss_bytes_median": 3670016,
           "peak_rss_bytes_samples": [
-            3653632,
-            3653632,
-            3653632,
-            3653632,
-            3653632
+            3670016,
+            3670016,
+            3670016,
+            3670016,
+            3670016
           ]
         },
         "rust": {
-          "elapsed_ns_median": 5957292,
-          "wall_ns_median": 8047000,
+          "elapsed_ns_median": 5891292,
+          "wall_ns_median": 8148291,
           "elapsed_ns_samples": [
-            5999000,
-            5761958,
-            5890375,
-            5957292,
-            6043791
+            6115583,
+            5891292,
+            5835083,
+            5758459,
+            5895458
           ],
           "peak_rss_bytes_median": 5210112,
           "peak_rss_bytes_samples": [
+            5226496,
             5210112,
             5210112,
-            5210112,
-            5210112,
-            5210112
+            5177344,
+            5160960
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.5222,
-          "best_ratio": 0.523,
+          "ratio": 0.5176,
+          "best_ratio": 0.5212,
           "tolerance": 0.04,
-          "noise": 0.008
+          "noise": 0.0087
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.6966,
-          "best_ratio": 0.7175,
+          "ratio": 0.6992,
+          "best_ratio": 0.708,
           "tolerance": 0.04,
-          "noise": 0.0182
+          "noise": 0.0102
         }
       }
     },
@@ -1300,77 +1310,77 @@
       "result": 179,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 588000,
-          "wall_ns_median": 2493208,
+          "elapsed_ns_median": 724000,
+          "wall_ns_median": 2644666,
           "elapsed_ns_samples": [
-            736000,
-            702000,
-            577000,
-            588000,
-            566000
+            579000,
+            586000,
+            724000,
+            731000,
+            739000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 726792,
-          "wall_ns_median": 2659125,
+          "elapsed_ns_median": 625750,
+          "wall_ns_median": 2607125,
           "elapsed_ns_samples": [
-            587667,
-            743625,
-            709709,
-            734084,
-            726792
+            580292,
+            625750,
+            579625,
+            748958,
+            731291
           ],
-          "peak_rss_bytes_median": 1736704,
+          "peak_rss_bytes_median": 1753088,
           "peak_rss_bytes_samples": [
-            1736704,
-            1736704,
-            1736704,
-            1736704,
-            1736704
+            1753088,
+            1753088,
+            1753088,
+            1753088,
+            1753088
           ]
         },
         "rust": {
-          "elapsed_ns_median": 657958,
-          "wall_ns_median": 2767459,
+          "elapsed_ns_median": 653917,
+          "wall_ns_median": 2816917,
           "elapsed_ns_samples": [
-            605458,
-            663083,
-            621208,
-            663583,
-            657958
+            789750,
+            616042,
+            681833,
+            614042,
+            653917
           ],
-          "peak_rss_bytes_median": 1933312,
+          "peak_rss_bytes_median": 1949696,
           "peak_rss_bytes_samples": [
-            1933312,
-            1933312,
-            1933312,
-            1933312,
-            1933312
+            1949696,
+            1949696,
+            1949696,
+            1949696,
+            1949696
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.809,
-          "best_ratio": 0.9631,
-          "tolerance": 0.2126,
-          "noise": 0.2126
+          "ratio": 1.157,
+          "best_ratio": 0.9989,
+          "tolerance": 0.2413,
+          "noise": 0.2413
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.8937,
-          "best_ratio": 0.9348,
-          "tolerance": 0.2126,
-          "noise": 0.2126
+          "ratio": 1.1072,
+          "best_ratio": 0.9429,
+          "tolerance": 0.2003,
+          "noise": 0.2003
         }
       }
     },
@@ -1382,14 +1392,14 @@
       "result": 42239213,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 4653000,
-          "wall_ns_median": 7446083,
+          "elapsed_ns_median": 4442000,
+          "wall_ns_median": 7117250,
           "elapsed_ns_samples": [
-            4324000,
-            5189000,
-            4591000,
-            4653000,
-            4680000
+            4734000,
+            4722000,
+            4442000,
+            4265000,
+            4361000
           ],
           "peak_rss_bytes_median": 8028160,
           "peak_rss_bytes_samples": [
@@ -1397,22 +1407,22 @@
             8028160,
             8028160,
             8028160,
-            8028160
+            8011776
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 6318625,
-          "wall_ns_median": 8982500,
+          "elapsed_ns_median": 5847250,
+          "wall_ns_median": 8254000,
           "elapsed_ns_samples": [
-            9020958,
-            5821000,
-            5913875,
-            6318625,
-            6903209
+            6229666,
+            6605875,
+            5522209,
+            5847250,
+            5728000
           ],
           "peak_rss_bytes_median": 11583488,
           "peak_rss_bytes_samples": [
-            11567104,
+            11583488,
             11583488,
             11583488,
             11583488,
@@ -1420,14 +1430,14 @@
           ]
         },
         "rust": {
-          "elapsed_ns_median": 11490542,
-          "wall_ns_median": 14224000,
+          "elapsed_ns_median": 11267375,
+          "wall_ns_median": 13895709,
           "elapsed_ns_samples": [
-            10610333,
-            11767291,
-            11490542,
-            12149875,
-            11139958
+            11993916,
+            12045333,
+            11267375,
+            11178125,
+            11258250
           ],
           "peak_rss_bytes_median": 6799360,
           "peak_rss_bytes_samples": [
@@ -1442,17 +1452,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.7364,
-          "best_ratio": 0.7428,
-          "tolerance": 0.1566,
-          "noise": 0.1566
+          "ratio": 0.7597,
+          "best_ratio": 0.7723,
+          "tolerance": 0.0858,
+          "noise": 0.0858
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.4049,
-          "best_ratio": 0.4075,
-          "tolerance": 0.0546,
-          "noise": 0.0546
+          "ratio": 0.3942,
+          "best_ratio": 0.3815,
+          "tolerance": 0.0813,
+          "noise": 0.0813
         }
       }
     },
@@ -1464,58 +1474,58 @@
       "result": 995982695,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 11634000,
-          "wall_ns_median": 14124542,
+          "elapsed_ns_median": 11674000,
+          "wall_ns_median": 14416584,
           "elapsed_ns_samples": [
-            11922000,
-            11747000,
-            11483000,
-            11485000,
-            11634000
+            11804000,
+            11674000,
+            11581000,
+            11424000,
+            11856000
           ],
-          "peak_rss_bytes_median": 34668544,
+          "peak_rss_bytes_median": 34684928,
           "peak_rss_bytes_samples": [
-            34668544,
             34684928,
-            34668544,
             34684928,
-            34668544
+            34684928,
+            34684928,
+            34684928
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 11178208,
-          "wall_ns_median": 13724417,
+          "elapsed_ns_median": 11337167,
+          "wall_ns_median": 13984708,
           "elapsed_ns_samples": [
-            11370167,
-            11150333,
-            11178208,
-            11242625,
-            11113542
+            11295958,
+            11184583,
+            11345791,
+            11337167,
+            11574041
           ],
           "peak_rss_bytes_median": 34603008,
           "peak_rss_bytes_samples": [
             34603008,
+            34603008,
             34586624,
             34603008,
-            34603008,
-            34586624
+            34603008
           ]
         },
         "rust": {
-          "elapsed_ns_median": 10236833,
-          "wall_ns_median": 12728500,
+          "elapsed_ns_median": 10327500,
+          "wall_ns_median": 13081875,
           "elapsed_ns_samples": [
-            10319083,
-            10206583,
-            10305042,
-            10236833,
-            10095041
+            10200875,
+            10475500,
+            10238000,
+            10327500,
+            10645583
           ],
-          "peak_rss_bytes_median": 20119552,
+          "peak_rss_bytes_median": 20135936,
           "peak_rss_bytes_samples": [
-            20119552,
-            20119552,
-            20119552,
+            20135936,
+            20135936,
+            20135936,
             20135936,
             20135936
           ]
@@ -1524,17 +1534,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0408,
-          "best_ratio": 1.0332,
+          "ratio": 1.0297,
+          "best_ratio": 1.0214,
           "tolerance": 0.04,
-          "noise": 0.0225
+          "noise": 0.0191
         },
         "rust": {
           "outcome": "loss",
-          "ratio": 1.1365,
-          "best_ratio": 1.1375,
+          "ratio": 1.1304,
+          "best_ratio": 1.1199,
           "tolerance": 0.04,
-          "noise": 0.0225
+          "noise": 0.023
         }
       }
     },
@@ -1546,77 +1556,77 @@
       "result": 127112128,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 74330000,
-          "wall_ns_median": 76768583,
+          "elapsed_ns_median": 76713000,
+          "wall_ns_median": 79286167,
           "elapsed_ns_samples": [
-            75353000,
-            74286000,
-            74092000,
-            75007000,
-            74330000
+            79106000,
+            79455000,
+            76713000,
+            76473000,
+            76560000
           ],
-          "peak_rss_bytes_median": 17825792,
+          "peak_rss_bytes_median": 17809408,
           "peak_rss_bytes_samples": [
-            17825792,
-            17825792,
-            17825792,
-            17825792,
-            17825792
+            17809408,
+            17809408,
+            17809408,
+            17809408,
+            17809408
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 76153834,
-          "wall_ns_median": 78427250,
+          "elapsed_ns_median": 78648583,
+          "wall_ns_median": 80881625,
           "elapsed_ns_samples": [
-            76207250,
-            76065541,
-            76153834,
-            76243416,
-            75990417
+            81427709,
+            78648583,
+            78652417,
+            78111416,
+            78069458
           ],
-          "peak_rss_bytes_median": 17727488,
+          "peak_rss_bytes_median": 17743872,
           "peak_rss_bytes_samples": [
-            17727488,
-            17727488,
-            17727488,
-            17727488,
-            17727488
+            17743872,
+            17743872,
+            17743872,
+            17743872,
+            17743872
           ]
         },
         "rust": {
-          "elapsed_ns_median": 74271375,
-          "wall_ns_median": 76834708,
+          "elapsed_ns_median": 76393834,
+          "wall_ns_median": 78950625,
           "elapsed_ns_samples": [
-            74245792,
-            74314791,
-            74279000,
-            74271375,
-            74157083
+            81663667,
+            76619917,
+            76393834,
+            76090292,
+            76058250
           ],
-          "peak_rss_bytes_median": 17907712,
+          "peak_rss_bytes_median": 17924096,
           "peak_rss_bytes_samples": [
-            17907712,
-            17907712,
-            17907712,
-            17907712,
-            17907712
+            17924096,
+            17924096,
+            17924096,
+            17924096,
+            17924096
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9761,
-          "best_ratio": 0.975,
+          "ratio": 0.9754,
+          "best_ratio": 0.9796,
           "tolerance": 0.04,
-          "noise": 0.0097
+          "noise": 0.0332
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0008,
-          "best_ratio": 0.9991,
+          "ratio": 1.0042,
+          "best_ratio": 1.0055,
           "tolerance": 0.04,
-          "noise": 0.0097
+          "noise": 0.0332
         }
       }
     },
@@ -1628,52 +1638,52 @@
       "result": 5599628,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 4980000,
-          "wall_ns_median": 7116209,
+          "elapsed_ns_median": 5038000,
+          "wall_ns_median": 7216542,
           "elapsed_ns_samples": [
-            4917000,
-            4937000,
-            4986000,
-            4980000,
-            5008000
+            5061000,
+            5038000,
+            5023000,
+            5069000,
+            5023000
           ],
           "peak_rss_bytes_median": 4915200,
           "peak_rss_bytes_samples": [
             4915200,
             4915200,
-            4898816,
+            4915200,
             4915200,
             4915200
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 5453750,
-          "wall_ns_median": 7304959,
+          "elapsed_ns_median": 5631417,
+          "wall_ns_median": 7652041,
           "elapsed_ns_samples": [
-            5285000,
-            5782875,
-            4997500,
-            5693291,
-            5453750
+            5704167,
+            5767458,
+            5335292,
+            5332917,
+            5631417
           ],
           "peak_rss_bytes_median": 6062080,
           "peak_rss_bytes_samples": [
             6062080,
             6062080,
-            6045696,
+            6062080,
             6062080,
             6062080
           ]
         },
         "rust": {
-          "elapsed_ns_median": 8213667,
-          "wall_ns_median": 10517250,
+          "elapsed_ns_median": 8281375,
+          "wall_ns_median": 10549875,
           "elapsed_ns_samples": [
-            8087750,
-            8213667,
-            8216208,
-            8266333,
-            7864459
+            8281375,
+            8063333,
+            8293542,
+            8198333,
+            8432833
           ],
           "peak_rss_bytes_median": 4423680,
           "peak_rss_bytes_samples": [
@@ -1687,18 +1697,18 @@
       },
       "verdict": {
         "cpp": {
-          "outcome": "parity",
-          "ratio": 0.9131,
-          "best_ratio": 0.9839,
-          "tolerance": 0.0749,
-          "noise": 0.0749
+          "outcome": "win",
+          "ratio": 0.8946,
+          "best_ratio": 0.9419,
+          "tolerance": 0.0655,
+          "noise": 0.0655
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.6063,
-          "best_ratio": 0.6252,
+          "ratio": 0.6084,
+          "best_ratio": 0.6229,
           "tolerance": 0.04,
-          "noise": 0.0156
+          "noise": 0.0115
         }
       }
     },
@@ -1710,33 +1720,33 @@
       "result": 260013339,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 1429000,
-          "wall_ns_median": 3458334,
+          "elapsed_ns_median": 1478000,
+          "wall_ns_median": 3322000,
           "elapsed_ns_samples": [
-            1419000,
-            1481000,
-            1429000,
-            1420000,
-            1463000
+            1478000,
+            1454000,
+            1494000,
+            1370000,
+            1478000
           ],
           "peak_rss_bytes_median": 1916928,
           "peak_rss_bytes_samples": [
             1916928,
             1916928,
-            1916928,
+            1900544,
             1916928,
             1916928
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 1401084,
-          "wall_ns_median": 3372875,
+          "elapsed_ns_median": 1395958,
+          "wall_ns_median": 3265792,
           "elapsed_ns_samples": [
-            1434458,
-            1375125,
-            1394834,
-            1419625,
-            1401084
+            1395958,
+            1279708,
+            1410833,
+            1312041,
+            1435083
           ],
           "peak_rss_bytes_median": 1818624,
           "peak_rss_bytes_samples": [
@@ -1748,14 +1758,14 @@
           ]
         },
         "rust": {
-          "elapsed_ns_median": 1375542,
-          "wall_ns_median": 3431584,
+          "elapsed_ns_median": 1404042,
+          "wall_ns_median": 3581583,
           "elapsed_ns_samples": [
-            1395875,
-            1336625,
-            1375542,
-            1228042,
-            1431792
+            1404042,
+            1472334,
+            1441792,
+            1401875,
+            1402917
           ],
           "peak_rss_bytes_median": 2015232,
           "peak_rss_bytes_samples": [
@@ -1770,17 +1780,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0199,
-          "best_ratio": 1.0319,
-          "tolerance": 0.04,
-          "noise": 0.0301
+          "ratio": 1.0588,
+          "best_ratio": 1.0706,
+          "tolerance": 0.0708,
+          "noise": 0.0708
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0389,
-          "best_ratio": 1.1555,
-          "tolerance": 0.0431,
-          "noise": 0.0431
+          "ratio": 1.0527,
+          "best_ratio": 0.9773,
+          "tolerance": 0.04,
+          "noise": 0.0277
         }
       }
     },
@@ -1792,52 +1802,52 @@
       "result": 979644148,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 3800000,
-          "wall_ns_median": 5921917,
+          "elapsed_ns_median": 3802000,
+          "wall_ns_median": 5997167,
           "elapsed_ns_samples": [
-            3800000,
-            3762000,
-            3973000,
-            3968000,
-            3638000
+            3777000,
+            3681000,
+            4005000,
+            3961000,
+            3802000
           ],
-          "peak_rss_bytes_median": 2506752,
+          "peak_rss_bytes_median": 2523136,
           "peak_rss_bytes_samples": [
             2506752,
-            2506752,
-            2506752,
-            2506752,
-            2506752
+            2523136,
+            2523136,
+            2523136,
+            2523136
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 3792167,
-          "wall_ns_median": 5823042,
+          "elapsed_ns_median": 3852625,
+          "wall_ns_median": 6061708,
           "elapsed_ns_samples": [
-            3854458,
-            3792667,
-            3790667,
-            3792167,
-            3728917
+            4160542,
+            3852625,
+            3843458,
+            4125000,
+            3820542
           ],
           "peak_rss_bytes_median": 2392064,
           "peak_rss_bytes_samples": [
-            2408448,
             2392064,
             2375680,
-            2408448,
-            2392064
+            2392064,
+            2375680,
+            2408448
           ]
         },
         "rust": {
-          "elapsed_ns_median": 3946083,
-          "wall_ns_median": 6212583,
+          "elapsed_ns_median": 3986708,
+          "wall_ns_median": 6331625,
           "elapsed_ns_samples": [
-            4040125,
-            3946083,
-            4053667,
-            3907542,
-            3780666
+            3986708,
+            4140958,
+            3881333,
+            4098667,
+            3849500
           ],
           "peak_rss_bytes_median": 2621440,
           "peak_rss_bytes_samples": [
@@ -1852,17 +1862,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0021,
-          "best_ratio": 0.9756,
-          "tolerance": 0.0542,
-          "noise": 0.0542
+          "ratio": 0.9869,
+          "best_ratio": 0.9635,
+          "tolerance": 0.0731,
+          "noise": 0.0731
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.963,
-          "best_ratio": 0.9623,
-          "tolerance": 0.0542,
-          "noise": 0.0542
+          "ratio": 0.9537,
+          "best_ratio": 0.9562,
+          "tolerance": 0.0545,
+          "noise": 0.0545
         }
       }
     },
@@ -1895,14 +1905,14 @@
       "result": 4266360,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 3452000,
-          "wall_ns_median": 5680917,
+          "elapsed_ns_median": 3547000,
+          "wall_ns_median": 5893500,
           "elapsed_ns_samples": [
-            3439000,
-            3510000,
-            3370000,
-            3452000,
-            3487000
+            3661000,
+            3547000,
+            3481000,
+            3527000,
+            3554000
           ],
           "peak_rss_bytes_median": 4931584,
           "peak_rss_bytes_samples": [
@@ -1914,58 +1924,58 @@
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 5183416,
-          "wall_ns_median": 7098208,
+          "elapsed_ns_median": 5405417,
+          "wall_ns_median": 7626459,
           "elapsed_ns_samples": [
-            5311250,
-            5183416,
-            5036792,
-            5095125,
-            5761166
+            5146042,
+            5150792,
+            5405417,
+            5487709,
+            6473375
           ],
           "peak_rss_bytes_median": 6062080,
           "peak_rss_bytes_samples": [
             6062080,
-            6045696,
+            6062080,
             6062080,
             6062080,
             6062080
           ]
         },
         "rust": {
-          "elapsed_ns_median": 6741583,
-          "wall_ns_median": 8991250,
+          "elapsed_ns_median": 6804667,
+          "wall_ns_median": 9387667,
           "elapsed_ns_samples": [
-            6591750,
-            6638875,
-            6873625,
-            6741583,
-            6768084
+            6550666,
+            6804667,
+            7298750,
+            6767417,
+            7001583
           ],
           "peak_rss_bytes_median": 4407296,
           "peak_rss_bytes_samples": [
             4407296,
             4407296,
+            4423680,
             4407296,
-            4407296,
-            4407296
+            3817472
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.666,
-          "best_ratio": 0.6691,
-          "tolerance": 0.0417,
-          "noise": 0.0417
+          "ratio": 0.6562,
+          "best_ratio": 0.6764,
+          "tolerance": 0.0623,
+          "noise": 0.0623
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.512,
-          "best_ratio": 0.5112,
+          "ratio": 0.5213,
+          "best_ratio": 0.5314,
           "tolerance": 0.04,
-          "noise": 0.0192
+          "noise": 0.0344
         }
       }
     },
@@ -1984,14 +1994,14 @@
       "result": 346043827,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 4351000,
-          "wall_ns_median": 6726958,
+          "elapsed_ns_median": 4403000,
+          "wall_ns_median": 6909000,
           "elapsed_ns_samples": [
-            4203000,
-            4351000,
-            4312000,
-            4408000,
-            4448000
+            4437000,
+            4403000,
+            4500000,
+            4355000,
+            4373000
           ],
           "peak_rss_bytes_median": 2064384,
           "peak_rss_bytes_samples": [
@@ -1999,62 +2009,62 @@
             2064384,
             2064384,
             2064384,
-            2064384
+            2048000
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 4251292,
-          "wall_ns_median": 6331750,
+          "elapsed_ns_median": 4350417,
+          "wall_ns_median": 6547250,
           "elapsed_ns_samples": [
-            4224042,
-            4334917,
-            4251292,
-            4249833,
-            4281416
+            4599166,
+            4348916,
+            4351375,
+            4332125,
+            4350417
           ],
-          "peak_rss_bytes_median": 1933312,
+          "peak_rss_bytes_median": 1949696,
           "peak_rss_bytes_samples": [
-            1933312,
-            1933312,
-            1933312,
-            1933312,
-            1933312
+            1949696,
+            1949696,
+            1949696,
+            1949696,
+            1949696
           ]
         },
         "rust": {
-          "elapsed_ns_median": 4410542,
-          "wall_ns_median": 6627042,
+          "elapsed_ns_median": 4461625,
+          "wall_ns_median": 6788917,
           "elapsed_ns_samples": [
-            4410542,
-            4414542,
-            4479666,
-            4262334,
-            4223250
+            4446459,
+            4461625,
+            4536666,
+            4479792,
+            4367959
           ],
-          "peak_rss_bytes_median": 2113536,
+          "peak_rss_bytes_median": 2129920,
           "peak_rss_bytes_samples": [
-            2113536,
-            2113536,
-            2113536,
-            2113536,
-            2113536
+            2129920,
+            2129920,
+            2129920,
+            2129920,
+            2129920
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0235,
-          "best_ratio": 0.995,
+          "ratio": 1.0121,
+          "best_ratio": 1.0053,
           "tolerance": 0.04,
-          "noise": 0.0221
+          "noise": 0.0145
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9865,
-          "best_ratio": 0.9952,
+          "ratio": 0.9869,
+          "best_ratio": 0.997,
           "tolerance": 0.04,
-          "noise": 0.0345
+          "noise": 0.0145
         }
       }
     },
@@ -2066,525 +2076,33 @@
       "result": 38776,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 3006000,
-          "wall_ns_median": 4963500,
+          "elapsed_ns_median": 3060000,
+          "wall_ns_median": 5019292,
           "elapsed_ns_samples": [
-            3050000,
-            2928000,
-            3006000,
-            3022000,
-            2964000
+            3111000,
+            3020000,
+            3060000,
+            3025000,
+            3106000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 3076250,
-          "wall_ns_median": 4910541,
-          "elapsed_ns_samples": [
-            3154916,
-            3025167,
-            3048208,
-            3092125,
-            3076250
-          ],
-          "peak_rss_bytes_median": 1703936,
-          "peak_rss_bytes_samples": [
-            1703936,
-            1703936,
-            1703936,
-            1703936,
-            1703936
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 3840250,
-          "wall_ns_median": 5983875,
-          "elapsed_ns_samples": [
-            3819000,
-            3948291,
-            3840250,
-            3946166,
-            3755667
-          ],
-          "peak_rss_bytes_median": 1884160,
-          "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 0.9772,
-          "best_ratio": 0.9679,
-          "tolerance": 0.04,
-          "noise": 0.0193
-        },
-        "rust": {
-          "outcome": "win",
-          "ratio": 0.7828,
-          "best_ratio": 0.7796,
-          "tolerance": 0.04,
-          "noise": 0.0331
-        }
-      }
-    },
-    {
-      "name": "fft",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu",
-      "result": 327680,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 2749000,
-          "wall_ns_median": 4784792,
-          "elapsed_ns_samples": [
-            2750000,
-            2749000,
-            2758000,
-            2706000,
-            2704000
-          ],
-          "peak_rss_bytes_median": 1900544,
-          "peak_rss_bytes_samples": [
-            1900544,
-            1900544,
-            1900544,
-            1900544,
-            1900544
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 2687875,
-          "wall_ns_median": 4613083,
-          "elapsed_ns_samples": [
-            2708917,
-            2671625,
-            2719000,
-            2680333,
-            2687875
-          ],
-          "peak_rss_bytes_median": 1785856,
-          "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
             1769472,
-            1785856
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 3004542,
-          "wall_ns_median": 5063500,
-          "elapsed_ns_samples": [
-            3004542,
-            3023167,
-            2978125,
-            3056708,
-            2987291
-          ],
-          "peak_rss_bytes_median": 1966080,
-          "peak_rss_bytes_samples": [
-            1949696,
-            1966080,
-            1949696,
-            1966080,
-            1966080
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 1.0227,
-          "best_ratio": 1.0121,
-          "tolerance": 0.04,
-          "noise": 0.016
-        },
-        "rust": {
-          "outcome": "win",
-          "ratio": 0.9149,
-          "best_ratio": 0.908,
-          "tolerance": 0.04,
-          "noise": 0.016
-        }
-      }
-    },
-    {
-      "name": "numerical_integration",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu",
-      "result": 314159265,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 2184000,
-          "wall_ns_median": 3980042,
-          "elapsed_ns_samples": [
-            2258000,
-            2151000,
-            2184000,
-            2158000,
-            2211000
-          ],
-          "peak_rss_bytes_median": 1785856,
-          "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 2198875,
-          "wall_ns_median": 4134916,
+          "elapsed_ns_median": 3070250,
+          "wall_ns_median": 5172334,
           "elapsed_ns_samples": [
-            2226584,
-            2198875,
-            2157459,
-            2245875,
-            2160500
-          ],
-          "peak_rss_bytes_median": 1703936,
-          "peak_rss_bytes_samples": [
-            1703936,
-            1687552,
-            1703936,
-            1703936,
-            1703936
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 2167875,
-          "wall_ns_median": 4292750,
-          "elapsed_ns_samples": [
-            2167875,
-            2209792,
-            2175166,
-            2154250,
-            2160750
-          ],
-          "peak_rss_bytes_median": 1884160,
-          "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 0.9932,
-          "best_ratio": 0.997,
-          "tolerance": 0.04,
-          "noise": 0.0301
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.0074,
-          "best_ratio": 0.9985,
-          "tolerance": 0.04,
-          "noise": 0.0243
-        }
-      }
-    },
-    {
-      "name": "vector_dot",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu-memory",
-      "result": 199986180,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 12328000,
-          "wall_ns_median": 14761583,
-          "elapsed_ns_samples": [
-            12543000,
-            12328000,
-            12105000,
-            12235000,
-            12878000
-          ],
-          "peak_rss_bytes_median": 33865728,
-          "peak_rss_bytes_samples": [
-            33865728,
-            33865728,
-            33865728,
-            33865728,
-            33865728
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 17516209,
-          "wall_ns_median": 19922250,
-          "elapsed_ns_samples": [
-            17780167,
-            17468917,
-            17350667,
-            17516209,
-            18075625
-          ],
-          "peak_rss_bytes_median": 33751040,
-          "peak_rss_bytes_samples": [
-            33751040,
-            33751040,
-            33751040,
-            33751040,
-            33751040
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 11797125,
-          "wall_ns_median": 14404875,
-          "elapsed_ns_samples": [
-            11797125,
-            11796875,
-            11670292,
-            11845917,
-            12536083
-          ],
-          "peak_rss_bytes_median": 33931264,
-          "peak_rss_bytes_samples": [
-            33931264,
-            33931264,
-            33931264,
-            33931264,
-            33931264
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "win",
-          "ratio": 0.7038,
-          "best_ratio": 0.6977,
-          "tolerance": 0.04,
-          "noise": 0.025
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.045,
-          "best_ratio": 1.0372,
-          "tolerance": 0.04,
-          "noise": 0.025
-        }
-      }
-    },
-    {
-      "name": "convolution",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu-memory",
-      "result": 399934914,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 3665000,
-          "wall_ns_median": 6198041,
-          "elapsed_ns_samples": [
-            3623000,
-            3711000,
-            3665000,
-            4048000,
-            3601000
-          ],
-          "peak_rss_bytes_median": 11468800,
-          "peak_rss_bytes_samples": [
-            11468800,
-            11452416,
-            11468800,
-            11468800,
-            11468800
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 3648542,
-          "wall_ns_median": 6034500,
-          "elapsed_ns_samples": [
-            3648542,
-            4496500,
-            3619417,
-            3541458,
-            3695042
-          ],
-          "peak_rss_bytes_median": 11337728,
-          "peak_rss_bytes_samples": [
-            11337728,
-            11354112,
-            11337728,
-            11337728,
-            11337728
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 3576833,
-          "wall_ns_median": 6286875,
-          "elapsed_ns_samples": [
-            3631958,
-            3805500,
-            3570834,
-            3576833,
-            3487750
-          ],
-          "peak_rss_bytes_median": 11517952,
-          "peak_rss_bytes_samples": [
-            11517952,
-            11517952,
-            11517952,
-            11517952,
-            11517952
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 1.0045,
-          "best_ratio": 1.0168,
-          "tolerance": 0.04,
-          "noise": 0.024
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.0246,
-          "best_ratio": 1.0325,
-          "tolerance": 0.04,
-          "noise": 0.024
-        }
-      }
-    },
-    {
-      "name": "monte_carlo",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu",
-      "result": 6498683,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 43833000,
-          "wall_ns_median": 46089500,
-          "elapsed_ns_samples": [
-            45027000,
-            44048000,
-            43833000,
-            43665000,
-            43616000
-          ],
-          "peak_rss_bytes_median": 1802240,
-          "peak_rss_bytes_samples": [
-            1802240,
-            1802240,
-            1802240,
-            1802240,
-            1802240
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 43919667,
-          "wall_ns_median": 46143208,
-          "elapsed_ns_samples": [
-            44522959,
-            43919667,
-            44008125,
-            43758000,
-            43822583
-          ],
-          "peak_rss_bytes_median": 1703936,
-          "peak_rss_bytes_samples": [
-            1703936,
-            1703936,
-            1703936,
-            1703936,
-            1703936
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 43680875,
-          "wall_ns_median": 46090292,
-          "elapsed_ns_samples": [
-            44033792,
-            43634666,
-            43680875,
-            43718500,
-            43468167
-          ],
-          "peak_rss_bytes_median": 1884160,
-          "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 0.998,
-          "best_ratio": 0.9968,
-          "tolerance": 0.04,
-          "noise": 0.0087
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.0035,
-          "best_ratio": 1.0034,
-          "tolerance": 0.04,
-          "noise": 0.0087
-        }
-      }
-    },
-    {
-      "name": "polynomial_evaluation",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu",
-      "result": 147510845,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 18649000,
-          "wall_ns_median": 20880459,
-          "elapsed_ns_samples": [
-            18819000,
-            18649000,
-            18612000,
-            18608000,
-            18691000
-          ],
-          "peak_rss_bytes_median": 1818624,
-          "peak_rss_bytes_samples": [
-            1818624,
-            1818624,
-            1818624,
-            1818624,
-            1818624
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 18706667,
-          "wall_ns_median": 20971666,
-          "elapsed_ns_samples": [
-            21070500,
-            18720500,
-            18647000,
-            18657042,
-            18706667
+            3071375,
+            3138125,
+            3070250,
+            3064333,
+            3068709
           ],
           "peak_rss_bytes_median": 1720320,
           "peak_rss_bytes_samples": [
@@ -2596,39 +2114,531 @@
           ]
         },
         "rust": {
-          "elapsed_ns_median": 23018041,
-          "wall_ns_median": 25477459,
+          "elapsed_ns_median": 3856875,
+          "wall_ns_median": 6008875,
           "elapsed_ns_samples": [
-            23082000,
-            22969208,
-            23018041,
-            22833958,
-            23127917
+            3851917,
+            3860250,
+            3883667,
+            3856875,
+            3822250
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
+            1900544,
+            1900544,
             1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9969,
-          "best_ratio": 0.9979,
+          "ratio": 0.9967,
+          "best_ratio": 0.9855,
           "tolerance": 0.04,
-          "noise": 0.0042
+          "noise": 0.0265
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.8102,
-          "best_ratio": 0.8149,
+          "ratio": 0.7934,
+          "best_ratio": 0.7901,
           "tolerance": 0.04,
-          "noise": 0.0049
+          "noise": 0.0265
+        }
+      }
+    },
+    {
+      "name": "fft",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu",
+      "result": 327680,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 2773000,
+          "wall_ns_median": 4666666,
+          "elapsed_ns_samples": [
+            2773000,
+            2721000,
+            2790000,
+            2729000,
+            2777000
+          ],
+          "peak_rss_bytes_median": 1900544,
+          "peak_rss_bytes_samples": [
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 2714333,
+          "wall_ns_median": 4708458,
+          "elapsed_ns_samples": [
+            2748500,
+            2706791,
+            2728583,
+            2695333,
+            2714333
+          ],
+          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_samples": [
+            1785856,
+            1785856,
+            1785856,
+            1785856,
+            1785856
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 3000416,
+          "wall_ns_median": 5138125,
+          "elapsed_ns_samples": [
+            2984875,
+            3000416,
+            3020209,
+            3009250,
+            2984708
+          ],
+          "peak_rss_bytes_median": 1966080,
+          "peak_rss_bytes_samples": [
+            1966080,
+            1966080,
+            1966080,
+            1966080,
+            1966080
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 1.0216,
+          "best_ratio": 1.0095,
+          "tolerance": 0.04,
+          "noise": 0.0173
+        },
+        "rust": {
+          "outcome": "win",
+          "ratio": 0.9242,
+          "best_ratio": 0.9116,
+          "tolerance": 0.04,
+          "noise": 0.0173
+        }
+      }
+    },
+    {
+      "name": "numerical_integration",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu",
+      "result": 314159265,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 2242000,
+          "wall_ns_median": 4163041,
+          "elapsed_ns_samples": [
+            2242000,
+            2219000,
+            2272000,
+            2220000,
+            2248000
+          ],
+          "peak_rss_bytes_median": 1769472,
+          "peak_rss_bytes_samples": [
+            1769472,
+            1769472,
+            1769472,
+            1769472,
+            1769472
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 2258542,
+          "wall_ns_median": 4184333,
+          "elapsed_ns_samples": [
+            2273166,
+            2212791,
+            2259542,
+            2223583,
+            2258542
+          ],
+          "peak_rss_bytes_median": 1720320,
+          "peak_rss_bytes_samples": [
+            1720320,
+            1720320,
+            1720320,
+            1720320,
+            1720320
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 2183542,
+          "wall_ns_median": 4311458,
+          "elapsed_ns_samples": [
+            2253166,
+            2183542,
+            2168500,
+            2180208,
+            2189125
+          ],
+          "peak_rss_bytes_median": 1900544,
+          "peak_rss_bytes_samples": [
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 0.9927,
+          "best_ratio": 1.0028,
+          "tolerance": 0.04,
+          "noise": 0.0159
+        },
+        "rust": {
+          "outcome": "parity",
+          "ratio": 1.0268,
+          "best_ratio": 1.0233,
+          "tolerance": 0.04,
+          "noise": 0.0125
+        }
+      }
+    },
+    {
+      "name": "vector_dot",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu-memory",
+      "result": 199986180,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 12691000,
+          "wall_ns_median": 15559000,
+          "elapsed_ns_samples": [
+            12387000,
+            13403000,
+            12477000,
+            16470000,
+            12691000
+          ],
+          "peak_rss_bytes_median": 33865728,
+          "peak_rss_bytes_samples": [
+            33865728,
+            33882112,
+            33849344,
+            33849344,
+            33865728
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 17654333,
+          "wall_ns_median": 20649709,
+          "elapsed_ns_samples": [
+            17384375,
+            17654333,
+            18316917,
+            17608375,
+            17706542
+          ],
+          "peak_rss_bytes_median": 33767424,
+          "peak_rss_bytes_samples": [
+            33767424,
+            33767424,
+            33783808,
+            33767424,
+            33767424
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 11991041,
+          "wall_ns_median": 15335958,
+          "elapsed_ns_samples": [
+            13856250,
+            11947167,
+            20126000,
+            11991041,
+            11919167
+          ],
+          "peak_rss_bytes_median": 33947648,
+          "peak_rss_bytes_samples": [
+            33947648,
+            33947648,
+            33947648,
+            33947648,
+            33947648
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "win",
+          "ratio": 0.7189,
+          "best_ratio": 0.7125,
+          "tolerance": 0.073,
+          "noise": 0.073
+        },
+        "rust": {
+          "outcome": "parity",
+          "ratio": 1.0584,
+          "best_ratio": 1.0393,
+          "tolerance": 0.1592,
+          "noise": 0.1592
+        }
+      }
+    },
+    {
+      "name": "convolution",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu-memory",
+      "result": 399934914,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 3688000,
+          "wall_ns_median": 6251292,
+          "elapsed_ns_samples": [
+            3661000,
+            3688000,
+            3699000,
+            4037000,
+            3623000
+          ],
+          "peak_rss_bytes_median": 11468800,
+          "peak_rss_bytes_samples": [
+            11468800,
+            11468800,
+            11468800,
+            11452416,
+            11452416
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 3592542,
+          "wall_ns_median": 5921084,
+          "elapsed_ns_samples": [
+            3932750,
+            3615792,
+            3576667,
+            3592542,
+            3570333
+          ],
+          "peak_rss_bytes_median": 11354112,
+          "peak_rss_bytes_samples": [
+            11354112,
+            11354112,
+            11354112,
+            11354112,
+            11354112
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 3533334,
+          "wall_ns_median": 5957167,
+          "elapsed_ns_samples": [
+            3466833,
+            3505417,
+            3533334,
+            3651792,
+            3630917
+          ],
+          "peak_rss_bytes_median": 11534336,
+          "peak_rss_bytes_samples": [
+            11534336,
+            11534336,
+            11534336,
+            11534336,
+            11534336
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 1.0266,
+          "best_ratio": 1.0148,
+          "tolerance": 0.04,
+          "noise": 0.0109
+        },
+        "rust": {
+          "outcome": "loss",
+          "ratio": 1.0438,
+          "best_ratio": 1.045,
+          "tolerance": 0.04,
+          "noise": 0.0355
+        }
+      }
+    },
+    {
+      "name": "monte_carlo",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu",
+      "result": 6498683,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 45288000,
+          "wall_ns_median": 47933250,
+          "elapsed_ns_samples": [
+            46043000,
+            45329000,
+            44997000,
+            45035000,
+            45288000
+          ],
+          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_samples": [
+            1785856,
+            1785856,
+            1785856,
+            1785856,
+            1785856
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 45580959,
+          "wall_ns_median": 48140167,
+          "elapsed_ns_samples": [
+            46089708,
+            45060542,
+            44957167,
+            46341917,
+            45580959
+          ],
+          "peak_rss_bytes_median": 1720320,
+          "peak_rss_bytes_samples": [
+            1720320,
+            1720320,
+            1720320,
+            1720320,
+            1720320
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 44890125,
+          "wall_ns_median": 47549958,
+          "elapsed_ns_samples": [
+            45090958,
+            44890125,
+            44724167,
+            45535250,
+            44810959
+          ],
+          "peak_rss_bytes_median": 1900544,
+          "peak_rss_bytes_samples": [
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 0.9936,
+          "best_ratio": 1.0009,
+          "tolerance": 0.04,
+          "noise": 0.0226
+        },
+        "rust": {
+          "outcome": "parity",
+          "ratio": 1.0089,
+          "best_ratio": 1.0061,
+          "tolerance": 0.04,
+          "noise": 0.0065
+        }
+      }
+    },
+    {
+      "name": "polynomial_evaluation",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu",
+      "result": 147510845,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 18846000,
+          "wall_ns_median": 21149542,
+          "elapsed_ns_samples": [
+            18717000,
+            18862000,
+            18821000,
+            18846000,
+            18900000
+          ],
+          "peak_rss_bytes_median": 1802240,
+          "peak_rss_bytes_samples": [
+            1802240,
+            1802240,
+            1802240,
+            1802240,
+            1802240
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 18859584,
+          "wall_ns_median": 21013833,
+          "elapsed_ns_samples": [
+            18909959,
+            18841125,
+            18834958,
+            18924208,
+            18859584
+          ],
+          "peak_rss_bytes_median": 1736704,
+          "peak_rss_bytes_samples": [
+            1736704,
+            1736704,
+            1736704,
+            1736704,
+            1736704
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 23257125,
+          "wall_ns_median": 25794459,
+          "elapsed_ns_samples": [
+            23307833,
+            23184500,
+            23191375,
+            23390250,
+            23257125
+          ],
+          "peak_rss_bytes_median": 1900544,
+          "peak_rss_bytes_samples": [
+            1900544,
+            1884160,
+            1900544,
+            1900544,
+            1900544
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 0.9993,
+          "best_ratio": 0.9937,
+          "tolerance": 0.04,
+          "noise": 0.0036
+        },
+        "rust": {
+          "outcome": "win",
+          "ratio": 0.8103,
+          "best_ratio": 0.8073,
+          "tolerance": 0.04,
+          "noise": 0.005
         }
       }
     },
@@ -2640,77 +2650,77 @@
       "result": 166215579,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 3250000,
-          "wall_ns_median": 5484541,
+          "elapsed_ns_median": 3401000,
+          "wall_ns_median": 5556875,
           "elapsed_ns_samples": [
-            3211000,
-            3307000,
-            3250000,
-            3363000,
-            3243000
+            3453000,
+            3401000,
+            3406000,
+            3239000,
+            3143000
           ],
-          "peak_rss_bytes_median": 9830400,
+          "peak_rss_bytes_median": 9814016,
           "peak_rss_bytes_samples": [
-            9830400,
-            9830400,
-            9830400,
-            9830400,
-            9830400
+            9814016,
+            9814016,
+            9814016,
+            9814016,
+            9814016
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 3439208,
-          "wall_ns_median": 5713792,
+          "elapsed_ns_median": 3536875,
+          "wall_ns_median": 5666625,
           "elapsed_ns_samples": [
-            3439208,
-            3387125,
-            3659958,
-            3704292,
-            3392958
+            3536875,
+            3382167,
+            3363666,
+            3672042,
+            3540292
           ],
-          "peak_rss_bytes_median": 9732096,
+          "peak_rss_bytes_median": 9748480,
           "peak_rss_bytes_samples": [
-            9732096,
-            9732096,
-            9732096,
-            9732096,
-            9732096
+            9748480,
+            9748480,
+            9748480,
+            9748480,
+            9748480
           ]
         },
         "rust": {
-          "elapsed_ns_median": 3284584,
-          "wall_ns_median": 5691708,
+          "elapsed_ns_median": 3273708,
+          "wall_ns_median": 5695917,
           "elapsed_ns_samples": [
-            3256542,
-            3294833,
-            3206208,
-            3284584,
-            3451542
+            3327417,
+            3273708,
+            3282750,
+            3213792,
+            3244541
           ],
-          "peak_rss_bytes_median": 9912320,
+          "peak_rss_bytes_median": 9928704,
           "peak_rss_bytes_samples": [
-            9912320,
-            9912320,
-            9912320,
-            9912320,
-            9912320
+            9928704,
+            9928704,
+            9928704,
+            9928704,
+            9928704
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.945,
-          "best_ratio": 0.948,
-          "tolerance": 0.0776,
-          "noise": 0.0776
+          "ratio": 0.9616,
+          "best_ratio": 0.9344,
+          "tolerance": 0.0491,
+          "noise": 0.0491
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9895,
-          "best_ratio": 1.0015,
-          "tolerance": 0.04,
-          "noise": 0.0197
+          "ratio": 1.0389,
+          "best_ratio": 0.978,
+          "tolerance": 0.0491,
+          "noise": 0.0491
         }
       }
     },
@@ -2722,57 +2732,57 @@
       "result": 822454185,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 7484000,
-          "wall_ns_median": 9657292,
+          "elapsed_ns_median": 7482000,
+          "wall_ns_median": 9623625,
           "elapsed_ns_samples": [
-            7433000,
-            7394000,
-            7754000,
-            8290000,
-            7484000
+            7372000,
+            8404000,
+            7482000,
+            7392000,
+            8207000
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1851392,
           "peak_rss_bytes_samples": [
-            1867776,
-            1884160,
-            1884160,
-            1867776,
-            1884160
+            1851392,
+            1851392,
+            1851392,
+            1851392,
+            1851392
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 7559333,
-          "wall_ns_median": 9619500,
+          "elapsed_ns_median": 7425583,
+          "wall_ns_median": 9739542,
           "elapsed_ns_samples": [
-            7757291,
-            8303542,
-            7559333,
-            7299625,
-            7402250
+            8609750,
+            7418584,
+            7425250,
+            8208125,
+            7425583
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1802240,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1835008,
-            1785856
+            1802240,
+            1802240,
+            1802240,
+            1802240,
+            1818624
           ]
         },
         "rust": {
-          "elapsed_ns_median": 7493334,
-          "wall_ns_median": 9698167,
+          "elapsed_ns_median": 7740833,
+          "wall_ns_median": 10053542,
           "elapsed_ns_samples": [
-            7493334,
-            7388250,
-            7394542,
-            7566917,
-            8176833
+            7464083,
+            7740833,
+            7819959,
+            7430833,
+            7904667
           ],
           "peak_rss_bytes_median": 1949696,
           "peak_rss_bytes_samples": [
-            1949696,
-            1949696,
+            1966080,
+            1966080,
             1949696,
             1949696,
             1949696
@@ -2782,17 +2792,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.99,
-          "best_ratio": 1.0129,
-          "tolerance": 0.047,
-          "noise": 0.047
+          "ratio": 1.0076,
+          "best_ratio": 0.9937,
+          "tolerance": 0.1089,
+          "noise": 0.1089
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9988,
-          "best_ratio": 1.0008,
-          "tolerance": 0.0429,
-          "noise": 0.0429
+          "ratio": 0.9666,
+          "best_ratio": 0.9921,
+          "tolerance": 0.1089,
+          "noise": 0.1089
         }
       }
     },
@@ -2804,77 +2814,77 @@
       "result": 1786242537,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 180000,
-          "wall_ns_median": 2263292,
+          "elapsed_ns_median": 179000,
+          "wall_ns_median": 2132291,
           "elapsed_ns_samples": [
-            194000,
+            182000,
+            179000,
             178000,
-            180000,
-            201000,
-            178000
+            203000,
+            179000
           ],
-          "peak_rss_bytes_median": 1802240,
+          "peak_rss_bytes_median": 1785856,
           "peak_rss_bytes_samples": [
-            1802240,
-            1802240,
-            1802240,
             1785856,
-            1802240
+            1785856,
+            1785856,
+            1785856,
+            1785856
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 178334,
-          "wall_ns_median": 2122042,
+          "elapsed_ns_median": 178375,
+          "wall_ns_median": 2125708,
           "elapsed_ns_samples": [
-            178334,
-            176458,
-            183708,
-            185542,
-            172791
+            178083,
+            178375,
+            201041,
+            181084,
+            178333
           ],
-          "peak_rss_bytes_median": 1703936,
+          "peak_rss_bytes_median": 1720320,
           "peak_rss_bytes_samples": [
-            1703936,
-            1703936,
-            1703936,
-            1703936,
-            1703936
+            1720320,
+            1720320,
+            1720320,
+            1720320,
+            1720320
           ]
         },
         "rust": {
-          "elapsed_ns_median": 186375,
-          "wall_ns_median": 2291541,
+          "elapsed_ns_median": 188125,
+          "wall_ns_median": 2305625,
           "elapsed_ns_samples": [
-            186291,
-            186375,
-            184625,
-            186375,
-            188417
+            190750,
+            189000,
+            188125,
+            186167,
+            185875
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0093,
-          "best_ratio": 1.0301,
+          "ratio": 1.0035,
+          "best_ratio": 0.9995,
           "tolerance": 0.1402,
-          "noise": 0.0889
+          "noise": 0.0168
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9658,
-          "best_ratio": 0.9641,
-          "tolerance": 0.1341,
-          "noise": 0.0889
+          "ratio": 0.9515,
+          "best_ratio": 0.9576,
+          "tolerance": 0.1329,
+          "noise": 0.0168
         }
       }
     },
@@ -2886,96 +2896,14 @@
       "result": 1266501065,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 159000,
-          "wall_ns_median": 2140958,
+          "elapsed_ns_median": 158000,
+          "wall_ns_median": 2153125,
           "elapsed_ns_samples": [
-            159000,
+            158000,
+            161000,
+            158000,
             157000,
-            157000,
-            163000,
-            159000
-          ],
-          "peak_rss_bytes_median": 1818624,
-          "peak_rss_bytes_samples": [
-            1818624,
-            1818624,
-            1818624,
-            1818624,
-            1818624
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 153209,
-          "wall_ns_median": 2031542,
-          "elapsed_ns_samples": [
-            155459,
-            149333,
-            148750,
-            153209,
-            153916
-          ],
-          "peak_rss_bytes_median": 1703936,
-          "peak_rss_bytes_samples": [
-            1703936,
-            1703936,
-            1703936,
-            1703936,
-            1703936
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 151125,
-          "wall_ns_median": 2164709,
-          "elapsed_ns_samples": [
-            151125,
-            146208,
-            150583,
-            153416,
-            153083
-          ],
-          "peak_rss_bytes_median": 1884160,
-          "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1867776
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 1.0378,
-          "best_ratio": 1.0555,
-          "tolerance": 0.1632,
-          "noise": 0.0299
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.0521,
-          "best_ratio": 1.0738,
-          "tolerance": 0.1654,
-          "noise": 0.0165
-        }
-      }
-    },
-    {
-      "name": "raytracer_sphere",
-      "category": "compute",
-      "status": "implemented",
-      "profile": "cpu",
-      "result": 245803119,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 338000,
-          "wall_ns_median": 2260500,
-          "elapsed_ns_samples": [
-            360000,
-            344000,
-            328000,
-            338000,
-            325000
+            164000
           ],
           "peak_rss_bytes_median": 1802240,
           "peak_rss_bytes_samples": [
@@ -2987,58 +2915,140 @@
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 361209,
-          "wall_ns_median": 2318000,
+          "elapsed_ns_median": 151625,
+          "wall_ns_median": 2113667,
           "elapsed_ns_samples": [
-            367875,
-            364667,
-            358750,
-            358458,
-            361209
+            150875,
+            153333,
+            153750,
+            151625,
+            150791
           ],
-          "peak_rss_bytes_median": 1703936,
+          "peak_rss_bytes_median": 1720320,
           "peak_rss_bytes_samples": [
-            1703936,
-            1703936,
-            1703936,
-            1703936,
-            1703936
+            1720320,
+            1720320,
+            1720320,
+            1720320,
+            1720320
           ]
         },
         "rust": {
-          "elapsed_ns_median": 407458,
-          "wall_ns_median": 2415000,
+          "elapsed_ns_median": 152834,
+          "wall_ns_median": 2260125,
           "elapsed_ns_samples": [
-            403542,
-            407458,
-            408917,
-            401917,
-            414625
+            152834,
+            153750,
+            150708,
+            152959,
+            151042
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9357,
-          "best_ratio": 0.9067,
-          "tolerance": 0.0692,
-          "noise": 0.0473
+          "ratio": 1.042,
+          "best_ratio": 1.0412,
+          "tolerance": 0.1649,
+          "noise": 0.019
+        },
+        "rust": {
+          "outcome": "parity",
+          "ratio": 1.0338,
+          "best_ratio": 1.0417,
+          "tolerance": 0.1636,
+          "noise": 0.019
+        }
+      }
+    },
+    {
+      "name": "raytracer_sphere",
+      "category": "compute",
+      "status": "implemented",
+      "profile": "cpu",
+      "result": 245803119,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 334000,
+          "wall_ns_median": 2324041,
+          "elapsed_ns_samples": [
+            334000,
+            332000,
+            356000,
+            333000,
+            334000
+          ],
+          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_samples": [
+            1785856,
+            1785856,
+            1785856,
+            1785856,
+            1785856
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 362917,
+          "wall_ns_median": 2291667,
+          "elapsed_ns_samples": [
+            364750,
+            361667,
+            365292,
+            362917,
+            361250
+          ],
+          "peak_rss_bytes_median": 1720320,
+          "peak_rss_bytes_samples": [
+            1720320,
+            1720320,
+            1720320,
+            1720320,
+            1720320
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 402375,
+          "wall_ns_median": 2429959,
+          "elapsed_ns_samples": [
+            401750,
+            403709,
+            420250,
+            402333,
+            402375
+          ],
+          "peak_rss_bytes_median": 1900544,
+          "peak_rss_bytes_samples": [
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "win",
+          "ratio": 0.9203,
+          "best_ratio": 0.919,
+          "tolerance": 0.0689,
+          "noise": 0.0085
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.8295,
-          "best_ratio": 0.8086,
-          "tolerance": 0.0614,
-          "noise": 0.0473
+          "ratio": 0.8301,
+          "best_ratio": 0.8264,
+          "tolerance": 0.0621,
+          "noise": 0.0034
         }
       }
     },
@@ -3050,77 +3060,77 @@
       "result": 199450484,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 2607000,
-          "wall_ns_median": 4610416,
+          "elapsed_ns_median": 2553000,
+          "wall_ns_median": 4450792,
           "elapsed_ns_samples": [
-            2702000,
-            2607000,
-            2603000,
-            2714000,
-            2578000
+            2658000,
+            2553000,
+            2235000,
+            2538000,
+            2634000
           ],
-          "peak_rss_bytes_median": 1867776,
+          "peak_rss_bytes_median": 1851392,
           "peak_rss_bytes_samples": [
-            1867776,
-            1867776,
-            1867776,
-            1867776,
-            1867776
+            1835008,
+            1851392,
+            1851392,
+            1851392,
+            1851392
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 3106208,
-          "wall_ns_median": 5089292,
+          "elapsed_ns_median": 2921500,
+          "wall_ns_median": 4733666,
           "elapsed_ns_samples": [
-            3517750,
-            3106208,
-            2755542,
-            2829958,
-            3250541
+            2572334,
+            2930708,
+            2724875,
+            2921500,
+            2978083
           ],
           "peak_rss_bytes_median": 1802240,
           "peak_rss_bytes_samples": [
+            1802240,
+            1802240,
+            1802240,
             1785856,
-            1802240,
-            1802240,
-            1802240,
-            1785856
+            1802240
           ]
         },
         "rust": {
-          "elapsed_ns_median": 2260875,
-          "wall_ns_median": 4450209,
+          "elapsed_ns_median": 2290458,
+          "wall_ns_median": 4431833,
           "elapsed_ns_samples": [
-            2189709,
-            2249083,
-            2353459,
-            2260875,
-            2266625
+            2290458,
+            2194708,
+            2294708,
+            2338208,
+            2218459
           ],
           "peak_rss_bytes_median": 1966080,
           "peak_rss_bytes_samples": [
+            1966080,
+            1966080,
             1982464,
-            1966080,
-            1966080,
-            1966080,
-            1949696
+            1982464,
+            1966080
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.8393,
-          "best_ratio": 0.9356,
-          "tolerance": 0.1354,
-          "noise": 0.1354
+          "ratio": 0.8739,
+          "best_ratio": 0.8689,
+          "tolerance": 0.0705,
+          "noise": 0.0705
         },
         "rust": {
-          "outcome": "loss",
-          "ratio": 1.1531,
-          "best_ratio": 1.1773,
+          "outcome": "parity",
+          "ratio": 1.1146,
+          "best_ratio": 1.0184,
           "tolerance": 0.04,
-          "noise": 0.038
+          "noise": 0.0376
         }
       }
     },
@@ -3160,59 +3170,59 @@
       "result": 210156772,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 19416000,
-          "wall_ns_median": 21713542,
+          "elapsed_ns_median": 19338000,
+          "wall_ns_median": 21608083,
           "elapsed_ns_samples": [
-            19446000,
-            19442000,
-            19398000,
-            19416000,
-            19310000
+            19420000,
+            19302000,
+            19178000,
+            19547000,
+            19338000
           ],
-          "peak_rss_bytes_median": 1851392,
+          "peak_rss_bytes_median": 1835008,
           "peak_rss_bytes_samples": [
+            1835008,
+            1835008,
             1851392,
             1851392,
-            1851392,
-            1851392,
-            1851392
+            1835008
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 18812625,
-          "wall_ns_median": 21077875,
+          "elapsed_ns_median": 18991875,
+          "wall_ns_median": 21031041,
           "elapsed_ns_samples": [
-            18870834,
-            18933458,
-            18812625,
-            18605875,
-            18596458
+            19016208,
+            18471459,
+            18317959,
+            18991875,
+            19042750
           ],
-          "peak_rss_bytes_median": 1736704,
+          "peak_rss_bytes_median": 1753088,
           "peak_rss_bytes_samples": [
-            1736704,
-            1736704,
             1720320,
-            1720320,
-            1736704
+            1753088,
+            1753088,
+            1753088,
+            1753088
           ]
         },
         "rust": {
-          "elapsed_ns_median": 19572375,
-          "wall_ns_median": 21905708,
+          "elapsed_ns_median": 19728708,
+          "wall_ns_median": 22265750,
           "elapsed_ns_samples": [
-            19156708,
-            19572375,
-            19516458,
-            19664125,
-            19795500
+            19728708,
+            20083917,
+            19991542,
+            19668458,
+            19238334
           ],
           "peak_rss_bytes_median": 1933312,
           "peak_rss_bytes_samples": [
             1933312,
             1933312,
             1933312,
-            1916928,
+            1933312,
             1933312
           ]
         }
@@ -3220,17 +3230,17 @@
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0321,
-          "best_ratio": 1.0384,
+          "ratio": 1.0182,
+          "best_ratio": 1.047,
           "tolerance": 0.04,
-          "noise": 0.0141
+          "noise": 0.0287
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.992,
-          "best_ratio": 1.008,
+          "ratio": 0.9802,
+          "best_ratio": 0.9969,
           "tolerance": 0.04,
-          "noise": 0.0075
+          "noise": 0.0164
         }
       }
     },
@@ -3242,14 +3252,14 @@
       "result": 339103,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 577000,
-          "wall_ns_median": 2644334,
+          "elapsed_ns_median": 574000,
+          "wall_ns_median": 2576167,
           "elapsed_ns_samples": [
-            593000,
-            577000,
             579000,
-            562000,
-            563000
+            574000,
+            569000,
+            573000,
+            586000
           ],
           "peak_rss_bytes_median": 1933312,
           "peak_rss_bytes_samples": [
@@ -3261,58 +3271,58 @@
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 1413792,
-          "wall_ns_median": 3441875,
+          "elapsed_ns_median": 1379959,
+          "wall_ns_median": 3353416,
           "elapsed_ns_samples": [
-            1428292,
-            1343000,
-            1413792,
-            1368375,
-            1446333
+            1367458,
+            1385584,
+            1399625,
+            1379959,
+            1366709
           ],
           "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
             1900544,
-            1900544,
-            1900544,
             1916928,
+            1916928,
+            1900544,
             1900544
           ]
         },
         "rust": {
-          "elapsed_ns_median": 1884333,
-          "wall_ns_median": 4131709,
+          "elapsed_ns_median": 1890083,
+          "wall_ns_median": 4061791,
           "elapsed_ns_samples": [
-            1870125,
-            1899041,
-            1881917,
-            1884333,
-            1912709
+            1917750,
+            1855917,
+            1890083,
+            1890667,
+            1875333
           ],
           "peak_rss_bytes_median": 2113536,
           "peak_rss_bytes_samples": [
             2113536,
-            2097152,
             2113536,
             2113536,
-            2113536
+            2113536,
+            2097152
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.4081,
-          "best_ratio": 0.4185,
-          "tolerance": 0.0424,
-          "noise": 0.0424
+          "ratio": 0.416,
+          "best_ratio": 0.4163,
+          "tolerance": 0.04,
+          "noise": 0.0131
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.3062,
-          "best_ratio": 0.3005,
+          "ratio": 0.3037,
+          "best_ratio": 0.3066,
           "tolerance": 0.04,
-          "noise": 0.0277
+          "noise": 0.0105
         }
       }
     },
@@ -3324,77 +3334,77 @@
       "result": 48996500,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 5618000,
-          "wall_ns_median": 8469042,
+          "elapsed_ns_median": 5428000,
+          "wall_ns_median": 7982583,
           "elapsed_ns_samples": [
-            5330000,
-            5414000,
-            5618000,
-            5648000,
-            5745000
+            5428000,
+            5452000,
+            5247000,
+            5521000,
+            5214000
           ],
-          "peak_rss_bytes_median": 41811968,
+          "peak_rss_bytes_median": 41795584,
           "peak_rss_bytes_samples": [
-            41811968,
-            41811968,
-            41811968,
-            41811968,
-            41811968
+            41779200,
+            41795584,
+            41795584,
+            41795584,
+            41795584
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 7065209,
-          "wall_ns_median": 9943625,
+          "elapsed_ns_median": 6857334,
+          "wall_ns_median": 9446375,
           "elapsed_ns_samples": [
-            6678250,
-            7122625,
-            7664166,
-            7065209,
-            7009042
+            7050375,
+            6755916,
+            6859458,
+            6857334,
+            6688333
           ],
-          "peak_rss_bytes_median": 41730048,
+          "peak_rss_bytes_median": 41746432,
           "peak_rss_bytes_samples": [
-            41730048,
-            41730048,
-            41730048,
-            41730048,
-            41730048
+            41746432,
+            41746432,
+            41746432,
+            41746432,
+            41746432
           ]
         },
         "rust": {
-          "elapsed_ns_median": 5771208,
-          "wall_ns_median": 8688625,
+          "elapsed_ns_median": 5335000,
+          "wall_ns_median": 7828084,
           "elapsed_ns_samples": [
-            5858500,
-            5743333,
-            5771208,
-            5790750,
-            5522708
+            5335000,
+            5474416,
+            5293166,
+            5306791,
+            5361125
           ],
-          "peak_rss_bytes_median": 41910272,
+          "peak_rss_bytes_median": 41926656,
           "peak_rss_bytes_samples": [
-            41910272,
-            41910272,
-            41910272,
-            41910272,
-            41910272
+            41926656,
+            41926656,
+            41926656,
+            41926656,
+            41926656
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.7952,
-          "best_ratio": 0.7981,
-          "tolerance": 0.0417,
-          "noise": 0.0417
+          "ratio": 0.7916,
+          "best_ratio": 0.7796,
+          "tolerance": 0.04,
+          "noise": 0.0378
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9735,
-          "best_ratio": 0.9651,
-          "tolerance": 0.0417,
-          "noise": 0.0417
+          "ratio": 1.0174,
+          "best_ratio": 0.985,
+          "tolerance": 0.04,
+          "noise": 0.0378
         }
       }
     },
@@ -3406,77 +3416,77 @@
       "result": 36000000,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 6612000,
-          "wall_ns_median": 9284375,
+          "elapsed_ns_median": 6540000,
+          "wall_ns_median": 9100958,
           "elapsed_ns_samples": [
-            7940000,
-            6612000,
-            6534000,
-            6317000,
-            7174000
+            6736000,
+            6521000,
+            6278000,
+            6540000,
+            7113000
           ],
-          "peak_rss_bytes_median": 17809408,
+          "peak_rss_bytes_median": 17793024,
           "peak_rss_bytes_samples": [
-            17809408,
-            17809408,
-            17809408,
-            17809408,
-            17809408
+            17793024,
+            17793024,
+            17793024,
+            17793024,
+            17793024
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 6853917,
-          "wall_ns_median": 9283292,
+          "elapsed_ns_median": 6551708,
+          "wall_ns_median": 9111375,
           "elapsed_ns_samples": [
-            7246542,
-            6853917,
-            6583084,
-            7067708,
-            6489167
+            6551708,
+            6460208,
+            6942375,
+            6590125,
+            6336833
           ],
-          "peak_rss_bytes_median": 17727488,
+          "peak_rss_bytes_median": 17743872,
           "peak_rss_bytes_samples": [
-            17727488,
-            17727488,
-            17727488,
-            17727488,
-            17727488
+            17743872,
+            17743872,
+            17743872,
+            17743872,
+            17743872
           ]
         },
         "rust": {
-          "elapsed_ns_median": 6634500,
-          "wall_ns_median": 9303500,
+          "elapsed_ns_median": 6553500,
+          "wall_ns_median": 9114292,
           "elapsed_ns_samples": [
-            6822917,
-            6634500,
-            6313000,
-            6289291,
-            6868583
+            7177208,
+            6375625,
+            6445709,
+            6665333,
+            6553500
           ],
-          "peak_rss_bytes_median": 17907712,
+          "peak_rss_bytes_median": 17924096,
           "peak_rss_bytes_samples": [
-            17907712,
-            17907712,
-            17907712,
-            17907712,
-            17907712
+            17924096,
+            17924096,
+            17924096,
+            17924096,
+            17924096
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9647,
-          "best_ratio": 0.9735,
-          "tolerance": 0.0968,
-          "noise": 0.0968
+          "ratio": 0.9982,
+          "best_ratio": 0.9907,
+          "tolerance": 0.04,
+          "noise": 0.0329
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9966,
-          "best_ratio": 1.0044,
-          "tolerance": 0.0968,
-          "noise": 0.0968
+          "ratio": 0.9979,
+          "best_ratio": 0.9847,
+          "tolerance": 0.04,
+          "noise": 0.0335
         }
       }
     },
@@ -3488,52 +3498,52 @@
       "result": 409805349,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 2132000,
-          "wall_ns_median": 4252792,
+          "elapsed_ns_median": 2135000,
+          "wall_ns_median": 4222834,
           "elapsed_ns_samples": [
-            2140000,
-            2132000,
-            2088000,
-            2139000,
-            2092000
+            2134000,
+            2143000,
+            2135000,
+            2155000,
+            2122000
           ],
           "peak_rss_bytes_median": 5111808,
           "peak_rss_bytes_samples": [
             5111808,
-            5111808,
+            5095424,
             5111808,
             5111808,
             5111808
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 2309667,
-          "wall_ns_median": 4328083,
+          "elapsed_ns_median": 2325084,
+          "wall_ns_median": 4406834,
           "elapsed_ns_samples": [
-            2282583,
-            2350000,
-            2309667,
-            2354667,
-            2301792
+            2340541,
+            2325084,
+            2318833,
+            2339541,
+            2307500
           ],
           "peak_rss_bytes_median": 5029888,
           "peak_rss_bytes_samples": [
             5029888,
             5029888,
             5029888,
-            5029888,
+            5013504,
             5029888
           ]
         },
         "rust": {
-          "elapsed_ns_median": 2390375,
-          "wall_ns_median": 4648750,
+          "elapsed_ns_median": 2397125,
+          "wall_ns_median": 4531958,
           "elapsed_ns_samples": [
-            2396083,
-            2475500,
-            2377416,
-            2371167,
-            2390375
+            2383791,
+            2437458,
+            2391000,
+            2410458,
+            2397125
           ],
           "peak_rss_bytes_median": 5210112,
           "peak_rss_bytes_samples": [
@@ -3548,17 +3558,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.9231,
-          "best_ratio": 0.9148,
+          "ratio": 0.9182,
+          "best_ratio": 0.9196,
           "tolerance": 0.04,
-          "noise": 0.022
+          "noise": 0.0089
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.8919,
-          "best_ratio": 0.8806,
+          "ratio": 0.8907,
+          "best_ratio": 0.8902,
           "tolerance": 0.04,
-          "noise": 0.022
+          "noise": 0.0081
         }
       }
     },
@@ -3570,77 +3580,77 @@
       "result": 90068056,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 6760000,
-          "wall_ns_median": 9036875,
+          "elapsed_ns_median": 6776000,
+          "wall_ns_median": 9136458,
           "elapsed_ns_samples": [
-            7055000,
-            6686000,
-            6704000,
-            6760000,
-            6793000
+            6982000,
+            6706000,
+            6675000,
+            6776000,
+            6814000
           ],
-          "peak_rss_bytes_median": 17874944,
+          "peak_rss_bytes_median": 17858560,
           "peak_rss_bytes_samples": [
-            17874944,
-            17874944,
-            17874944,
-            17874944,
+            17858560,
+            17842176,
+            17858560,
+            17858560,
             17874944
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 5735084,
-          "wall_ns_median": 8104083,
+          "elapsed_ns_median": 5885500,
+          "wall_ns_median": 8401750,
           "elapsed_ns_samples": [
-            5735084,
-            5700000,
-            5769333,
-            5678583,
-            5747417
+            5824125,
+            5784792,
+            5934958,
+            5954334,
+            5885500
           ],
-          "peak_rss_bytes_median": 17760256,
+          "peak_rss_bytes_median": 17776640,
           "peak_rss_bytes_samples": [
-            17760256,
-            17760256,
-            17760256,
-            17760256,
-            17760256
+            17776640,
+            17776640,
+            17776640,
+            17776640,
+            17776640
           ]
         },
         "rust": {
-          "elapsed_ns_median": 5551416,
-          "wall_ns_median": 7951042,
+          "elapsed_ns_median": 5746375,
+          "wall_ns_median": 8023833,
           "elapsed_ns_samples": [
-            5647959,
-            5545833,
-            5519917,
-            5551416,
-            5685208
+            5752709,
+            5747334,
+            5716625,
+            5742792,
+            5746375
           ],
-          "peak_rss_bytes_median": 17940480,
+          "peak_rss_bytes_median": 17956864,
           "peak_rss_bytes_samples": [
-            17940480,
-            17940480,
-            17940480,
-            17940480,
-            17940480
+            17956864,
+            17956864,
+            17956864,
+            17956864,
+            17956864
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "loss",
-          "ratio": 1.1787,
-          "best_ratio": 1.1774,
+          "ratio": 1.1513,
+          "best_ratio": 1.1539,
           "tolerance": 0.04,
-          "noise": 0.0132
+          "noise": 0.0188
         },
         "rust": {
           "outcome": "loss",
-          "ratio": 1.2177,
-          "best_ratio": 1.2113,
+          "ratio": 1.1792,
+          "best_ratio": 1.1676,
           "tolerance": 0.04,
-          "noise": 0.0184
+          "noise": 0.0159
         }
       }
     },
@@ -3652,59 +3662,59 @@
       "result": 4137497,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 303000,
-          "wall_ns_median": 2271625,
+          "elapsed_ns_median": 301000,
+          "wall_ns_median": 2211875,
           "elapsed_ns_samples": [
-            297000,
-            285000,
-            303000,
+            301000,
             313000,
-            304000
+            302000,
+            291000,
+            281000
           ],
-          "peak_rss_bytes_median": 2064384,
+          "peak_rss_bytes_median": 2048000,
           "peak_rss_bytes_samples": [
-            2064384,
-            2064384,
-            2064384,
-            2064384,
-            2064384
+            2048000,
+            2048000,
+            2048000,
+            2048000,
+            2048000
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 807708,
-          "wall_ns_median": 2784708,
+          "elapsed_ns_median": 808208,
+          "wall_ns_median": 2775958,
           "elapsed_ns_samples": [
-            807708,
-            798833,
-            834625,
-            766250,
-            847667
+            895375,
+            799667,
+            925459,
+            808208,
+            770625
           ],
-          "peak_rss_bytes_median": 1982464,
+          "peak_rss_bytes_median": 1998848,
           "peak_rss_bytes_samples": [
-            1982464,
-            1982464,
-            1982464,
-            1966080,
-            1966080
+            1998848,
+            1998848,
+            1998848,
+            1998848,
+            1998848
           ]
         },
         "rust": {
-          "elapsed_ns_median": 461584,
-          "wall_ns_median": 2502042,
+          "elapsed_ns_median": 466208,
+          "wall_ns_median": 2661375,
           "elapsed_ns_samples": [
-            447083,
-            450333,
-            476709,
-            467875,
-            461584
+            470917,
+            456333,
+            452834,
+            466208,
+            474000
           ],
           "peak_rss_bytes_median": 2179072,
           "peak_rss_bytes_samples": [
-            2162688,
             2179072,
             2179072,
-            2162688,
+            2179072,
+            2179072,
             2179072
           ]
         }
@@ -3712,17 +3722,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.3751,
-          "best_ratio": 0.3719,
-          "tolerance": 0.0443,
-          "noise": 0.0443
+          "ratio": 0.3724,
+          "best_ratio": 0.3646,
+          "tolerance": 0.1184,
+          "noise": 0.1184
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.6564,
-          "best_ratio": 0.6375,
-          "tolerance": 0.0542,
-          "noise": 0.038
+          "ratio": 0.6456,
+          "best_ratio": 0.6205,
+          "tolerance": 0.0536,
+          "noise": 0.0365
         }
       }
     },
@@ -3741,14 +3751,14 @@
       "result": 2556572,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 1782000,
-          "wall_ns_median": 4079084,
+          "elapsed_ns_median": 1816000,
+          "wall_ns_median": 3956333,
           "elapsed_ns_samples": [
-            1782000,
-            1787000,
-            1781000,
-            1962000,
-            1781000
+            1803000,
+            1816000,
+            1798000,
+            1838000,
+            1857000
           ],
           "peak_rss_bytes_median": 8060928,
           "peak_rss_bytes_samples": [
@@ -3760,58 +3770,58 @@
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 4392583,
-          "wall_ns_median": 6307375,
+          "elapsed_ns_median": 4070833,
+          "wall_ns_median": 6085292,
           "elapsed_ns_samples": [
-            6920166,
-            4271334,
-            4174708,
-            4417250,
-            4392583
+            4003041,
+            4070833,
+            4079958,
+            4020792,
+            4304583
           ],
-          "peak_rss_bytes_median": 9895936,
+          "peak_rss_bytes_median": 9912320,
           "peak_rss_bytes_samples": [
-            9895936,
-            9895936,
-            9895936,
-            9895936,
-            9895936
+            9912320,
+            9912320,
+            9912320,
+            9912320,
+            9912320
           ]
         },
         "rust": {
-          "elapsed_ns_median": 5482125,
-          "wall_ns_median": 7956125,
+          "elapsed_ns_median": 5503334,
+          "wall_ns_median": 7666250,
           "elapsed_ns_samples": [
-            5372000,
-            5482125,
-            5481125,
-            5721500,
-            5552917
+            5368167,
+            5587667,
+            5503334,
+            5225667,
+            5528250
           ],
-          "peak_rss_bytes_median": 13942784,
+          "peak_rss_bytes_median": 13975552,
           "peak_rss_bytes_samples": [
             13975552,
-            13942784,
             13975552,
             13942784,
-            13926400
+            13975552,
+            13975552
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.4057,
-          "best_ratio": 0.4266,
+          "ratio": 0.4461,
+          "best_ratio": 0.4492,
           "tolerance": 0.04,
-          "noise": 0.0332
+          "noise": 0.0193
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.3251,
-          "best_ratio": 0.3315,
+          "ratio": 0.33,
+          "best_ratio": 0.3441,
           "tolerance": 0.04,
-          "noise": 0.0131
+          "noise": 0.0291
         }
       }
     },
@@ -3823,134 +3833,52 @@
       "result": 21823488,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 699000,
-          "wall_ns_median": 2695208,
+          "elapsed_ns_median": 709000,
+          "wall_ns_median": 2627667,
           "elapsed_ns_samples": [
-            710000,
-            720000,
-            697000,
-            689000,
-            699000
+            731000,
+            709000,
+            693000,
+            711000,
+            696000
           ],
-          "peak_rss_bytes_median": 2097152,
+          "peak_rss_bytes_median": 2080768,
           "peak_rss_bytes_samples": [
-            2097152,
-            2097152,
-            2097152,
-            2097152,
-            2097152
+            2080768,
+            2080768,
+            2080768,
+            2080768,
+            2080768
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 1254125,
-          "wall_ns_median": 3116833,
+          "elapsed_ns_median": 1261375,
+          "wall_ns_median": 3207000,
           "elapsed_ns_samples": [
-            1267833,
-            1256708,
-            1239667,
-            1254125,
-            1244042
+            1268500,
+            1261375,
+            1243250,
+            1281167,
+            1251417
           ],
-          "peak_rss_bytes_median": 2457600,
+          "peak_rss_bytes_median": 2473984,
           "peak_rss_bytes_samples": [
-            2457600,
-            2457600,
-            2457600,
-            2457600,
-            2457600
+            2473984,
+            2473984,
+            2473984,
+            2473984,
+            2473984
           ]
         },
         "rust": {
-          "elapsed_ns_median": 695083,
-          "wall_ns_median": 2661833,
+          "elapsed_ns_median": 694167,
+          "wall_ns_median": 2917125,
           "elapsed_ns_samples": [
-            718833,
-            686708,
-            695875,
-            695083,
-            687792
-          ],
-          "peak_rss_bytes_median": 2195456,
-          "peak_rss_bytes_samples": [
-            2195456,
-            2195456,
-            2195456,
-            2211840,
-            2195456
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "win",
-          "ratio": 0.5574,
-          "best_ratio": 0.5558,
-          "tolerance": 0.04,
-          "noise": 0.0186
-        },
-        "rust": {
-          "outcome": "parity",
-          "ratio": 1.0056,
-          "best_ratio": 1.0033,
-          "tolerance": 0.04,
-          "noise": 0.0186
-        }
-      }
-    },
-    {
-      "name": "file_write",
-      "category": "io",
-      "status": "implemented",
-      "profile": "io-allocation",
-      "result": 18825216,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 832000,
-          "wall_ns_median": 2913250,
-          "elapsed_ns_samples": [
-            1142000,
-            832000,
-            793000,
-            771000,
-            1051000
-          ],
-          "peak_rss_bytes_median": 2097152,
-          "peak_rss_bytes_samples": [
-            2097152,
-            2097152,
-            2097152,
-            2097152,
-            2097152
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 865584,
-          "wall_ns_median": 2758959,
-          "elapsed_ns_samples": [
-            1019209,
-            865584,
-            826125,
-            822000,
-            1084000
-          ],
-          "peak_rss_bytes_median": 2031616,
-          "peak_rss_bytes_samples": [
-            2031616,
-            2031616,
-            2031616,
-            2031616,
-            2031616
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 783417,
-          "wall_ns_median": 2936750,
-          "elapsed_ns_samples": [
-            958250,
-            783417,
-            762875,
-            1190125,
-            768417
+            704208,
+            694167,
+            686417,
+            703542,
+            683208
           ],
           "peak_rss_bytes_median": 2211840,
           "peak_rss_bytes_samples": [
@@ -3964,18 +3892,100 @@
       },
       "verdict": {
         "cpp": {
-          "outcome": "parity",
-          "ratio": 0.9612,
-          "best_ratio": 0.938,
-          "tolerance": 0.3101,
-          "noise": 0.3101
+          "outcome": "win",
+          "ratio": 0.5621,
+          "best_ratio": 0.5574,
+          "tolerance": 0.04,
+          "noise": 0.0212
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.062,
-          "best_ratio": 1.0107,
-          "tolerance": 0.3101,
-          "noise": 0.3101
+          "ratio": 1.0214,
+          "best_ratio": 1.0143,
+          "tolerance": 0.04,
+          "noise": 0.0247
+        }
+      }
+    },
+    {
+      "name": "file_write",
+      "category": "io",
+      "status": "implemented",
+      "profile": "io-allocation",
+      "result": 18825216,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 820000,
+          "wall_ns_median": 2784208,
+          "elapsed_ns_samples": [
+            847000,
+            820000,
+            798000,
+            794000,
+            844000
+          ],
+          "peak_rss_bytes_median": 2080768,
+          "peak_rss_bytes_samples": [
+            2080768,
+            2080768,
+            2080768,
+            2080768,
+            2080768
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 867083,
+          "wall_ns_median": 2949209,
+          "elapsed_ns_samples": [
+            1035709,
+            838583,
+            836333,
+            1040333,
+            867083
+          ],
+          "peak_rss_bytes_median": 2048000,
+          "peak_rss_bytes_samples": [
+            2048000,
+            2048000,
+            2048000,
+            2048000,
+            2048000
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 792416,
+          "wall_ns_median": 2963333,
+          "elapsed_ns_samples": [
+            807791,
+            768375,
+            775333,
+            857042,
+            792416
+          ],
+          "peak_rss_bytes_median": 2228224,
+          "peak_rss_bytes_samples": [
+            2228224,
+            2228224,
+            2228224,
+            2228224,
+            2228224
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "parity",
+          "ratio": 0.9457,
+          "best_ratio": 0.9494,
+          "tolerance": 0.2273,
+          "noise": 0.2273
+        },
+        "rust": {
+          "outcome": "parity",
+          "ratio": 1.0348,
+          "best_ratio": 1.0333,
+          "tolerance": 0.0561,
+          "noise": 0.0561
         }
       }
     },
@@ -3987,37 +3997,37 @@
       "result": 8437760,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 309000,
-          "wall_ns_median": 2254292,
+          "elapsed_ns_median": 380000,
+          "wall_ns_median": 2689208,
           "elapsed_ns_samples": [
-            317000,
-            332000,
-            309000,
-            294000,
-            302000
+            380000,
+            414000,
+            322000,
+            393000,
+            320000
           ],
           "peak_rss_bytes_median": 2785280,
           "peak_rss_bytes_samples": [
+            2785280,
+            2785280,
             2801664,
-            2785280,
-            2785280,
             2801664,
             2785280
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 920042,
-          "wall_ns_median": 2944166,
+          "elapsed_ns_median": 917333,
+          "wall_ns_median": 3116292,
           "elapsed_ns_samples": [
-            917792,
-            952500,
-            920042,
-            930208,
-            902292
+            916041,
+            992500,
+            916291,
+            1248667,
+            917333
           ],
           "peak_rss_bytes_median": 3293184,
           "peak_rss_bytes_samples": [
-            3276800,
+            3293184,
             3293184,
             3293184,
             3293184,
@@ -4025,21 +4035,21 @@
           ]
         },
         "rust": {
-          "elapsed_ns_median": 303583,
-          "wall_ns_median": 2349458,
+          "elapsed_ns_median": 310792,
+          "wall_ns_median": 2804583,
           "elapsed_ns_samples": [
-            318542,
-            303583,
-            286209,
-            314458,
-            292625
+            387209,
+            310792,
+            303667,
+            312333,
+            297208
           ],
           "peak_rss_bytes_median": 2932736,
           "peak_rss_bytes_samples": [
             2932736,
             2932736,
             2932736,
-            2932736,
+            2949120,
             2932736
           ]
         }
@@ -4047,17 +4057,17 @@
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.3359,
-          "best_ratio": 0.3258,
-          "tolerance": 0.0485,
-          "noise": 0.0485
+          "ratio": 0.4142,
+          "best_ratio": 0.3493,
+          "tolerance": 0.1868,
+          "noise": 0.1868
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0178,
-          "best_ratio": 1.0272,
-          "tolerance": 0.0823,
-          "noise": 0.0719
+          "ratio": 1.2227,
+          "best_ratio": 1.0767,
+          "tolerance": 0.1868,
+          "noise": 0.1868
         }
       }
     },
@@ -4069,77 +4079,77 @@
       "result": 211969972,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 144000,
-          "wall_ns_median": 2138500,
+          "elapsed_ns_median": 157000,
+          "wall_ns_median": 2256625,
           "elapsed_ns_samples": [
-            142000,
-            142000,
-            153000,
-            144000,
-            150000
+            146000,
+            157000,
+            155000,
+            158000,
+            167000
           ],
-          "peak_rss_bytes_median": 2015232,
+          "peak_rss_bytes_median": 1998848,
           "peak_rss_bytes_samples": [
-            2015232,
-            2015232,
-            2015232,
-            2015232,
-            2015232
+            1998848,
+            1998848,
+            1998848,
+            1998848,
+            1998848
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 243875,
-          "wall_ns_median": 2153458,
+          "elapsed_ns_median": 255167,
+          "wall_ns_median": 2382750,
           "elapsed_ns_samples": [
-            243875,
-            241416,
-            267458,
-            241625,
-            260250
+            241958,
+            245500,
+            256584,
+            274458,
+            255167
           ],
-          "peak_rss_bytes_median": 1933312,
+          "peak_rss_bytes_median": 1949696,
           "peak_rss_bytes_samples": [
-            1933312,
-            1933312,
-            1933312,
-            1933312,
-            1933312
+            1949696,
+            1949696,
+            1949696,
+            1949696,
+            1949696
           ]
         },
         "rust": {
-          "elapsed_ns_median": 139417,
-          "wall_ns_median": 2232792,
+          "elapsed_ns_median": 151542,
+          "wall_ns_median": 2526042,
           "elapsed_ns_samples": [
-            138083,
-            139750,
-            139417,
-            138167,
-            142375
+            183292,
+            150916,
+            151667,
+            149292,
+            151542
           ],
-          "peak_rss_bytes_median": 2113536,
+          "peak_rss_bytes_median": 2129920,
           "peak_rss_bytes_samples": [
-            2113536,
-            2113536,
-            2113536,
-            2113536,
-            2113536
+            2129920,
+            2129920,
+            2129920,
+            2129920,
+            2129920
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.5905,
-          "best_ratio": 0.5882,
-          "tolerance": 0.1025,
-          "noise": 0.0764
+          "ratio": 0.6153,
+          "best_ratio": 0.6034,
+          "tolerance": 0.098,
+          "noise": 0.0434
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0329,
-          "best_ratio": 1.0284,
-          "tolerance": 0.1793,
-          "noise": 0.0556
+          "ratio": 1.036,
+          "best_ratio": 0.9779,
+          "tolerance": 0.165,
+          "noise": 0.0191
         }
       }
     },
@@ -4151,134 +4161,52 @@
       "result": 777607308,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 803000,
-          "wall_ns_median": 2694000,
+          "elapsed_ns_median": 863000,
+          "wall_ns_median": 3064041,
           "elapsed_ns_samples": [
-            826000,
-            785000,
-            788000,
-            803000,
-            805000
+            959000,
+            863000,
+            854000,
+            821000,
+            883000
           ],
-          "peak_rss_bytes_median": 2277376,
+          "peak_rss_bytes_median": 2260992,
           "peak_rss_bytes_samples": [
+            2260992,
+            2260992,
             2277376,
-            2277376,
-            2277376,
-            2277376,
+            2260992,
             2277376
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 771625,
-          "wall_ns_median": 2714083,
+          "elapsed_ns_median": 830084,
+          "wall_ns_median": 3191292,
           "elapsed_ns_samples": [
-            785584,
-            771625,
-            782667,
-            758292,
-            769708
+            830084,
+            924708,
+            834125,
+            804625,
+            830083
           ],
-          "peak_rss_bytes_median": 2195456,
+          "peak_rss_bytes_median": 2211840,
           "peak_rss_bytes_samples": [
-            2195456,
-            2195456,
-            2195456,
-            2195456,
-            2195456
+            2211840,
+            2211840,
+            2211840,
+            2211840,
+            2211840
           ]
         },
         "rust": {
-          "elapsed_ns_median": 742250,
-          "wall_ns_median": 2779834,
+          "elapsed_ns_median": 808333,
+          "wall_ns_median": 3100333,
           "elapsed_ns_samples": [
-            750333,
-            742250,
-            820333,
-            726709,
-            738750
-          ],
-          "peak_rss_bytes_median": 2359296,
-          "peak_rss_bytes_samples": [
-            2359296,
-            2342912,
-            2359296,
-            2359296,
-            2359296
-          ]
-        }
-      },
-      "verdict": {
-        "cpp": {
-          "outcome": "parity",
-          "ratio": 1.0407,
-          "best_ratio": 1.0352,
-          "tolerance": 0.04,
-          "noise": 0.0212
-        },
-        "rust": {
-          "outcome": "loss",
-          "ratio": 1.0818,
-          "best_ratio": 1.0802,
-          "tolerance": 0.04,
-          "noise": 0.0212
-        }
-      }
-    },
-    {
-      "name": "csv_parse",
-      "category": "io",
-      "status": "implemented",
-      "profile": "cpu-allocation",
-      "result": 664934317,
-      "languages": {
-        "prismio": {
-          "elapsed_ns_median": 1055000,
-          "wall_ns_median": 2866666,
-          "elapsed_ns_samples": [
-            1096000,
-            1051000,
-            1055000,
-            1043000,
-            1073000
-          ],
-          "peak_rss_bytes_median": 2244608,
-          "peak_rss_bytes_samples": [
-            2244608,
-            2244608,
-            2244608,
-            2244608,
-            2244608
-          ]
-        },
-        "cpp": {
-          "elapsed_ns_median": 1211750,
-          "wall_ns_median": 3115875,
-          "elapsed_ns_samples": [
-            1215000,
-            1187542,
-            1165209,
-            1211750,
-            1229292
-          ],
-          "peak_rss_bytes_median": 2080768,
-          "peak_rss_bytes_samples": [
-            2064384,
-            2080768,
-            2080768,
-            2080768,
-            2080768
-          ]
-        },
-        "rust": {
-          "elapsed_ns_median": 1790083,
-          "wall_ns_median": 4126250,
-          "elapsed_ns_samples": [
-            1823500,
-            1765791,
-            1767792,
-            1860375,
-            1790083
+            802542,
+            811041,
+            809875,
+            776292,
+            808333
           ],
           "peak_rss_bytes_median": 2375680,
           "peak_rss_bytes_samples": [
@@ -4292,18 +4220,100 @@
       },
       "verdict": {
         "cpp": {
-          "outcome": "win",
-          "ratio": 0.8706,
-          "best_ratio": 0.8951,
+          "outcome": "parity",
+          "ratio": 1.0397,
+          "best_ratio": 1.0204,
           "tolerance": 0.04,
-          "noise": 0.0227
+          "noise": 0.0336
+        },
+        "rust": {
+          "outcome": "loss",
+          "ratio": 1.0676,
+          "best_ratio": 1.0576,
+          "tolerance": 0.04,
+          "noise": 0.0336
+        }
+      }
+    },
+    {
+      "name": "csv_parse",
+      "category": "io",
+      "status": "implemented",
+      "profile": "cpu-allocation",
+      "result": 664934317,
+      "languages": {
+        "prismio": {
+          "elapsed_ns_median": 1132000,
+          "wall_ns_median": 3464375,
+          "elapsed_ns_samples": [
+            1132000,
+            1119000,
+            1154000,
+            1099000,
+            1186000
+          ],
+          "peak_rss_bytes_median": 2244608,
+          "peak_rss_bytes_samples": [
+            2244608,
+            2244608,
+            2244608,
+            2244608,
+            2244608
+          ]
+        },
+        "cpp": {
+          "elapsed_ns_median": 1217417,
+          "wall_ns_median": 3715083,
+          "elapsed_ns_samples": [
+            1237875,
+            1697750,
+            1217417,
+            1203541,
+            1214167
+          ],
+          "peak_rss_bytes_median": 2097152,
+          "peak_rss_bytes_samples": [
+            2097152,
+            2113536,
+            2097152,
+            2097152,
+            2097152
+          ]
+        },
+        "rust": {
+          "elapsed_ns_median": 2022333,
+          "wall_ns_median": 4366125,
+          "elapsed_ns_samples": [
+            2022333,
+            2053625,
+            2041584,
+            1874750,
+            1867041
+          ],
+          "peak_rss_bytes_median": 2375680,
+          "peak_rss_bytes_samples": [
+            2375680,
+            2359296,
+            2375680,
+            2375680,
+            2375680
+          ]
+        }
+      },
+      "verdict": {
+        "cpp": {
+          "outcome": "win",
+          "ratio": 0.9298,
+          "best_ratio": 0.9131,
+          "tolerance": 0.04,
+          "noise": 0.0309
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.5894,
-          "best_ratio": 0.5907,
-          "tolerance": 0.04,
-          "noise": 0.0311
+          "ratio": 0.5597,
+          "best_ratio": 0.5886,
+          "tolerance": 0.0825,
+          "noise": 0.0825
         }
       }
     },
@@ -4350,77 +4360,77 @@
       "result": 524287256,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 35071000,
-          "wall_ns_median": 37448583,
+          "elapsed_ns_median": 37525000,
+          "wall_ns_median": 40183750,
           "elapsed_ns_samples": [
-            35071000,
-            35183000,
-            33341000,
-            37565000,
-            35014000
+            36558000,
+            38305000,
+            51957000,
+            37525000,
+            34729000
           ],
-          "peak_rss_bytes_median": 8175616,
+          "peak_rss_bytes_median": 8159232,
           "peak_rss_bytes_samples": [
             8175616,
             8175616,
-            8175616,
-            8175616,
-            8175616
+            8159232,
+            8159232,
+            8159232
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 34847209,
-          "wall_ns_median": 37177417,
+          "elapsed_ns_median": 37975792,
+          "wall_ns_median": 40640167,
           "elapsed_ns_samples": [
-            35321541,
-            34714500,
-            36462958,
-            33469875,
-            34847209
+            38648167,
+            34091125,
+            43390625,
+            36356750,
+            37975792
           ],
-          "peak_rss_bytes_median": 8044544,
+          "peak_rss_bytes_median": 8060928,
           "peak_rss_bytes_samples": [
-            8044544,
-            8044544,
-            8044544,
-            8044544,
-            8044544
+            8060928,
+            8060928,
+            8060928,
+            8060928,
+            8060928
           ]
         },
         "rust": {
-          "elapsed_ns_median": 35085041,
-          "wall_ns_median": 37727834,
+          "elapsed_ns_median": 36029875,
+          "wall_ns_median": 38832417,
           "elapsed_ns_samples": [
-            36617292,
-            36385458,
-            35085041,
-            34853208,
-            34763916
+            35543958,
+            36029875,
+            38042792,
+            38118667,
+            35518750
           ],
-          "peak_rss_bytes_median": 8241152,
+          "peak_rss_bytes_median": 8257536,
           "peak_rss_bytes_samples": [
-            8241152,
-            8241152,
-            8241152,
-            8241152,
-            8241152
+            8257536,
+            8257536,
+            8257536,
+            8257536,
+            8257536
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0064,
-          "best_ratio": 0.9961,
-          "tolerance": 0.04,
-          "noise": 0.0174
+          "ratio": 0.9881,
+          "best_ratio": 1.0187,
+          "tolerance": 0.0603,
+          "noise": 0.0603
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9996,
-          "best_ratio": 0.9591,
-          "tolerance": 0.0437,
-          "noise": 0.0437
+          "ratio": 1.0415,
+          "best_ratio": 0.9778,
+          "tolerance": 0.0694,
+          "noise": 0.0694
         }
       }
     },
@@ -4432,77 +4442,77 @@
       "result": 142595977,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 23050000,
-          "wall_ns_median": 25495209,
+          "elapsed_ns_median": 23421000,
+          "wall_ns_median": 25946625,
           "elapsed_ns_samples": [
-            22839000,
-            23050000,
-            23148000,
-            23214000,
-            22842000
+            23377000,
+            23421000,
+            23423000,
+            23432000,
+            23365000
           ],
           "peak_rss_bytes_median": 10240000,
           "peak_rss_bytes_samples": [
+            10223616,
             10240000,
             10240000,
             10240000,
-            10240000,
-            10240000
+            10223616
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 23134583,
-          "wall_ns_median": 25504000,
+          "elapsed_ns_median": 23450583,
+          "wall_ns_median": 25865500,
           "elapsed_ns_samples": [
-            23068416,
-            23134583,
-            23048041,
-            23224334,
-            23141916
+            23395791,
+            23450583,
+            23453083,
+            23372916,
+            23504958
           ],
-          "peak_rss_bytes_median": 10125312,
+          "peak_rss_bytes_median": 10141696,
           "peak_rss_bytes_samples": [
-            10125312,
-            10125312,
-            10125312,
-            10125312,
-            10125312
+            10141696,
+            10141696,
+            10141696,
+            10141696,
+            10141696
           ]
         },
         "rust": {
-          "elapsed_ns_median": 23412459,
-          "wall_ns_median": 26075042,
+          "elapsed_ns_median": 23698417,
+          "wall_ns_median": 26475208,
           "elapsed_ns_samples": [
-            23550417,
-            23333958,
-            23595209,
-            23407917,
-            23412459
+            23698417,
+            23722542,
+            23555791,
+            23712333,
+            23626334
           ],
-          "peak_rss_bytes_median": 14532608,
+          "peak_rss_bytes_median": 14548992,
           "peak_rss_bytes_samples": [
-            14532608,
-            14532608,
-            14532608,
-            14532608,
-            14532608
+            14548992,
+            14548992,
+            14548992,
+            14548992,
+            14548992
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9963,
-          "best_ratio": 0.9909,
+          "ratio": 0.9987,
+          "best_ratio": 0.9997,
           "tolerance": 0.04,
-          "noise": 0.0133
+          "noise": 0.0024
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9845,
-          "best_ratio": 0.9788,
+          "ratio": 0.9883,
+          "best_ratio": 0.9919,
           "tolerance": 0.04,
-          "noise": 0.0133
+          "noise": 0.0036
         }
       }
     },
@@ -4514,77 +4524,77 @@
       "result": 956634761,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 35001000,
-          "wall_ns_median": 37742792,
+          "elapsed_ns_median": 35318000,
+          "wall_ns_median": 37877042,
           "elapsed_ns_samples": [
-            35001000,
-            35969000,
-            35296000,
-            34881000,
-            34869000
+            35318000,
+            35291000,
+            35301000,
+            35345000,
+            35414000
           ],
           "peak_rss_bytes_median": 19922944,
           "peak_rss_bytes_samples": [
-            19906560,
             19922944,
+            19906560,
             19922944,
             19922944,
             19922944
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 35038625,
-          "wall_ns_median": 37277125,
+          "elapsed_ns_median": 35287917,
+          "wall_ns_median": 37627250,
           "elapsed_ns_samples": [
-            34845375,
-            36088875,
-            35038625,
-            35241792,
-            34674250
+            35167458,
+            35158500,
+            35303708,
+            35287917,
+            35360917
           ],
-          "peak_rss_bytes_median": 19791872,
+          "peak_rss_bytes_median": 19808256,
           "peak_rss_bytes_samples": [
-            19791872,
-            19791872,
-            19791872,
-            19791872,
-            19791872
+            19808256,
+            19808256,
+            19808256,
+            19808256,
+            19808256
           ]
         },
         "rust": {
-          "elapsed_ns_median": 40516625,
-          "wall_ns_median": 43246250,
+          "elapsed_ns_median": 40742000,
+          "wall_ns_median": 43470000,
           "elapsed_ns_samples": [
-            40866250,
-            40940667,
-            40516625,
-            40345417,
-            40486125
+            40829208,
+            40870584,
+            40620708,
+            40742000,
+            40636208
           ],
-          "peak_rss_bytes_median": 19988480,
+          "peak_rss_bytes_median": 20004864,
           "peak_rss_bytes_samples": [
             19988480,
-            19988480,
-            19988480,
-            19972096,
-            19972096
+            20004864,
+            20004864,
+            20004864,
+            20004864
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9989,
-          "best_ratio": 1.0056,
+          "ratio": 1.0009,
+          "best_ratio": 1.0038,
           "tolerance": 0.04,
-          "noise": 0.0119
+          "noise": 0.0039
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.8639,
-          "best_ratio": 0.8643,
+          "ratio": 0.8669,
+          "best_ratio": 0.8688,
           "tolerance": 0.04,
-          "noise": 0.0119
+          "noise": 0.0047
         }
       }
     },
@@ -4596,77 +4606,77 @@
       "result": 419296629,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 58452000,
-          "wall_ns_median": 61264125,
+          "elapsed_ns_median": 59620000,
+          "wall_ns_median": 62189000,
           "elapsed_ns_samples": [
-            58452000,
-            59517000,
-            59998000,
-            58308000,
-            58029000
+            59620000,
+            59941000,
+            59372000,
+            59513000,
+            59768000
           ],
-          "peak_rss_bytes_median": 18595840,
+          "peak_rss_bytes_median": 18579456,
           "peak_rss_bytes_samples": [
-            18595840,
-            18595840,
-            18595840,
-            18595840,
-            18595840
+            18579456,
+            18579456,
+            18579456,
+            18579456,
+            18579456
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 58797125,
-          "wall_ns_median": 61321500,
+          "elapsed_ns_median": 59818667,
+          "wall_ns_median": 62373708,
           "elapsed_ns_samples": [
-            58797125,
-            59563458,
-            59178458,
-            58475083,
-            58236875
+            59722375,
+            59818667,
+            59790417,
+            60019167,
+            59864084
           ],
-          "peak_rss_bytes_median": 18497536,
+          "peak_rss_bytes_median": 18513920,
           "peak_rss_bytes_samples": [
-            18497536,
-            18497536,
-            18497536,
-            18497536,
-            18497536
+            18513920,
+            18513920,
+            18513920,
+            18513920,
+            18513920
           ]
         },
         "rust": {
-          "elapsed_ns_median": 58609333,
-          "wall_ns_median": 61438000,
+          "elapsed_ns_median": 59763084,
+          "wall_ns_median": 62545833,
           "elapsed_ns_samples": [
-            58459292,
-            63220666,
-            58632834,
-            58609333,
-            58327083
+            59763084,
+            59957958,
+            59661708,
+            60067792,
+            59683125
           ],
-          "peak_rss_bytes_median": 18677760,
+          "peak_rss_bytes_median": 18694144,
           "peak_rss_bytes_samples": [
-            18677760,
-            18677760,
-            18677760,
-            18677760,
-            18677760
+            18694144,
+            18694144,
+            18694144,
+            18694144,
+            18694144
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9941,
-          "best_ratio": 0.9964,
+          "ratio": 0.9967,
+          "best_ratio": 0.9941,
           "tolerance": 0.04,
-          "noise": 0.0207
+          "noise": 0.0043
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9973,
-          "best_ratio": 0.9949,
+          "ratio": 0.9976,
+          "best_ratio": 0.9951,
           "tolerance": 0.04,
-          "noise": 0.0207
+          "noise": 0.0046
         }
       }
     },
@@ -4678,77 +4688,77 @@
       "result": 8699986,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 9644000,
-          "wall_ns_median": 12252500,
+          "elapsed_ns_median": 9452000,
+          "wall_ns_median": 11661833,
           "elapsed_ns_samples": [
-            9940000,
-            9666000,
-            9644000,
-            9635000,
-            9535000
+            9452000,
+            9434000,
+            9516000,
+            9453000,
+            9445000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 9653625,
-          "wall_ns_median": 12119125,
+          "elapsed_ns_median": 9532708,
+          "wall_ns_median": 11614459,
           "elapsed_ns_samples": [
-            10573875,
-            9570000,
-            9583708,
-            9653625,
-            9656333
+            9560541,
+            9532708,
+            9489584,
+            9488834,
+            9535791
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
             1703936,
-            1687552,
             1703936,
-            1687552,
-            1687552
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 9533875,
-          "wall_ns_median": 11968166,
+          "elapsed_ns_median": 9507583,
+          "wall_ns_median": 11774416,
           "elapsed_ns_samples": [
-            10068583,
-            9533875,
-            9520208,
-            9378000,
-            9627458
+            9543417,
+            9507583,
+            9524583,
+            9467709,
+            9456292
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.999,
-          "best_ratio": 0.9963,
+          "ratio": 0.9915,
+          "best_ratio": 0.9942,
           "tolerance": 0.04,
-          "noise": 0.0075
+          "noise": 0.0048
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0116,
-          "best_ratio": 1.0167,
+          "ratio": 0.9942,
+          "best_ratio": 0.9976,
           "tolerance": 0.04,
-          "noise": 0.0112
+          "noise": 0.006
         }
       }
     },
@@ -4760,77 +4770,77 @@
       "result": 959998845,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 12341000,
-          "wall_ns_median": 14246542,
+          "elapsed_ns_median": 11948000,
+          "wall_ns_median": 14144292,
           "elapsed_ns_samples": [
-            13969000,
-            8983000,
-            12083000,
-            12341000,
-            14115000
+            9129000,
+            12170000,
+            11948000,
+            8932000,
+            14274000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1753088,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 11066584,
-          "wall_ns_median": 13218042,
+          "elapsed_ns_median": 11779500,
+          "wall_ns_median": 13998000,
           "elapsed_ns_samples": [
-            14199000,
-            14129625,
-            10951417,
-            11066584,
-            10930916
+            11779500,
+            8875250,
+            12196250,
+            8881416,
+            14234791
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
-            1687552,
-            1687552,
-            1687552,
-            1687552,
-            1687552
+            1703936,
+            1703936,
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 13814417,
-          "wall_ns_median": 16237042,
+          "elapsed_ns_median": 13388125,
+          "wall_ns_median": 15668625,
           "elapsed_ns_samples": [
-            13886834,
-            12363541,
-            12349458,
-            14444417,
-            13814417
+            12814250,
+            14670833,
+            13388125,
+            14424833,
+            12949875
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.1152,
-          "best_ratio": 0.8218,
-          "tolerance": 0.2872,
-          "noise": 0.2872
+          "ratio": 1.0143,
+          "best_ratio": 1.0064,
+          "tolerance": 0.2814,
+          "noise": 0.2814
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.8933,
-          "best_ratio": 0.7274,
-          "tolerance": 0.1528,
-          "noise": 0.1528
+          "ratio": 0.8924,
+          "best_ratio": 0.697,
+          "tolerance": 0.2545,
+          "noise": 0.2545
         }
       }
     },
@@ -4842,77 +4852,77 @@
       "result": 308976558,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 38394000,
-          "wall_ns_median": 40877000,
+          "elapsed_ns_median": 38852000,
+          "wall_ns_median": 41282792,
           "elapsed_ns_samples": [
-            38674000,
-            38345000,
-            38689000,
-            38325000,
-            38394000
+            38892000,
+            38804000,
+            38797000,
+            38899000,
+            38852000
           ],
-          "peak_rss_bytes_median": 6012928,
+          "peak_rss_bytes_median": 5996544,
           "peak_rss_bytes_samples": [
-            6012928,
-            6012928,
-            6012928,
-            6012928,
-            6012928
+            5996544,
+            5996544,
+            5996544,
+            5996544,
+            5996544
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 38576875,
-          "wall_ns_median": 40968375,
+          "elapsed_ns_median": 38790875,
+          "wall_ns_median": 41204000,
           "elapsed_ns_samples": [
-            38667250,
-            38576875,
-            38661542,
-            38511291,
-            38221625
+            38855833,
+            38813959,
+            38778958,
+            38790875,
+            38790208
           ],
-          "peak_rss_bytes_median": 5898240,
+          "peak_rss_bytes_median": 5914624,
           "peak_rss_bytes_samples": [
-            5898240,
-            5898240,
-            5898240,
-            5898240,
-            5898240
+            5914624,
+            5914624,
+            5914624,
+            5914624,
+            5914624
           ]
         },
         "rust": {
-          "elapsed_ns_median": 36569541,
-          "wall_ns_median": 39341625,
+          "elapsed_ns_median": 36938417,
+          "wall_ns_median": 39543541,
           "elapsed_ns_samples": [
-            36418292,
-            36609542,
-            36569541,
-            36889417,
-            36536208
+            36656125,
+            36802333,
+            36938417,
+            36974875,
+            37160000
           ],
-          "peak_rss_bytes_median": 6111232,
+          "peak_rss_bytes_median": 6127616,
           "peak_rss_bytes_samples": [
-            6111232,
-            6111232,
-            6111232,
-            6111232,
-            6111232
+            6127616,
+            6127616,
+            6127616,
+            6127616,
+            6127616
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9953,
-          "best_ratio": 1.0027,
+          "ratio": 1.0016,
+          "best_ratio": 1.0005,
           "tolerance": 0.04,
-          "noise": 0.0086
+          "noise": 0.0023
         },
         "rust": {
           "outcome": "loss",
-          "ratio": 1.0499,
-          "best_ratio": 1.0524,
+          "ratio": 1.0518,
+          "best_ratio": 1.0584,
           "tolerance": 0.04,
-          "noise": 0.0086
+          "noise": 0.0047
         }
       }
     },
@@ -4924,77 +4934,77 @@
       "result": 1621250581,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 18251000,
-          "wall_ns_median": 20627375,
+          "elapsed_ns_median": 18655000,
+          "wall_ns_median": 20899083,
           "elapsed_ns_samples": [
-            18251000,
-            18186000,
-            18204000,
-            18322000,
-            18815000
+            18669000,
+            18655000,
+            18494000,
+            18507000,
+            18657000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1769472,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 18266958,
-          "wall_ns_median": 20598459,
+          "elapsed_ns_median": 18543916,
+          "wall_ns_median": 20777792,
           "elapsed_ns_samples": [
-            18266958,
-            18224459,
-            18344917,
-            18142667,
-            18330417
+            18720584,
+            18543916,
+            18541542,
+            18638458,
+            18524292
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
-            1687552,
-            1687552,
-            1687552,
-            1687552,
-            1687552
+            1703936,
+            1703936,
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 18300125,
-          "wall_ns_median": 20752000,
+          "elapsed_ns_median": 18587500,
+          "wall_ns_median": 21015917,
           "elapsed_ns_samples": [
-            18189375,
-            18300125,
-            18349875,
-            18079833,
-            18747875
+            18645875,
+            18785458,
+            18486250,
+            18587500,
+            18499583
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 0.9991,
-          "best_ratio": 1.0024,
+          "ratio": 1.006,
+          "best_ratio": 0.9984,
           "tolerance": 0.04,
-          "noise": 0.0065
+          "noise": 0.008
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9973,
-          "best_ratio": 1.0059,
+          "ratio": 1.0036,
+          "best_ratio": 1.0004,
           "tolerance": 0.04,
-          "noise": 0.0088
+          "noise": 0.008
         }
       }
     },
@@ -5006,77 +5016,77 @@
       "result": 754246185,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 9325000,
-          "wall_ns_median": 12093667,
+          "elapsed_ns_median": 9329000,
+          "wall_ns_median": 11609334,
           "elapsed_ns_samples": [
-            9134000,
-            9325000,
-            10971000,
-            9435000,
-            8667000
+            9487000,
+            9255000,
+            9482000,
+            9173000,
+            9329000
           ],
           "peak_rss_bytes_median": 17973248,
           "peak_rss_bytes_samples": [
+            17956864,
             17973248,
             17973248,
-            17989632,
             17973248,
-            17956864
+            17940480
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 10959709,
-          "wall_ns_median": 13890000,
+          "elapsed_ns_median": 9853417,
+          "wall_ns_median": 12211542,
           "elapsed_ns_samples": [
-            11573209,
-            11035583,
-            10959709,
-            10331375,
-            9833834
+            9731166,
+            9971833,
+            9684500,
+            9901625,
+            9853417
           ],
-          "peak_rss_bytes_median": 17809408,
+          "peak_rss_bytes_median": 17825792,
           "peak_rss_bytes_samples": [
-            17809408,
-            17809408,
-            17809408,
-            17809408,
-            17809408
+            17825792,
+            17825792,
+            17825792,
+            17825792,
+            17825792
           ]
         },
         "rust": {
-          "elapsed_ns_median": 9766917,
-          "wall_ns_median": 12811416,
+          "elapsed_ns_median": 9073083,
+          "wall_ns_median": 11436167,
           "elapsed_ns_samples": [
-            9766917,
-            9920000,
-            10568791,
-            9322208,
-            9117708
+            9180000,
+            8917958,
+            9077208,
+            8900083,
+            9073083
           ],
-          "peak_rss_bytes_median": 18022400,
+          "peak_rss_bytes_median": 18038784,
           "peak_rss_bytes_samples": [
+            18038784,
+            18038784,
             18022400,
-            18022400,
-            18022400,
-            18022400,
-            18022400
+            18038784,
+            18038784
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.8508,
-          "best_ratio": 0.8813,
-          "tolerance": 0.0643,
-          "noise": 0.0643
+          "ratio": 0.9468,
+          "best_ratio": 0.9472,
+          "tolerance": 0.04,
+          "noise": 0.0243
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 0.9548,
-          "best_ratio": 0.9506,
-          "tolerance": 0.0612,
-          "noise": 0.0612
+          "ratio": 1.0282,
+          "best_ratio": 1.0307,
+          "tolerance": 0.04,
+          "noise": 0.0243
         }
       }
     },
@@ -5088,77 +5098,77 @@
       "result": 535505734,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 48893000,
-          "wall_ns_median": 51236375,
+          "elapsed_ns_median": 49165000,
+          "wall_ns_median": 51601917,
           "elapsed_ns_samples": [
-            49411000,
-            48893000,
-            48768000,
-            48622000,
-            48948000
+            49405000,
+            49047000,
+            49186000,
+            49165000,
+            48943000
           ],
           "peak_rss_bytes_median": 13926400,
           "peak_rss_bytes_samples": [
             13926400,
+            13910016,
             13926400,
-            13926400,
-            13926400,
+            13910016,
             13926400
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 53764000,
-          "wall_ns_median": 56220583,
+          "elapsed_ns_median": 53794375,
+          "wall_ns_median": 56357875,
           "elapsed_ns_samples": [
-            53764000,
-            53862958,
-            53696791,
-            54009333,
-            53708625
+            53845125,
+            53749375,
+            53792833,
+            53913292,
+            53794375
           ],
-          "peak_rss_bytes_median": 13778944,
+          "peak_rss_bytes_median": 13795328,
           "peak_rss_bytes_samples": [
-            13778944,
-            13778944,
-            13778944,
-            13778944,
-            13778944
+            13795328,
+            13795328,
+            13795328,
+            13795328,
+            13795328
           ]
         },
         "rust": {
-          "elapsed_ns_median": 52880000,
-          "wall_ns_median": 55433375,
+          "elapsed_ns_median": 53009125,
+          "wall_ns_median": 55453250,
           "elapsed_ns_samples": [
-            53131875,
-            53104750,
-            51989541,
-            52621958,
-            52880000
+            53206500,
+            53009125,
+            52811000,
+            53030500,
+            52837084
           ],
-          "peak_rss_bytes_median": 14008320,
+          "peak_rss_bytes_median": 14024704,
           "peak_rss_bytes_samples": [
-            14008320,
-            14008320,
-            14008320,
-            14008320,
-            14008320
+            14024704,
+            14024704,
+            14024704,
+            14024704,
+            14024704
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "win",
-          "ratio": 0.9094,
-          "best_ratio": 0.9055,
+          "ratio": 0.9139,
+          "best_ratio": 0.9106,
           "tolerance": 0.04,
-          "noise": 0.0037
+          "noise": 0.0028
         },
         "rust": {
           "outcome": "win",
-          "ratio": 0.9246,
-          "best_ratio": 0.9352,
+          "ratio": 0.9275,
+          "best_ratio": 0.9268,
           "tolerance": 0.04,
-          "noise": 0.0091
+          "noise": 0.0036
         }
       }
     },
@@ -5170,77 +5180,77 @@
       "result": 72450205,
       "languages": {
         "prismio": {
-          "elapsed_ns_median": 1637000,
-          "wall_ns_median": 3762667,
+          "elapsed_ns_median": 1658000,
+          "wall_ns_median": 3649333,
           "elapsed_ns_samples": [
-            1607000,
-            1675000,
-            1637000,
-            1688000,
-            1636000
+            1636000,
+            1642000,
+            1659000,
+            1658000,
+            1664000
           ],
-          "peak_rss_bytes_median": 1998848,
+          "peak_rss_bytes_median": 1982464,
           "peak_rss_bytes_samples": [
-            1998848,
-            1998848,
-            1998848,
-            1998848,
-            1998848
+            1982464,
+            1982464,
+            1982464,
+            1982464,
+            1982464
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 1600375,
-          "wall_ns_median": 3582667,
+          "elapsed_ns_median": 1582792,
+          "wall_ns_median": 3581875,
           "elapsed_ns_samples": [
-            1686209,
-            1572833,
-            1600375,
-            1611500,
-            1598250
+            1583208,
+            1576958,
+            1582708,
+            1606291,
+            1582792
           ],
-          "peak_rss_bytes_median": 1851392,
+          "peak_rss_bytes_median": 1867776,
           "peak_rss_bytes_samples": [
-            1851392,
-            1851392,
-            1851392,
-            1851392,
-            1851392
+            1867776,
+            1867776,
+            1867776,
+            1867776,
+            1867776
           ]
         },
         "rust": {
-          "elapsed_ns_median": 1624333,
-          "wall_ns_median": 3777959,
+          "elapsed_ns_median": 1628708,
+          "wall_ns_median": 3665125,
           "elapsed_ns_samples": [
-            1667625,
-            1597417,
-            1630083,
-            1585042,
-            1624333
+            1634500,
+            1628708,
+            1621541,
+            1635250,
+            1620458
           ],
-          "peak_rss_bytes_median": 2064384,
+          "peak_rss_bytes_median": 2080768,
           "peak_rss_bytes_samples": [
-            2064384,
-            2064384,
-            2064384,
-            2064384,
-            2064384
+            2080768,
+            2080768,
+            2080768,
+            2080768,
+            2080768
           ]
         }
       },
       "verdict": {
         "cpp": {
           "outcome": "parity",
-          "ratio": 1.0229,
-          "best_ratio": 1.0217,
+          "ratio": 1.0475,
+          "best_ratio": 1.0374,
           "tolerance": 0.04,
-          "noise": 0.0238
+          "noise": 0.0103
         },
         "rust": {
           "outcome": "parity",
-          "ratio": 1.0078,
-          "best_ratio": 1.0139,
+          "ratio": 1.018,
+          "best_ratio": 1.0096,
           "tolerance": 0.04,
-          "noise": 0.0238
+          "noise": 0.0103
         }
       }
     },
@@ -5254,59 +5264,59 @@
       "languages": {
         "prismio": {
           "elapsed_ns_median": 0,
-          "wall_ns_median": 1917875,
+          "wall_ns_median": 1940625,
           "elapsed_ns_samples": [
+            1000,
             0,
             0,
             0,
-            0,
-            0
+            1000
           ],
-          "peak_rss_bytes_median": 1785856,
+          "peak_rss_bytes_median": 1769472,
           "peak_rss_bytes_samples": [
-            1785856,
-            1785856,
-            1785856,
-            1785856,
-            1785856
+            1769472,
+            1769472,
+            1753088,
+            1769472,
+            1769472
           ]
         },
         "cpp": {
-          "elapsed_ns_median": 625,
-          "wall_ns_median": 1891500,
+          "elapsed_ns_median": 584,
+          "wall_ns_median": 1918875,
           "elapsed_ns_samples": [
-            667,
-            541,
-            625,
-            709,
-            583
+            459,
+            708,
+            584,
+            458,
+            625
           ],
-          "peak_rss_bytes_median": 1687552,
+          "peak_rss_bytes_median": 1703936,
           "peak_rss_bytes_samples": [
-            1687552,
-            1687552,
-            1687552,
-            1687552,
-            1687552
+            1703936,
+            1703936,
+            1703936,
+            1703936,
+            1703936
           ]
         },
         "rust": {
-          "elapsed_ns_median": 875,
-          "wall_ns_median": 2057125,
+          "elapsed_ns_median": 834,
+          "wall_ns_median": 2049917,
           "elapsed_ns_samples": [
-            958,
-            958,
+            792,
             875,
-            750,
-            834
+            834,
+            875,
+            708
           ],
-          "peak_rss_bytes_median": 1884160,
+          "peak_rss_bytes_median": 1900544,
           "peak_rss_bytes_samples": [
-            1884160,
-            1884160,
-            1884160,
-            1884160,
-            1884160
+            1900544,
+            1900544,
+            1900544,
+            1900544,
+            1900544
           ]
         }
       }

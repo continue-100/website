@@ -210,6 +210,30 @@ fn main() -> Int {
 }
 ```
 
+A global `let` may also hold an **array of literals** — numbers, characters or strings. It is read-only data in the program, read by address, so reading it builds and allocates nothing, and it is the place for a table or a vocabulary that several functions share:
+
+<!-- prismio-check: pass -->
+```prismio
+import std.io
+import std.string
+import std.vec
+
+let weekdays = ["mon", "tue", "wed", "thu", "fri"]
+let primes = [2, 3, 5, 7, 11]
+
+fn isWeekday(day: String) -> Bool {
+    return weekdays.contains(day)
+}
+
+fn main() -> Int {
+    println(isWeekday("wed"))     // true
+    println(primes[4])            // 11
+    return 0
+}
+```
+
+The array must be `let`, not `let mut`; an element must itself be a literal (a call, a variable or a `Bool` is refused); and, like any array whose length is known, binding it to a `let mut` makes a writable copy.
+
 Globals share the flattened program namespace after imports are resolved. A mutable global can be assigned by a function. Prefer passing state explicitly where practical: global mutation makes ownership, initialization order, and foreign integration harder to reason about.
 
 <!-- prismio-check: fail -->

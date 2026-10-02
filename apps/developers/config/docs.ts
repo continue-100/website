@@ -161,6 +161,7 @@ export const docsConfig: DocsAppConfig = {
                 { label: "CLI reference", href: "/compiler/cli" },
                 { label: "Diagnostics", href: "/compiler/diagnostics" },
                 { label: "IDE protocol", href: "/tooling/ide-protocol" },
+                { label: "IntelliJ plugin", href: "/tooling/intellij-plugin" },
                 { label: "Debugging, targets, and tracing", href: "/tooling/debugging-targets-and-build-tracing" },
             ],
         },

@@ -58,5 +58,6 @@ and inspect final machine code when optimization is the claim. For ownership cha
 ledger alone cannot detect every premature release.
 
 While iterating, run a named test through `PRISMIO=<generation> python3 tests/test_runner.py <name>`.
-Finish with the full runner, AIF differential when applicable, and `tools/release_gate.py` for a
-self-hosting, runtime, backend, or packaging change.
+Finish with `prismio verify` (the suite, source lists, externs and the AIF differential) and, for a
+self-hosting, runtime, backend, or packaging change, `prismio gate`, which lints and runs the whole release
+gate on a packaged candidate. Do not run `prismio build` or edit `src/` while the suite is running.

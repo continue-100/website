@@ -4,6 +4,7 @@ import {ArrowRight, ArrowUpRight, FileUser, Heart, Mail, Sparkles} from "lucide-
 import HeaderMain from "@/components/HeaderMain";
 import DiscordIcon from "@/components/icons/DiscordIcon";
 import GithubIcon from "@/components/icons/GithubIcon";
+import LinkedinIcon from "@/components/icons/LinkedinIcon";
 import FooterMain from "@prismio/ui/FooterMain";
 import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
@@ -128,7 +129,7 @@ export default function TeamPage() {
                                     </p>
                                 </div>
 
-                                <div className="flex flex-wrap items-center gap-3 pt-1">
+                                <div className="flex flex-col items-start gap-3 pt-1">
                                     <Link
                                         href="/team/saksham-jaiswal"
                                         className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200"
@@ -137,33 +138,45 @@ export default function TeamPage() {
                                         <ArrowRight size={14} />
                                     </Link>
 
-                                    <a
-                                        href="https://github.com/saksham1319"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                    >
-                                        <GithubIcon size={14} />
-                                        GitHub
-                                        <ArrowUpRight size={12} className="opacity-60" />
-                                    </a>
-                                    <a
-                                        href="https://saksham1319.vercel.app"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                    >
-                                        <FileUser size={14} className="text-teal-400" />
-                                        Portfolio
-                                        <ArrowUpRight size={12} className="opacity-60" />
-                                    </a>
-                                    <a
-                                        href="mailto:saksham6975@gmail.com"
-                                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                    >
-                                        <Mail size={14} className="text-sky-400" />
-                                        Contact
-                                    </a>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <a
+                                            href="https://github.com/saksham1319"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                                        >
+                                            <GithubIcon size={14} />
+                                            GitHub
+                                            <ArrowUpRight size={12} className="opacity-60" />
+                                        </a>
+                                        <a
+                                            href="https://www.linkedin.com/in/saksham6975"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                                        >
+                                            <LinkedinIcon size={14} className="text-[#70b5f9]" />
+                                            LinkedIn
+                                            <ArrowUpRight size={12} className="opacity-60" />
+                                        </a>
+                                        <a
+                                            href="https://saksham1319.vercel.app"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                                        >
+                                            <FileUser size={14} className="text-teal-400" />
+                                            Portfolio
+                                            <ArrowUpRight size={12} className="opacity-60" />
+                                        </a>
+                                        <a
+                                            href="mailto:saksham6975@gmail.com"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                                        >
+                                            <Mail size={14} className="text-sky-400" />
+                                            Contact
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

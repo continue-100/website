@@ -80,8 +80,8 @@ before `PATH` and prints the chosen executable.
 
 Bootstrap, seed refresh, and fixed-point work should use `build/genN` outputs rather than the
 moving debug host. `tools/bootstrap.sh --compiler build/gen1 --out build/gen2` gives each generation
-an immutable path; `tools/release_gate.py --rc build/gen2` independently rebuilds successors and
-compares their IR. Record the exact compiler path in bug reports and benchmark results.
+an immutable path; `prismio gate` independently rebuilds successors from a packaged candidate and
+compares their IR (a hand-run `tools/release_gate.py --rc` needs a packaged compiler and the pinned LLVM first on `PATH`). Record the exact compiler path in bug reports and benchmark results.
 
 ## Trace or bypass caches
 

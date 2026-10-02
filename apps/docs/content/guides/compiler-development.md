@@ -3,7 +3,7 @@ title: Develop the self-hosted compiler
 description: Work on Prismio's self-hosted compiler with generation builds, fixed-point checks, and the regression suite.
 status: stable
 version: "0.1.0"
-lastUpdated: "2026-09-30"
+lastUpdated: "2026-10-02"
 tags: [guide, compiler, self-hosting, testing]
 related: [compiler/overview, compiler/bootstrap, specification/conformance]
 ---
@@ -16,8 +16,24 @@ Compiler changes are written in Prismio under `src/`. A trusted seed or previous
 tools/bootstrap.sh --seed --out build/gen0
 tools/bootstrap.sh --compiler build/gen0 --out build/gen1
 tools/bootstrap.sh --compiler build/gen1 --out build/gen2
-PRISMIO=$PWD/build/gen2 python3 tests/test_runner.py
+python3 tools/package.py --compiler build/gen2 --out build/dist
+python3 tools/run_suite.py --compiler build/dist/bin/prismio
 ```
+
+A bare generation can build compilers and nothing else: a program links the runtime as installed bitcode beside the executable, and a generation has none. Package it first, and test the package.
+
+## The project commands
+
+Once a compiler exists, the repository is itself a Prismio project, and `build.ums` declares its commands. Run them as `prismio <command>` from the checkout:
+
+| Command | What it does |
+|---|---|
+| `prismio build` | builds the compiler this checkout runs, `.prismio/build/debug/prismio` |
+| `prismio suite` | the test suite, for the fast loop |
+| `prismio verify` | suite, source lists, externs and the AIF differential |
+| `prismio gate` | lint, then the whole release gate on a packaged candidate; run it before every push |
+
+Do not run `prismio build`, or edit `src/`, while the suite is running: one of its fixtures replaces the project compiler, and some compile the working tree. The LLVM targets are written twice, `PRISMIO_LLVM_TARGET_LIST` in `runtime/prismio_llvm.h` and `TARGET_COMPONENTS` in `tools/setup_llvm.py` (AArch64, X86, WebAssembly); `python3 tools/check_source_lists.py` fails if they disagree, and a triple outside those families is refused with `P1043`.
 
 Name generation outputs explicitly for bootstrap and fixed-point checks. A stale
 compiler on `PATH` can make those failures look nondeterministic.
@@ -68,7 +84,7 @@ compare its generations. Continue to use `build/gen1`, `build/gen2`, and
 For a tight edit/test loop, select one file fixture by stem:
 
 ```bash
-PRISMIO=$PWD/build/gen2 python3 tests/test_runner.py test_92_field_view_provenance
+PRISMIO=$PWD/build/dist/bin/prismio python3 tests/test_runner.py test_92_field_view_provenance
 ```
 
 Filtered runs cover file fixtures only. Run the unfiltered suite before
@@ -77,15 +93,15 @@ checks also run.
 
 ## Establish a fixed point
 
-A fixed point requires the relevant outputs of `gen1` and `gen2` to agree. CI performs generation builds, runs positive and negative language tests, compares AIF results against its oracle, and checks that the committed seed remains target-neutral on Windows, macOS, and Linux.
+A fixed point requires the relevant outputs of `gen1` and `gen2` to agree. CI, which a maintainer starts by hand rather than on every push, performs generation builds, runs positive and negative language tests, compares AIF results against its oracle, and checks that the committed seed remains target-neutral on Windows, macOS, and Linux (and, on Linux, that it is current).
 
 Compare canonicalized outputs appropriate to the repository workflow rather than assuming native executable bytes are reproducible across linkers. A semantic or IR-level divergence can identify the stage where a compiler change begins compiling itself differently.
 
 Emit the compiler IR with both generations and compare it byte for byte:
 
 ```bash
-build/gen1 build components/main.psm -o /tmp/a.ll
-build/gen2 build components/main.psm -o /tmp/b.ll
+build/gen1 build src/main.psm -o /tmp/a.ll
+build/gen2 build src/main.psm -o /tmp/b.ll
 cmp /tmp/a.ll /tmp/b.ll
 ```
 
@@ -141,10 +157,10 @@ Run the repository checks directly:
 ```bash
 python3 tools/format_sources.py --check
 python3 tools/lint.py
-PRISMIO=$PWD/build/gen2 python3 tests/test_runner.py
+prismio gate
 python tools/sanitizer_smoke.py --compiler build/gen2
-python3 tools/milestone_bench.py --old build/gen0 --new build/gen2
-cd ../docs && PRISMIO=../prismio/build/gen2 node scripts/verify-doc-examples.mjs
+prismio bench
+cd ../website/apps/docs && PRISMIO_INTERNAL_HOSTED=1 PRISMIO=../../../prismio/build/dist/bin/prismio node scripts/verify-doc-examples.mjs
 ```
 
 Allocation-inference changes should additionally run the AIF oracle

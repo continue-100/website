@@ -681,7 +681,7 @@ reproduced from the two commands above without restoring that instrumentation.
 After editing `runtime/*.c`, rebuild the toolchain before measuring generated
 programs. A program links the runtime as installed bitcode, so an edit to the C
 does not reach it until that bitcode is rebuilt — `prismio build` refreshes a
-project-local toolchain, `prismio dist` a packaged one.
+project-local toolchain, and `tools/package.py` a packaged one.
 
 ## Open work
 
