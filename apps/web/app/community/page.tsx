@@ -123,7 +123,7 @@ export default function CommunityPage() {
 
             <HeaderMain />
 
-            <main className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:py-28">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 pt-20 pb-0 md:pt-28 md:pb-0">
                 {/* Hero */}
                 <section className="border-b border-white/[0.08] pb-20">
                     <h1 className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-white sm:text-5xl md:text-6xl">
@@ -293,7 +293,7 @@ export default function CommunityPage() {
                 </section>
 
                 {/* Closing CTA */}
-                <section className="pt-24 text-center">
+                <section className="pt-28 text-center">
                     <div className="mx-auto max-w-3xl space-y-6">
                         <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                             Rather just try it first?

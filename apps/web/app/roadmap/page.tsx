@@ -180,9 +180,7 @@ export default function RoadmapPage() {
                         <ul className={`${CARD} divide-y divide-white/[0.08] lg:col-span-8`}>
                             {WORKS_TODAY.map((item) => (
                                 <li key={item.title} className="flex gap-4 px-7 py-5">
-                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
-                                        <Check size={14}/>
-                                    </span>
+                                    <Check size={16} aria-hidden className="mt-1 shrink-0 text-emerald-400"/>
                                     <div>
                                         <h3 className="text-base font-semibold text-white">{item.title}</h3>
                                         <p className="mt-1 text-sm leading-6 text-zinc-400">{renderCode(item.detail)}</p>
@@ -207,10 +205,7 @@ export default function RoadmapPage() {
                     <div className="mt-12 grid gap-6 md:grid-cols-3">
                         {EXPERIMENTAL.map((item) => (
                             <div key={item.title} className={`${CARD} p-7`}>
-                                <span className="inline-block rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 font-mono text-xs text-amber-300">
-                                    Experimental
-                                </span>
-                                <h3 className="mt-4 text-lg font-semibold text-white">{item.title}</h3>
+                                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
                                 <p className="mt-2 text-sm leading-7 text-zinc-400">{renderCode(item.detail)}</p>
                             </div>
                         ))}
@@ -262,9 +257,7 @@ export default function RoadmapPage() {
                 <section className="pt-24" aria-labelledby="blocked-heading">
                     <div className={`${CARD} grid gap-6 border-rose-500/20 p-8 md:grid-cols-12 md:gap-10 md:p-10`}>
                         <div className="md:col-span-4">
-                            <span className="inline-block rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-0.5 font-mono text-xs text-rose-300">
-                                Blocked
-                            </span>
+                            <p className="font-mono text-xs uppercase tracking-[0.14em] text-rose-300">Blocked</p>
                             <h2 id="blocked-heading" className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-white">
                                 WebAssembly
                             </h2>

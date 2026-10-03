@@ -66,7 +66,7 @@ export default function SponsorsPage() {
 
             <HeaderMain />
 
-            <main className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:py-28">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 pt-20 pb-0 md:pt-28 md:pb-0">
                 {/* Hero */}
                 <section className="grid items-start gap-12 border-b border-white/[0.08] pb-20 lg:grid-cols-12 lg:gap-16">
                     <div className="lg:col-span-8">
@@ -128,7 +128,7 @@ export default function SponsorsPage() {
                 </section>
 
                 {/* How to sponsor */}
-                <section className="border-b border-white/[0.08] py-24" aria-labelledby="how-heading">
+                <section className="border-b border-white/[0.08] pt-24" aria-labelledby="how-heading">
                     <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
                         <div className="lg:col-span-4">
                             <h2 id="how-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
@@ -158,7 +158,7 @@ export default function SponsorsPage() {
                         </ol>
                     </div>
 
-                    <p className="mt-14 max-w-3xl border-t border-white/[0.1] pt-8 text-sm leading-7 text-zinc-300">
+                    <p className="mt-14 max-w-3xl border-t border-white/[0.1] py-8 text-sm leading-7 text-zinc-300">
                         Sponsors who want it are credited by name or logo on this page and in the release notes.
                         Staying anonymous is fine.
                     </p>
@@ -191,18 +191,28 @@ export default function SponsorsPage() {
                             <h2 id="supporters-heading" className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">
                                 Supporters.
                             </h2>
-                        </div>
-                        <div className="lg:col-span-8">
-                            <p className="text-base leading-7 text-zinc-300">
-                                No sponsors yet. The first ones will be listed here.
+                            <p className="mt-4 text-sm leading-7 text-zinc-400">
+                                Individuals and teams who contribute to Prismio development and infrastructure.
                             </p>
-                            <a
-                                href={sponsorMail("Prismio sponsorship")}
-                                className={`mt-6 inline-flex items-center gap-2 text-sm font-semibold text-indigo-300 transition-colors hover:text-indigo-200 ${FOCUS}`}
-                            >
-                                <Mail size={15} />
-                                Be the first
-                            </a>
+                        </div>
+
+                        <div className="lg:col-span-8">
+                            <div className={`${CARD} p-8 md:p-10`}>
+                                <h3 className="text-lg font-semibold text-white">No sponsors yet</h3>
+                                <p className="mt-2 text-sm leading-7 text-zinc-400">
+                                    Prismio is funded directly by community contributions with no corporate or venture backing.
+                                    Sponsors are credited here, in the repository, and in compiler release notes. Staying anonymous is always an option.
+                                </p>
+                                <div className="mt-6">
+                                    <a
+                                        href={sponsorMail("Prismio sponsorship")}
+                                        className={`inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 ${FOCUS}`}
+                                    >
+                                        <Mail size={15} />
+                                        Sponsor Prismio
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

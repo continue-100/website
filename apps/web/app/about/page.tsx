@@ -118,7 +118,7 @@ export default function AboutPage() {
 
             <HeaderMain />
 
-            <main className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:py-28">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 pt-20 pb-0 md:pt-28 md:pb-0">
                 {/* Hero */}
                 <section className="grid items-start gap-12 border-b border-white/[0.08] pb-20 lg:grid-cols-12 lg:gap-16">
                     <div className="lg:col-span-8">

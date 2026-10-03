@@ -1,12 +1,18 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {ArrowUpRight, Check, Copy} from 'lucide-react';
-import type {JetBrainsPluginInfo} from '@/app/api/marketplace/route';
+import GithubIcon from '@/components/icons/GithubIcon';
 
 const FOCUS = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400';
+
+// Fixed on purpose: no request to the Marketplace, so the page stays fully static. Update when a new version is published.
+const PLUGIN_NAME = 'Prismio';
+const PLUGIN_VERSION = '0.1.0';
+const MARKETPLACE_URL = 'https://plugins.jetbrains.com/plugin/34672-prismio';
+const GITHUB_URL = 'https://github.com/prismio-lang/intellij-plugin';
 
 // What the plugin does, taken from its own Marketplace description.
 const FEATURES = [
@@ -23,31 +29,11 @@ interface IntelliJPluginCardProps {
 }
 
 export default function IntelliJPluginCard({className = ''}: IntelliJPluginCardProps) {
-    const [info, setInfo] = useState<JetBrainsPluginInfo | null>(null);
     const [copied, setCopied] = useState(false);
-
-    // Until the Marketplace answers, the card assumes the cautious state: not yet installable.
-    useEffect(() => {
-        let cancelled = false;
-        fetch('/api/marketplace')
-            .then((res) => (res.ok ? res.json() : null))
-            .then((data: JetBrainsPluginInfo | null) => {
-                if (data && !cancelled) setInfo(data);
-            })
-            .catch(() => {});
-        return () => {
-            cancelled = true;
-        };
-    }, []);
-
-    const approved = info?.approved ?? false;
-    const marketplaceUrl = info?.marketplaceUrl ?? 'https://plugins.jetbrains.com/plugin/34672-prismio';
-    const githubUrl = info?.githubUrl ?? 'https://github.com/prismio-lang/intellij-plugin';
-    const pluginName = info?.name ?? 'Prismio';
 
     const copyName = async () => {
         try {
-            await navigator.clipboard.writeText(pluginName);
+            await navigator.clipboard.writeText(PLUGIN_NAME);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch {
@@ -67,38 +53,42 @@ export default function IntelliJPluginCard({className = ''}: IntelliJPluginCardP
                     <p className="mt-3 text-sm leading-7 text-zinc-400">
                         Official Prismio support for IntelliJ IDEA, CLion, and the other JetBrains IDEs.
                     </p>
-
-                    <p
-                        className={`mt-6 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
-                            approved
-                                ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300'
-                                : 'border-amber-500/25 bg-amber-500/10 text-amber-200'
-                        }`}
-                    >
-                        <span aria-hidden className={`size-1.5 rounded-full ${approved ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-                        {approved ? `On the Marketplace · v${info?.version}` : 'Waiting for JetBrains approval'}
-                    </p>
+                    <dl className="mt-6 divide-y divide-white/[0.06] border-y border-white/[0.06] text-sm">
+                        <div className="flex items-baseline justify-between gap-4 py-3">
+                            <dt className="text-zinc-500">Marketplace</dt>
+                            <dd className="flex items-center gap-2 text-zinc-200">
+                                <span aria-hidden className="size-1.5 rounded-full bg-emerald-400" />
+                                Live, v{PLUGIN_VERSION}
+                            </dd>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-4 py-3">
+                            <dt className="text-zinc-500">Recommended IDE</dt>
+                            <dd className="font-medium text-white">CLion</dd>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-4 py-3">
+                            <dt className="text-zinc-500">Works in</dt>
+                            <dd className="text-zinc-200">Every JetBrains IDE</dd>
+                        </div>
+                    </dl>
 
                     <div className="mt-8 flex flex-wrap items-center gap-3">
                         <a
-                            href={marketplaceUrl}
+                            href={MARKETPLACE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${FOCUS} ${
-                                approved ? 'bg-white text-black hover:bg-zinc-200' : 'border border-white/15 text-white hover:bg-white/[0.06]'
-                            }`}
+                            className={`inline-flex items-center gap-2 rounded-full border border-transparent bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-zinc-200 ${FOCUS}`}
                         >
                             Marketplace page
                             <ArrowUpRight size={14} />
                         </a>
                         <a
-                            href={githubUrl}
+                            href={GITHUB_URL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-1.5 text-sm font-medium text-zinc-300 transition-colors hover:text-white ${FOCUS}`}
+                            className={`inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/[0.06] ${FOCUS}`}
                         >
+                            <GithubIcon size={16} />
                             Source on GitHub
-                            <ArrowUpRight size={13} />
                         </a>
                     </div>
                 </div>
@@ -115,31 +105,24 @@ export default function IntelliJPluginCard({className = ''}: IntelliJPluginCardP
                         ))}
                     </ul>
 
-                    {approved ? (
-                        <div className="mt-6 rounded-xl border border-white/[0.08] bg-black/30 p-4 text-sm leading-7 text-zinc-300">
-                            <p>
-                                In your IDE open <strong className="text-white">Settings → Plugins → Marketplace</strong>, search for
-                            </p>
-                            <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-black/50 px-3 py-2 font-mono text-sm text-zinc-100">
-                                <span>{pluginName}</span>
-                                <button
-                                    type="button"
-                                    onClick={copyName}
-                                    className={`inline-flex items-center gap-1.5 rounded text-xs text-zinc-300 transition-colors hover:text-white ${FOCUS}`}
-                                    aria-label="Copy the plugin name"
-                                >
-                                    {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                                    <span className="font-sans">{copied ? 'Copied' : 'Copy'}</span>
-                                </button>
-                            </div>
-                            <p className="mt-2">then press Install and restart the IDE if asked.</p>
-                        </div>
-                    ) : (
-                        <p className="mt-6 text-sm leading-7 text-zinc-400">
-                            The plugin is built and released on GitHub, but it won&apos;t show up in the Marketplace search until
-                            JetBrains approves it. Watch the repository for the release.
+                    <div className="mt-6 rounded-xl border border-white/[0.08] bg-black/30 p-4 text-sm leading-7 text-zinc-300">
+                        <p>
+                            In your IDE open <strong className="text-white">Settings → Plugins → Marketplace</strong>, search for
                         </p>
-                    )}
+                        <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-black/50 px-3 py-2 font-mono text-sm text-zinc-100">
+                            <span>{PLUGIN_NAME}</span>
+                            <button
+                                type="button"
+                                onClick={copyName}
+                                className={`inline-flex items-center gap-1.5 rounded text-xs text-zinc-300 transition-colors hover:text-white ${FOCUS}`}
+                                aria-label="Copy the plugin name"
+                            >
+                                {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                                <span className="font-sans">{copied ? 'Copied' : 'Copy'}</span>
+                            </button>
+                        </div>
+                        <p className="mt-2">then press Install and restart the IDE if asked.</p>
+                    </div>
                 </div>
             </div>
 

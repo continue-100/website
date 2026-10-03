@@ -24,7 +24,7 @@ const UMS_LINES: UmsLine[] = [
         tokens: [
             {text: '    name', cls: 'text-zinc-300'},
             {text: ' = ', cls: 'text-zinc-500'},
-            {text: '"compiler-tools"', cls: 'text-[#47d7b5]'},
+            {text: '"xefy"', cls: 'text-[#47d7b5]'},
         ],
     },
     {

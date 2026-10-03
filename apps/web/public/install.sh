@@ -178,20 +178,154 @@ fetch() {
 
 # The archive is the one large download, so on a terminal it gets curl's progress bar,
 # which is erased once the transfer is done.
+
+format_bytes() {
+    bytes=${1:-0}
+
+    if [ "$bytes" -ge 1073741824 ] 2>/dev/null; then
+        awk -v n="$bytes" 'BEGIN { printf "%.1f GB", n / 1073741824 }'
+    elif [ "$bytes" -ge 1048576 ] 2>/dev/null; then
+        awk -v n="$bytes" 'BEGIN { printf "%.1f MB", n / 1048576 }'
+    elif [ "$bytes" -ge 1024 ] 2>/dev/null; then
+        awk -v n="$bytes" 'BEGIN { printf "%.1f KB", n / 1024 }'
+    else
+        printf "%s B" "$bytes"
+    fi
+}
+
 fetch_archive() {
     url="$1"
     dest="$2"
-    if [ "$FETCH_CMD" = "curl" ] && [ -t 1 ]; then
-        # Two lines are drawn (this one and curl's bar), so two are erased on success. On
-        # failure they stay: curl's own error line is the first thing the person should see.
-        printf "  ${C_SKY}%s${RESET} ${BOLD}%-${LABEL_WIDTH}s${RESET} ${DIM}%s${RESET}\n" "$DOT" "Download" "${url##*/}"
-        if curl -fL -# "$url" -o "$dest"; then
-            printf "\033[1A\033[2K\033[1A\033[2K"
-            return 0
+
+    # Non-interactive environments: don't render a terminal UI.
+    if [ ! -t 1 ] || [ ! -t 2 ]; then
+        if [ "$FETCH_CMD" = "curl" ]; then
+            curl -fsSL "$url" -o "$dest"
+        else
+            wget -q "$url" -O "$dest"
         fi
-        return 1
+        return $?
     fi
-    fetch "$url" "$dest" 2>/dev/null
+
+    # We only need this for the live progress display.
+    # GitHub redirects are followed, so this resolves the final archive size.
+    total_bytes=""
+
+    if [ "$FETCH_CMD" = "curl" ]; then
+        total_bytes=$(
+            curl -fsIL "$url" 2>/dev/null |
+            awk 'BEGIN { IGNORECASE=1 }
+                 /^content-length:/ {
+                     gsub("\r", "", $2)
+                     if ($2 ~ /^[0-9]+$/) size=$2
+                 }
+                 END { if (size != "") print size }'
+        )
+    fi
+
+    # Start the real download in the background.
+    rm -f "$dest"
+
+    if [ "$FETCH_CMD" = "curl" ]; then
+        curl -fsSL "$url" -o "$dest" >/dev/null 2>&1 &
+    else
+        wget -q "$url" -O "$dest" >/dev/null 2>&1 &
+    fi
+
+    download_pid=$!
+    start_time=$(date +%s)
+
+    # Download label.
+    filename=${url##*/}
+
+    # Draw the live meter while curl is running.
+    while kill -0 "$download_pid" 2>/dev/null; do
+        if [ -f "$dest" ]; then
+            downloaded=$(wc -c < "$dest" 2>/dev/null | tr -d ' ')
+        else
+            downloaded=0
+        fi
+
+        now=$(date +%s)
+        elapsed=$((now - start_time))
+
+        if [ "$elapsed" -lt 1 ]; then
+            elapsed=1
+        fi
+
+        # Speed in bytes/sec.
+        speed=$((downloaded / elapsed))
+
+        if [ -n "$total_bytes" ] && [ "$total_bytes" -gt 0 ] 2>/dev/null; then
+            percent=$((downloaded * 100 / total_bytes))
+
+            # Never display >100%.
+            if [ "$percent" -gt 100 ]; then
+                percent=100
+            fi
+
+            # 32-character bar.
+            width=32
+            filled=$((percent * width / 100))
+            empty=$((width - filled))
+
+            bar=""
+            i=0
+            while [ "$i" -lt "$filled" ]; do
+                bar="${bar}━"
+                i=$((i + 1))
+            done
+
+            i=0
+            while [ "$i" -lt "$empty" ]; do
+                bar="${bar}─"
+                i=$((i + 1))
+            done
+
+            # Remaining time.
+            remaining=""
+            if [ "$speed" -gt 0 ]; then
+                remaining_bytes=$((total_bytes - downloaded))
+
+                if [ "$remaining_bytes" -gt 0 ]; then
+                    eta=$((remaining_bytes / speed))
+                    eta_m=$((eta / 60))
+                    eta_s=$((eta % 60))
+                    remaining=$(printf "%d:%02d" "$eta_m" "$eta_s")
+                else
+                    remaining="0:00"
+                fi
+            else
+                remaining="--:--"
+            fi
+
+            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${DIM}%s${RESET}  ${C_MINT}%3d%%${RESET} ${DIM}%s${RESET}  ${DIM}%s/s${RESET}  ${DIM}ETA %s${RESET}" \
+                "$DOT" \
+                "$filename" \
+                "$percent" \
+                "$bar" \
+                "$(format_bytes "$speed")" \
+                "$remaining"
+        else
+            # Unknown content length: show downloaded amount + speed.
+            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${DIM}%s${RESET}  ${C_MINT}%s${RESET}  ${DIM}%s/s${RESET}" \
+                "$DOT" \
+                "$filename" \
+                "$(format_bytes "$downloaded")" \
+                "$(format_bytes "$speed")"
+        fi
+
+        sleep 0.1
+    done
+
+    # IMPORTANT: wait gives us curl/wget's real exit status.
+    wait "$download_pid"
+    download_status=$?
+
+    # Remove the live meter completely.
+    printf "\r\033[2K"
+
+    return "$download_status"
 }
 
 sha256_of() {
@@ -534,11 +668,10 @@ main() {
     printf "\n"
     printf "  ${BOLD}Get started${RESET}\n"
     case "$PATH_STATE" in
-        updated) printf "    ${DIM}\$${RESET} ${C_MINT}%s${RESET}  ${DIM}# or open a new terminal${RESET}\n" "$NEW_PATH_LINE" ;;
-        manual)  printf "    ${DIM}\$${RESET} ${C_MINT}%s${RESET}\n" "$NEW_PATH_LINE" ;;
+        updated) printf "    ${C_MINT}%s${RESET}\n" "$NEW_PATH_LINE" ;;
+        manual)  printf "    ${C_MINT}%s${RESET}\n" "$NEW_PATH_LINE" ;;
     esac
-    printf "    ${DIM}\$${RESET} ${C_MINT}prismio --version${RESET}\n"
-    printf "    ${DIM}\$${RESET} ${C_MINT}prismio run main.psm${RESET}\n"
+    printf "    ${C_MINT}prismio --version${RESET}\n"
     printf "\n"
     printf "  ${DIM}Docs${RESET}  ${C_SKY}https://docs.prismio.org${RESET}\n"
     printf "\n"

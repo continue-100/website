@@ -1,151 +1,56 @@
 import React from 'react';
 import {Binary, Braces, Bug, FileCode2, FileJson2, Link2, Workflow} from 'lucide-react';
 
-interface UmsToken {
-    text: string;
-    cls?: string;
+const UMS_SOURCE = `project {
+    name = "xefy"
+    version = "0.1.0"
+    prismio = "0.1.0"
+    license = "Apache-2.0"
 }
 
-interface UmsLine {
-    num: number;
-    tokens: UmsToken[];
+targets {
+    executable("xefy") {
+        entry = "src/main.psm"
+    }
 }
 
-const UMS_LINES: UmsLine[] = [
-    {
-        num: 1,
-        tokens: [
-            {text: 'project', cls: 'text-indigo-400 font-medium'},
-            {text: ' {', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 2,
-        tokens: [
-            {text: '    name', cls: 'text-zinc-300'},
-            {text: ' = ', cls: 'text-zinc-500'},
-            {text: '"compiler-tools"', cls: 'text-[#47d7b5]'},
-        ],
-    },
-    {
-        num: 3,
-        tokens: [
-            {text: '    version', cls: 'text-zinc-300'},
-            {text: ' = ', cls: 'text-zinc-500'},
-            {text: '"0.1.0"', cls: 'text-[#47d7b5]'},
-        ],
-    },
-    {
-        num: 4,
-        tokens: [
-            {text: '}', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 5,
-        tokens: [
-            {text: ''},
-        ],
-    },
-    {
-        num: 6,
-        tokens: [
-            {text: 'targets', cls: 'text-indigo-400 font-medium'},
-            {text: ' {', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 7,
-        tokens: [
-            {text: '    executable', cls: 'text-sky-300 font-medium'},
-            {text: '(', cls: 'text-zinc-500'},
-            {text: '"inspect"', cls: 'text-[#47d7b5]'},
-            {text: ') {', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 8,
-        tokens: [
-            {text: '        entry', cls: 'text-zinc-300'},
-            {text: ' = ', cls: 'text-zinc-500'},
-            {text: '"src/main.psm"', cls: 'text-[#47d7b5]'},
-        ],
-    },
-    {
-        num: 9,
-        tokens: [
-            {text: '    }', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 10,
-        tokens: [
-            {text: '}', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 11,
-        tokens: [
-            {text: ''},
-        ],
-    },
-    {
-        num: 12,
-        tokens: [
-            {text: 'commands', cls: 'text-indigo-400 font-medium'},
-            {text: ' {', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 13,
-        tokens: [
-            {text: '    command', cls: 'text-sky-300 font-medium'},
-            {text: '(', cls: 'text-zinc-500'},
-            {text: '"verify"', cls: 'text-[#47d7b5]'},
-            {text: ') {', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 14,
-        tokens: [
-            {text: '        description', cls: 'text-sky-300'},
-            {text: ' = ', cls: 'text-zinc-500'},
-            {text: '"Acceptance gate"', cls: 'text-[#47d7b5]'},
-        ],
-    },
-    {
-        num: 15,
-        tokens: [
-            {text: '        build', cls: 'text-sky-300'},
-            {text: '(', cls: 'text-zinc-500'},
-            {text: '"inspect"', cls: 'text-[#47d7b5]'},
-            {text: ')', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 16,
-        tokens: [
-            {text: '        run', cls: 'text-sky-300'},
-            {text: '(', cls: 'text-zinc-500'},
-            {text: '"inspect"', cls: 'text-[#47d7b5]'},
-            {text: ', ', cls: 'text-zinc-500'},
-            {text: 'args', cls: 'text-amber-300'},
-            {text: ')', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 17,
-        tokens: [
-            {text: '    }', cls: 'text-zinc-500'},
-        ],
-    },
-    {
-        num: 18,
-        tokens: [
-            {text: '}', cls: 'text-zinc-500'},
-        ],
-    },
-];
+commands {
+    command("verify") {
+        description = "Acceptance gate"
+        test("xefy")
+    }
+}`;
+
+// Colour by word; anything not listed is a plain key or value name.
+const WORD_CLASS: Record<string, string> = {
+    project: 'text-indigo-400 font-medium',
+    targets: 'text-indigo-400 font-medium',
+    commands: 'text-indigo-400 font-medium',
+    executable: 'text-sky-300 font-medium',
+    command: 'text-sky-300 font-medium',
+    description: 'text-sky-300',
+    build: 'text-sky-300',
+    run: 'text-sky-300',
+    args: 'text-amber-300',
+};
+
+// A string, a word, punctuation, or a run of anything else (whitespace). Whitespace is kept so indentation survives.
+const TOKEN = /("[^"]*")|([A-Za-z_]\w*)|([{}()=,])|(\s+|.)/g;
+
+// Runs once at build time: this is a server component, so the page ships finished spans, not a tokenizer.
+function highlight(line: string): React.ReactNode[] {
+    return Array.from(line.matchAll(TOKEN), (m, i) => {
+        const [text, str, word, punct] = m;
+        const cls = str ? 'text-[#47d7b5]' : word ? (WORD_CLASS[word] ?? 'text-zinc-300') : punct ? 'text-zinc-500' : undefined;
+        return (
+            <span key={i} className={cls}>
+                {text}
+            </span>
+        );
+    });
+}
+
+const UMS_LINES = UMS_SOURCE.split('\n');
 
 const TOOLING = [
     {
@@ -175,11 +80,13 @@ export default function AIReady() {
                 <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-400">
                     Prismio’s compiler, project model, native linkage, diagnostics, and memory
                     analysis form one development loop. The lexer, parser, import resolver,
-                    semantic analyzer, AIF engine, and LLVM IR generator are themselves written in Prismio. The runtime and the LLVM bridge are C.
+                    semantic analyzer, AIF engine, and LLVM IR generator are themselves written in Prismio. The runtime
+                    and the LLVM bridge are C.
                 </p>
             </div>
 
-            <div className="mt-14 grid overflow-hidden rounded-2xl bg-[#0b0c10] ring-1 ring-white/[0.09] lg:grid-cols-12">
+            <div
+                className="mt-14 grid overflow-hidden rounded-2xl bg-[#0b0c10] ring-1 ring-white/[0.09] lg:grid-cols-12">
                 <div className="border-b border-white/[0.07] p-6 sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r">
                     <div className="flex items-center gap-3 text-zinc-200">
                         <Workflow size={18} className="text-indigo-300"/>
@@ -193,27 +100,22 @@ export default function AIReady() {
                     </p>
 
                     <div className="mt-7 overflow-hidden rounded-xl bg-[#06070a] ring-1 ring-white/[0.08]">
-                        <div className="flex items-center justify-between border-b border-white/[0.07] bg-white/[0.02] px-4 py-2.5">
+                        <div
+                            className="flex items-center justify-between border-b border-white/[0.07] bg-white/[0.02] px-4 py-2.5">
                             <div className="flex items-center gap-2">
-                                <FileCode2 size={13} className="text-indigo-400" />
+                                <FileCode2 size={13} className="text-indigo-400"/>
                                 <span className="font-mono text-xs text-zinc-300">build.ums</span>
                             </div>
                             <span className="font-mono text-[10px] text-zinc-600">manifest</span>
                         </div>
 
-                        <pre className="overflow-x-auto p-4 sm:p-5 font-mono text-[11px] leading-5 sm:text-xs [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                            {UMS_LINES.map((line) => (
-                                <div key={line.num} className="flex items-center">
-                                    <span className="mr-3 w-4 select-none text-right font-mono text-[11px] text-zinc-600">
-                                        {line.num}
-                                    </span>
-                                    <code className="whitespace-pre">
-                                        {line.tokens.map((tok, i) => (
-                                            <span key={i} className={tok.cls || ''}>
-                                                {tok.text}
-                                            </span>
-                                        ))}
-                                    </code>
+                        <pre
+                            className="overflow-x-auto p-4 sm:p-5 font-mono text-[11px] leading-5 sm:text-xs [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                            {UMS_LINES.map((line, i) => (
+                                <div key={i} className="flex">
+                                    <span
+                                        className="mr-3 w-4 shrink-0 select-none text-right text-[11px] text-zinc-600">{i + 1}</span>
+                                    <code className="whitespace-pre">{highlight(line)}</code>
                                 </div>
                             ))}
                         </pre>
@@ -255,7 +157,8 @@ export default function AIReady() {
 
                         <div className="mt-6 divide-y divide-white/[0.07]">
                             {TOOLING.map(({icon: Icon, title, copy}) => (
-                                <article key={title} className="grid gap-3 py-5 first:pt-0 last:pb-0 sm:grid-cols-[2.25rem_1fr]">
+                                <article key={title}
+                                         className="grid gap-3 py-5 first:pt-0 last:pb-0 sm:grid-cols-[2.25rem_1fr]">
                                     <Icon size={17} className="mt-0.5 text-indigo-300"/>
                                     <div>
                                         <h4 className="text-sm font-semibold text-zinc-200">{title}</h4>

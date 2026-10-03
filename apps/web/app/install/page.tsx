@@ -392,7 +392,7 @@ export default function InstallPage() {
                         <div className="space-y-6">
                             <div>
                                 <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white">Install script</h2>
-                                <p className="mt-2 max-w-xl text-sm leading-7 text-zinc-400">
+                                <p className="mt-2 max-w-3xl text-sm leading-7 text-zinc-400">
                                     One command downloads the archive for your platform, checks its SHA-256 against the one published beside it, and
                                     installs into <code className="font-mono text-zinc-200">~/.prismio</code>. It then adds that directory to your PATH in{' '}
                                     <code className="font-mono text-zinc-200">.zshrc</code>, <code className="font-mono text-zinc-200">.bashrc</code> or the
@@ -400,13 +400,19 @@ export default function InstallPage() {
                                 </p>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Preview label="macOS and Linux" prompt="$" command="curl -fsSL https://prismio.org/install.sh | sh" />
+                                <Preview
+                                    label="macOS and Linux"
+                                    prompt="$"
+                                    command="curl -fsSL https://prismio.org/install.sh | sh"
+                                    copied={copied === 'script'}
+                                    onCopy={() => copy('curl -fsSL https://prismio.org/install.sh | sh', 'script')}
+                                />
                             </div>
                             <p className="max-w-xl text-sm leading-7 text-zinc-400">
                                 <span className="font-semibold text-zinc-200">Windows:</span> download the <code className="font-mono text-zinc-200">.zip</code> from
                                 the Prebuilt binaries tab, unpack it, and put its <code className="font-mono text-zinc-200">bin</code> directory on your PATH.
                             </p>
-                            <p className="max-w-xl text-sm leading-7 text-zinc-400">
+                            <p className="max-w-3xl text-sm leading-7 text-zinc-400">
                                 Set <code className="font-mono text-zinc-200">PRISMIO_VERSION</code> to install a specific release,{' '}
                                 <code className="font-mono text-zinc-200">PRISMIO_INSTALL</code> to choose the directory, and{' '}
                                 <code className="font-mono text-zinc-200">PRISMIO_NO_MODIFY_PATH=1</code> to leave your shell profile alone. The
@@ -552,11 +558,35 @@ export default function InstallPage() {
     );
 }
 
-/** A command that works once the release exists: shown, not copyable, so nobody pastes something that fails today. */
-function Preview({label, prompt, command}: {label: string; prompt: string; command: string}) {
+function Preview({
+    label,
+    prompt,
+    command,
+    onCopy,
+    copied,
+}: {
+    label: string;
+    prompt: string;
+    command: string;
+    onCopy?: () => void;
+    copied?: boolean;
+}) {
     return (
-        <div className="rounded-xl border border-dashed border-white/15 p-4">
-            <p className="text-xs text-zinc-400">{label}</p>
+        <div className="rounded-xl border border-white/[0.08] bg-[#06070a] p-4">
+            <div className="flex items-center justify-between gap-3">
+                <p className="text-xs text-zinc-400">{label}</p>
+                {onCopy && (
+                    <button
+                        type="button"
+                        aria-label="Copy install command"
+                        onClick={onCopy}
+                        className={`inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white ${FOCUS}`}
+                    >
+                        {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                        <span className={copied ? 'text-emerald-400' : ''}>{copied ? 'Copied' : 'Copy'}</span>
+                    </button>
+                )}
+            </div>
             <code className="mt-3 block overflow-x-auto whitespace-nowrap font-mono text-sm">
                 <span className="mr-3 select-none text-indigo-400">{prompt}</span>
                 <Command text={command} />
