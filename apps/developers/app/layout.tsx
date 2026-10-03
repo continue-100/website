@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
 import { docsConfig } from "@/config/docs";
 import { docs } from "@/libs/velite";
 import {

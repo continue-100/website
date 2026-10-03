@@ -1,7 +1,5 @@
 @import "tailwindcss";
 @import "@heroui/styles";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/jetbrains-mono";
 
 @source "../../../packages/docs-core/src";
 @source "../../../packages/ui";
@@ -87,6 +85,12 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    /* Shiki dual-theme tokens */
+    --shiki-light: inherit;
+    --shiki-light-bg: transparent;
+    --shiki-dark: inherit;
+    --shiki-dark-bg: inherit;
 }
 
 .dark {
@@ -162,13 +166,13 @@
 /* Shiki emits --shiki-light / --shiki-dark on every token span.            */
 /* In dark mode we must use !important to beat Shiki's inline style attr.   */
 .mdx pre code span {
-    color: var(--shiki-light);
-    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light, inherit);
+    background-color: var(--shiki-light-bg, transparent);
 }
 
 .dark .mdx pre code span {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
+    color: var(--shiki-dark, inherit) !important;
+    background-color: var(--shiki-dark-bg, transparent) !important;
 }
 
 /* Base pre background from Shiki theme in dark mode */
