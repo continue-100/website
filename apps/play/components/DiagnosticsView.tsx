@@ -11,7 +11,7 @@ interface DiagnosticsViewProps {
 export default function DiagnosticsView({ diagnostics }: DiagnosticsViewProps) {
     if (diagnostics.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center h-full p-8 text-center select-none">
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center select-none" role="status" aria-live="polite">
                 <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
                     <CheckCircle2 size={24} className="text-emerald-400" />
                 </div>
@@ -24,7 +24,7 @@ export default function DiagnosticsView({ diagnostics }: DiagnosticsViewProps) {
     }
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-5 space-y-4 font-mono text-xs">
+        <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-5 space-y-4 font-mono text-xs" role="alert" aria-live="assertive">
             {diagnostics.map((diag, index) => {
                 const isError = diag.level === 'error';
                 const borderColor = isError ? 'border-rose-500/30' : 'border-amber-500/30';

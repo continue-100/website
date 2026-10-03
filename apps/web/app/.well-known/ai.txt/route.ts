@@ -12,6 +12,7 @@ Disallow: /api/
 
 # Machine-readable entry points
 Summary: ${siteConfig.url}/ai/summary.json
+Service: ${siteConfig.url}/ai/service.json
 FAQ: ${siteConfig.url}/ai/faq.json
 LLMs: ${siteConfig.url}/llms.txt
 Sitemap: ${siteConfig.url}/sitemap.xml

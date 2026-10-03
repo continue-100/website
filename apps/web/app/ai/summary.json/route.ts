@@ -20,6 +20,7 @@ export function GET() {
                 releases: `${siteConfig.github}/releases`,
                 llms: `${siteConfig.url}/llms.txt`,
                 faq: `${siteConfig.url}/ai/faq.json`,
+                service: `${siteConfig.url}/ai/service.json`,
             },
             contact: siteConfig.email,
         },

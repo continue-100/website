@@ -2,6 +2,8 @@ import { docs } from "@/libs/velite";
 import { docsConfig } from "@/config/docs";
 import { generateLlmsFullTxt } from "@prismio/docs-core";
 
+export const dynamic = "force-static";
+
 export function GET() {
     return generateLlmsFullTxt(
         docs,

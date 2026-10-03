@@ -57,19 +57,19 @@ const bricolage = localFont({
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteConfig.url),
-    title: siteConfig.name,
+    title: "Prismio — Systems Programming Language for Native Performance",
     description: siteConfig.description,
     applicationName: siteConfig.name,
     alternates: {
-        canonical: "./",
+        canonical: "/",
         types: {
-            "application/atom+xml": [{url: siteConfig.releasesFeed, title: "Prismio releases"}],
+            "application/atom+xml": siteConfig.releasesFeed,
         },
     },
     openGraph: {
         type: "website",
         siteName: siteConfig.name,
-        title: siteConfig.name,
+        title: "Prismio — Systems Programming Language for Native Performance",
         description: siteConfig.description,
         locale: "en_US",
         images: [{url: "/icons/prismio-banner.png", width: 489, height: 121, alt: "Prismio logo and wordmark"}],
@@ -83,20 +83,13 @@ export const metadata: Metadata = {
     robots: {index: true, follow: true},
     keywords: [
         "Prismio",
-        "Programming",
-        "Language",
-        "Open Source",
-        "Cross platform",
-        "Multi platform",
-        "Software",
-        "Development",
-        "Native",
-        "Performance",
-        "System",
-        "LLVM",
-        "PLIB",
-        "AIF",
+        "systems programming language",
+        "native compiler",
+        "LLVM compiler",
+        "C interoperability",
+        "memory placement",
         "Adaptive Inference Framework",
+        "open source compiler",
     ],
     authors: [
         {

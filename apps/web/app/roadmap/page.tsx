@@ -7,8 +7,9 @@ import {PRISMIO_VERSION} from "@prismio/utils";
 import {getBenchmarkDataset} from "@/lib/benchmarks";
 
 export const metadata = {
-    title: "Roadmap · Prismio Systems Language",
+    title: "Prismio Roadmap — Compiler, Runtime, and Language Development",
     description: "What Prismio can do today, what is experimental, and what is not there yet. No dates, no promises.",
+    alternates: {canonical: "/roadmap"},
 };
 
 const CARD = "rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-blur-xl";

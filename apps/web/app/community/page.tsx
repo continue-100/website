@@ -8,9 +8,10 @@ import FooterMain from '@prismio/ui/FooterMain';
 import {DISCORD_INVITE_LINK} from '@prismio/utils';
 
 export const metadata = {
-    title: 'Community & Contributing | Prismio',
+    title: 'Prismio Community — Contributors, Discord, and Open Source',
     description:
         'Where to ask questions, report bugs, and contribute to Prismio: the Discord server, GitHub issues, and the contributing guide.',
+    alternates: {canonical: "/community"},
 };
 
 const REPO = 'https://github.com/prismio-lang/prismio';

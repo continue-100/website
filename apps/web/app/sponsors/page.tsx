@@ -7,6 +7,7 @@ import {siteConfig} from "@/config/site";
 export const metadata = {
     title: "Sponsors · Prismio",
     description: "Support Prismio by bank transfer. What the funding would pay for, how to sponsor, and how sponsors are credited.",
+    alternates: {canonical: "/sponsors"},
 };
 
 const CARD = "rounded-3xl border border-white/[0.08] bg-[#0c0c0e]/70 backdrop-blur-xl";

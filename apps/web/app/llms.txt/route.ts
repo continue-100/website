@@ -35,6 +35,7 @@ Prismio ${PRISMIO_VERSION} is the first release, published 2026-10-02, and is pr
 ## Optional
 
 - [Machine-readable summary](${siteConfig.url}/ai/summary.json)
+- [Machine-readable service description](${siteConfig.url}/ai/service.json)
 - [FAQ as JSON](${siteConfig.url}/ai/faq.json)
 `;
 

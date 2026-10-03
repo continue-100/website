@@ -1,7 +1,7 @@
 @import "tailwindcss";
+@import "@heroui/styles";
 /* The shared footer and logo live in packages/ui; without this their classes are never generated. */
 @source "../../../packages/ui";
-@import "@heroui/styles";
 
 @config "../tailwind.config.js";
 @custom-variant dark (&:is(.dark *));

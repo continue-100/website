@@ -9,7 +9,7 @@ export default function EditorSupport() {
                     Editor support
                 </h2>
                 <p className="mt-6 text-base leading-7 text-zinc-400">
-                    Official language support for IntelliJ IDEA and JetBrains IDEs.
+                    Official Prismio support for IntelliJ IDEA, CLion, and other JetBrains IDEs.
                 </p>
             </div>
 

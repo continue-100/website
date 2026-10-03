@@ -5,7 +5,7 @@ import {getBenchmarkDataset} from '@/lib/benchmarks';
 
 export default function BenchmarkTeaser() {
     const data = getBenchmarkDataset();
-    const {stats, featured, runs} = data;
+    const {stats, runs} = data;
     const compared = stats.implemented - stats.eliminated;
 
     const arms = [
@@ -101,59 +101,15 @@ export default function BenchmarkTeaser() {
                 })}
             </div>
 
-            {/* The rest of the numbers, as one line of facts */}
+            {/* The key supporting facts stay compact on the homepage. */}
             <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-3 text-sm">
-                {facts.map((fact) => (
+                {facts.slice(0, 2).map((fact) => (
                     <div key={fact.label} className="flex items-baseline gap-2">
                         <dt className="text-zinc-400">{fact.label}</dt>
                         <dd className="font-mono font-semibold text-white">{fact.value}</dd>
                     </div>
                 ))}
             </dl>
-
-            {/* Featured workloads */}
-            <div className="mt-12 overflow-x-auto rounded-2xl border border-white/[0.1] bg-[#0b0c10]/60">
-                <table className="w-full min-w-[720px] border-collapse text-left text-sm">
-                    <caption className="sr-only">Featured workloads with median time per language</caption>
-                    <thead>
-                        <tr className="border-b border-white/[0.08] text-xs text-zinc-400">
-                            <th scope="col" className="px-6 py-4 font-medium">Workload</th>
-                            <th scope="col" className="px-4 py-4 font-medium text-purple-300">
-                                <span className="inline-flex items-center gap-2">
-                                    <span aria-hidden className="size-1.5 rounded-full bg-purple-400" />
-                                    Prismio
-                                </span>
-                            </th>
-                            <th scope="col" className="px-4 py-4 font-medium text-sky-300">
-                                <span className="inline-flex items-center gap-2">
-                                    <span aria-hidden className="size-1.5 rounded-full bg-sky-400" />
-                                    C++20
-                                </span>
-                            </th>
-                            <th scope="col" className="px-4 py-4 font-medium text-orange-300">
-                                <span className="inline-flex items-center gap-2">
-                                    <span aria-hidden className="size-1.5 rounded-full bg-orange-400" />
-                                    Rust
-                                </span>
-                            </th>
-                            <th scope="col" className="px-6 py-4 font-medium">Readout</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {featured.map((result) => (
-                            <tr key={result.name} className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.02]">
-                                <th scope="row" className="px-6 py-5 text-left font-mono text-xs font-normal text-zinc-200">{result.name}</th>
-                                <td className="px-4 py-5 font-mono text-xs font-semibold text-purple-200">{result.prismio}</td>
-                                <td className="px-4 py-5 font-mono text-xs text-zinc-300">{result.cpp}</td>
-                                <td className="px-4 py-5 font-mono text-xs text-zinc-300">{result.rust}</td>
-                                <td className={`px-6 py-5 text-xs ${result.tone === 'win' ? 'text-emerald-300' : 'text-zinc-300'}`}>
-                                    {result.note}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
 
             <ul className="mt-8 grid gap-4 text-sm leading-6 text-zinc-400 sm:grid-cols-2 sm:gap-10">
                 <li className="flex gap-3">

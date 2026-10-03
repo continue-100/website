@@ -9,6 +9,13 @@ import BenchmarkMethodology from '@/components/benchmarks/BenchmarkMethodology';
 import ToolchainMetrics from '@/components/benchmarks/ToolchainMetrics';
 import { getBenchmarkDataset } from '@/lib/benchmarks';
 
+export const metadata = {
+    title: 'Prismio Benchmarks — C++ and Rust Performance Comparison',
+    description:
+        'Reproducible Prismio compiler and runtime benchmarks compared with C++ and Rust using identical workloads, multi-run medians, and checksum verification.',
+    alternates: {canonical: "/benchmarks"},
+};
+
 export default function BenchmarksPage() {
     const data = getBenchmarkDataset();
     const { stats, categories, benchmarks, unsupported } = data;

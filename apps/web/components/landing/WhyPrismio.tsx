@@ -52,9 +52,9 @@ export default function WhyPrismio() {
                         Memory decisions you can inspect, diff, and verify.
                     </h2>
                     <p className="mt-6 max-w-xl text-base leading-7 text-zinc-300">
-                        The Adaptive Inference Framework (experimental in 0.1) analyzes escape behavior, ownership,
-                        thread transfer, and layout before code generation. It chooses the
-                        cheapest safe placement it can prove—and produces evidence for the decision.
+                        The Adaptive Inference Framework is experimental in 0.1. It analyzes escape behavior,
+                        ownership, thread transfer, and layout before code generation. It chooses a safe
+                        placement and produces evidence for the decision.
                     </p>
 
                     <p className="mt-10 max-w-lg text-xl leading-8 tracking-[-0.02em] text-sky-200">

@@ -143,7 +143,7 @@ export default function CompilerOutput({ result, isRunning, options }: CompilerO
             </div>
 
             {/* Tab Body */}
-            <div className="flex-1 relative overflow-hidden bg-[#06070a]">
+            <div className="flex-1 relative overflow-hidden bg-[#06070a]" aria-live="polite" aria-atomic="false">
                 {isRunning ? (
                     <div className="flex flex-col items-center justify-center h-full text-zinc-500 space-y-3">
                         <div className="h-6 w-6 border-2 border-zinc-700 border-t-[#47d7b5] rounded-full animate-spin" />
@@ -200,7 +200,7 @@ export default function CompilerOutput({ result, isRunning, options }: CompilerO
             </div>
 
             {/* Bottom Status Bar */}
-            <div className="flex items-center justify-between px-3 py-1 bg-[#090a0f] border-t border-white/10 text-[11px] font-mono text-zinc-500 select-none">
+            <div className="flex items-center justify-between px-3 py-1 bg-[#090a0f] border-t border-white/10 text-[11px] font-mono text-zinc-500 select-none" role="status" aria-live="polite">
                 <div className="flex items-center gap-3">
                     {result ? (
                         result.success ? (

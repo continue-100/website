@@ -1,5 +1,6 @@
 import {faqItems} from "@/config/faq";
 import {siteConfig} from "@/config/site";
+import {PRISMIO_VERSION} from "@prismio/utils";
 
 export const PRISMIO_ORG_ID =
   "https://prismio.org/#organization";
@@ -44,6 +45,19 @@ export const prismioStructuredData = {
         "@id": PRISMIO_ORG_ID
       },
       "dateModified": BUILD_DATE
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": `${siteConfig.github}#source`,
+      "name": "Prismio source code",
+      "codeRepository": siteConfig.github,
+      "programmingLanguage": "Prismio",
+      "runtimePlatform": `LLVM ${siteConfig.name} toolchain`,
+      "version": PRISMIO_VERSION,
+      "isPartOf": {
+        "@id": PRISMIO_ORG_ID
+      },
+      "license": "https://opensource.org/licenses/MIT"
     },
     {
       "@type": "Person",

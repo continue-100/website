@@ -133,8 +133,8 @@ export default function Hero() {
 
                     <p className="mt-8 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
                         Prismio is a statically typed systems programming language that compiles to native
-                        machine code through LLVM. Its experimental Adaptive Inference Framework decides where
-                        values live, explains every placement, and can verify those decisions at runtime.
+                        machine code through LLVM. Its experimental Adaptive Inference Framework analyzes
+                        where values live and explains each decision.
                     </p>
 
                     <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -185,7 +185,7 @@ export default function Hero() {
                         </div>
                     </div>
 
-                    <dl className="mt-10 grid max-w-2xl grid-cols-3 gap-5 text-sm">
+                    <dl className="mt-10 grid max-w-2xl grid-cols-2 gap-5 text-sm sm:grid-cols-3">
                         <div>
                             <dt className="text-zinc-500">Compiler</dt>
                             <dd className="mt-1 font-medium text-zinc-200">Self-hosted</dd>

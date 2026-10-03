@@ -19,8 +19,9 @@ import FooterMain from "@prismio/ui/FooterMain";
 import {DISCORD_INVITE_LINK} from "@prismio/utils";
 
 export const metadata = {
-    title: "Author's Note & Technical Journey · Saksham Jaiswal · Prismio",
+    title: "Saksham Jaiswal — Prismio Creator and Compiler Architect",
     description: "A note from Saksham Jaiswal on compiler architecture, the vision behind Prismio, and building a self-hosted systems language.",
+    alternates: {canonical: "/team/saksham-jaiswal"},
 };
 
 const LINKEDIN_URL = "https://www.linkedin.com/in/saksham6975";

@@ -44,3 +44,6 @@ graphify-out/*
 !graphify-out/obsidian/
 .graphify/
 .graphify_*.json
+/dist/
+.vinext/
+.cloudflare/
