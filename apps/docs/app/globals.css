@@ -1,9 +1,10 @@
 @import "tailwindcss";
-@source "../../../packages/docs-core/src";
-@source "../../../packages/ui";
 @import "@heroui/styles";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
+
+@source "../../../packages/docs-core/src";
+@source "../../../packages/ui";
 
 @config "../tailwind.config.js";
 @custom-variant dark (&:is(.dark *));
