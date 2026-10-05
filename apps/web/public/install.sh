@@ -235,9 +235,6 @@ fetch_archive() {
     download_pid=$!
     start_time=$(date +%s)
 
-    # Download label.
-    filename=${url##*/}
-
     # Draw the live meter while curl is running.
     while kill -0 "$download_pid" 2>/dev/null; do
         if [ -f "$dest" ]; then
@@ -264,8 +261,8 @@ fetch_archive() {
                 percent=100
             fi
 
-            # 32-character bar.
-            width=32
+            # Keep the rendered line narrow enough to redraw on one terminal row.
+            width=16
             filled=$((percent * width / 100))
             empty=$((width - filled))
 
@@ -299,18 +296,16 @@ fetch_archive() {
                 remaining="--:--"
             fi
 
-            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${DIM}%s${RESET}  ${C_MINT}%3d%%${RESET} ${DIM}%s${RESET}  ${DIM}%s/s${RESET}  ${DIM}ETA %s${RESET}" \
+            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${C_MINT}%3d%%${RESET} ${DIM}%s${RESET}  ${DIM}%s/s${RESET}  ${DIM}ETA %s${RESET}" \
                 "$DOT" \
-                "$filename" \
                 "$percent" \
                 "$bar" \
                 "$(format_bytes "$speed")" \
                 "$remaining"
         else
             # Unknown content length: show downloaded amount + speed.
-            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${DIM}%s${RESET}  ${C_MINT}%s${RESET}  ${DIM}%s/s${RESET}" \
+            printf "\r\033[2K  ${C_SKY}%s${RESET} ${BOLD}Download${RESET}  ${C_MINT}%s${RESET}  ${DIM}%s/s${RESET}" \
                 "$DOT" \
-                "$filename" \
                 "$(format_bytes "$downloaded")" \
                 "$(format_bytes "$speed")"
         fi
@@ -668,7 +663,7 @@ main() {
     printf "\n"
     printf "  ${BOLD}Get started${RESET}\n"
     case "$PATH_STATE" in
-        updated) printf "    ${C_MINT}%s${RESET}\n" "$NEW_PATH_LINE" ;;
+        updated) printf "    ${C_MINT}source \"%s\"${RESET}\n" "$(shell_path "$PROFILE_UPDATED")" ;;
         manual)  printf "    ${C_MINT}%s${RESET}\n" "$NEW_PATH_LINE" ;;
     esac
     printf "    ${C_MINT}prismio --version${RESET}\n"
